@@ -849,41 +849,15 @@ async function fetchNews() {
   document.getElementById('filters').style.display = 'none';
 
   try {
-    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    const resp = await fetch("/api/news", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 3000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{
-          role: "user",
-          content: `Search the web for the top 8 cybersecurity news stories from the last 24-48 hours. Find real, current articles.
-
-Return ONLY a valid JSON array, no markdown, no extra text:
-[
-  {
-    "title": "Full article headline",
-    "source": "Publication name",
-    "url": "https://direct-article-url",
-    "summary": "2-3 sentence plain English summary of what happened and why it matters to security professionals.",
-    "threat_level": 1,
-    "category": "Ransomware|Data Breach|Vulnerability|Malware|Nation-State|Phishing|Zero-Day|Regulation|Other"
-  }
-]
-threat_level: 1=Info, 2=Low, 3=Medium, 4=High, 5=Critical. Return ONLY the JSON array.`
-        }]
-      })
+      headers: { "Content-Type": "application/json" }
     });
 
     const data = await resp.json();
-    if (data.error) throw new Error(data.error.message);
+    if (data.error) throw new Error(data.error);
 
-    const rawText = data.content.map(b => b.type === 'text' ? b.text : '').join('');
-    const match = rawText.match(/\[[\s\S]*?\]/);
-    if (!match) throw new Error('Could not parse AI response');
-
-    allArticles = JSON.parse(match[0]);
+    allArticles = data.articles;
     activeFilter = 'All';
     renderFeed();
 
