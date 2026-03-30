@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberWatch Daily — Cybersecurity Threat Intelligence</title>
+<meta name="description" content="Daily AI-curated cybersecurity news, threat alerts, and vulnerability reports. Stay ahead of the latest breaches, ransomware, and zero-days.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c0f;
+    --bg2: #0d1317;
+    --bg3: #121920;
+    --surface: #161e26;
+    --surface2: #1c2730;
+    --border: rgba(0,255,136,0.12);
+    --border2: rgba(0,255,136,0.25);
+    --green: #00ff88;
+    --green-dim: #00cc6a;
+    --green-dark: #003d1f;
+    --red: #ff4444;
+    --red-dim: #cc2222;
+    --red-dark: #3d0000;
+    --amber: #ffaa00;
+    --amber-dark: #3d2800;
+    --blue: #00aaff;
+    --blue-dark: #00223d;
+    --text: #e0edd6;
+    --text2: #7a9e8a;
+    --text3: #3d5a47;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  a { color: var(--green); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    position: sticky;
+    top: 0;
+    background: rgba(8,12,15,0.95);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-bracket { color: var(--text3); }
+
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: blink 2s infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  nav {
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  nav a { color: var(--text2); }
+  nav a:hover { color: var(--green); text-decoration: none; }
+
+  .header-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    border-bottom: 1px solid var(--border);
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: 'CYBERWATCH';
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--mono);
+    font-size: 120px;
+    font-weight: 600;
+    color: rgba(0,255,136,0.03);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 1px;
+    background: var(--green);
+  }
+
+  h1 {
+    font-family: var(--mono);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  h1 span { color: var(--green); }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 20px;
+    background: var(--green);
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    position: relative;
+  }
+
+  .btn-primary:hover { background: #fff; }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--green);
+    border: 1px solid var(--border2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-secondary:hover { background: var(--green-dark); }
+
+  /* ── STATS ── */
+  .stats-bar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+  }
+
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .stat {
+    background: var(--bg2);
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .stat-num.red { color: var(--red); }
+  .stat-num.amber { color: var(--amber); }
+  .stat-num.blue { color: var(--blue); }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .filter-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.5px;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--green);
+    color: var(--green);
+    background: var(--green-dark);
+  }
+
+  /* ── NEWS CARDS ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::before {
+    content: '//';
+    color: var(--green);
+  }
+
+  .news-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .news-card {
+    background: var(--surface);
+    padding: 1.25rem 1.5rem;
+    transition: background 0.15s;
+    animation: fadeIn 0.4s ease both;
+  }
+
+  .news-card:hover { background: var(--surface2); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .badge-critical { background: var(--red-dark); color: var(--red); border: 1px solid var(--red-dim); }
+  .badge-high     { background: var(--red-dark); color: #ff8866; border: 1px solid #cc4422; }
+  .badge-medium   { background: var(--amber-dark); color: var(--amber); border: 1px solid #cc8800; }
+  .badge-low      { background: #0a2000; color: #88cc44; border: 1px solid #446622; }
+  .badge-info     { background: var(--blue-dark); color: var(--blue); border: 1px solid #0066cc; }
+
+  .badge-cat {
+    background: var(--bg3);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .source-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    margin-left: auto;
+  }
+
+  .card-title {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.4;
+  }
+
+  .card-title a { color: var(--text); }
+  .card-title a:hover { color: var(--green); text-decoration: none; }
+
+  .card-summary {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+
+  .threat-dots {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .tdot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .read-more {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    background: var(--surface);
+    padding: 4rem 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .empty-icon {
+    font-family: var(--mono);
+    font-size: 40px;
+    color: var(--text3);
+    margin-bottom: 1rem;
+  }
+
+  .empty-title {
+    font-family: var(--mono);
+    font-size: 16px;
+    color: var(--text2);
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-sub {
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  /* ── LOADING ── */
+  .loading-state {
+    background: var(--surface);
+    padding: 3rem 2rem;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .loading-bar {
+    width: 200px;
+    height: 2px;
+    background: var(--bg3);
+    margin: 1.5rem auto 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .loading-bar::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--green);
+    animation: load 1.5s infinite ease-in-out;
+  }
+
+  @keyframes load { to { left: 100%; } }
+
+  .loading-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    animation: blink 1.5s infinite;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+  }
+
+  .sidebar-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text3);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .sidebar-title::before { content: '//'; color: var(--green); }
+
+  /* Newsletter */
+  .newsletter-form { display: flex; flex-direction: column; gap: 8px; }
+
+  .newsletter-input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .newsletter-input:focus { border-color: var(--green); }
+  .newsletter-input::placeholder { color: var(--text3); }
+
+  .newsletter-btn {
+    width: 100%;
+    background: var(--green);
+    color: #000;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .newsletter-btn:hover { background: #fff; }
+
+  .newsletter-note {
+    font-size: 11px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  /* Affiliate tools */
+  .tool-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .tool-link:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .tool-name { color: var(--text); font-weight: 500; }
+  .tool-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    background: var(--green-dark);
+    color: var(--green);
+    border: 1px solid var(--border2);
+  }
+
+  /* Threat level key */
+  .threat-key { display: flex; flex-direction: column; gap: 8px; }
+
+  .threat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .tkey-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-logo {
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--green);
+  }
+
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .footer-links a { color: var(--text3); }
+  .footer-links a:hover { color: var(--green); text-decoration: none; }
+
+  /* ── AD PLACEHOLDER ── */
+  .ad-placeholder {
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    padding: 1rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .main { grid-template-columns: 1fr; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    nav { display: none; }
+    .hero::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="live-dot"></div>
+      <span class="logo-bracket">[</span>CyberWatch Daily<span class="logo-bracket">]</span>
+    </div>
+    <nav>
+      <a href="#news">News</a>
+      <a href="#tools">Tools</a>
+      <a href="#newsletter">Newsletter</a>
+      <a href="#about">About</a>
+    </nav>
+    <div class="header-date" id="header-date"></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">AI-Powered Threat Intelligence</div>
+    <h1>Stay ahead of every<br><span>cyber threat</span>.</h1>
+    <p class="hero-sub">Real-time cybersecurity news, curated and analyzed by AI. Updated daily with threat ratings, breach alerts, and vulnerability reports.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="fetchNews()" id="scan-btn">⚡ Scan Today's Threats</button>
+      <button class="btn-secondary" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">Get Daily Digest →</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat">
+      <div class="stat-num" id="stat-total">—</div>
+      <div class="stat-label">Stories Today</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num red" id="stat-critical">—</div>
+      <div class="stat-label">Critical / High</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num amber" id="stat-breaches">—</div>
+      <div class="stat-label">Breaches / Leaks</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num blue" id="stat-vulns">—</div>
+      <div class="stat-label">Vulnerabilities</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT: NEWS FEED -->
+  <div id="news">
+    <div class="section-header">
+      <div class="section-title">Live Threat Feed</div>
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);" id="last-updated"></div>
+    </div>
+
+    <div class="filters" id="filters" style="display:none;">
+      <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
+    </div>
+
+    <div id="feed">
+      <div class="empty-state">
+        <div class="empty-icon">[ ]</div>
+        <div class="empty-title">No threats loaded</div>
+        <div class="empty-sub">Click "Scan Today's Threats" to pull the latest cybersecurity news</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Ad Placeholder -->
+    <div class="ad-placeholder">
+      <!-- Google AdSense goes here -->
+      Advertisement
+    </div>
+
+    <!-- Newsletter -->
+    <div class="sidebar-card" id="newsletter">
+      <div class="sidebar-title">Daily Digest</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get today's top threats delivered to your inbox every morning. Free.</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="your@email.com" id="email-input">
+        <button class="newsletter-btn" onclick="subscribe()">Subscribe — It's Free</button>
+        <div class="newsletter-note">No spam. Unsubscribe anytime.</div>
+      </div>
+    </div>
+
+    <!-- Threat Key -->
+    <div class="sidebar-card">
+      <div class="sidebar-title">Threat Levels</div>
+      <div class="threat-key">
+        <div class="threat-row"><div class="tkey-dot" style="background:#cc2222;"></div><span style="color:var(--red);">Critical</span><span style="color:var(--text3);margin-left:auto;">Immediate action needed</span></div>
+        <div class="threat-row"><div class="tkey-dot" style="background:#cc4422;"></div><span style="color:#ff8866;">High</span><span style="color:var(--text3);margin-left:auto;">Patch / respond soon</span></div>
+        <div class="threat-row"><div class="tkey-dot" style="background:#cc8800;"></div><span style="color:var(--amber);">Medium</span><span style="color:var(--text3);margin-left:auto;">Monitor closely</span></div>
+        <div class="threat-row"><div class="tkey-dot" style="background:#446622;"></div><span style="color:#88cc44;">Low</span><span style="color:var(--text3);margin-left:auto;">Low direct risk</span></div>
+        <div class="threat-row"><div class="tkey-dot" style="background:#0066cc;"></div><span style="color:var(--blue);">Info</span><span style="color:var(--text3);margin-left:auto;">Informational</span></div>
+      </div>
+    </div>
+
+    <!-- Affiliate Tools -->
+    <div class="sidebar-card" id="tools">
+      <div class="sidebar-title">Recommended Tools</div>
+      <div class="tool-link">
+        <div>
+          <div class="tool-name">NordVPN</div>
+          <div style="font-size:11px;color:var(--text3);">Best-in-class VPN</div>
+        </div>
+        <a href="https://nordvpn.com" target="_blank" class="tool-badge">Get 70% Off</a>
+      </div>
+      <div class="tool-link">
+        <div>
+          <div class="tool-name">1Password</div>
+          <div style="font-size:11px;color:var(--text3);">Password manager</div>
+        </div>
+        <a href="https://1password.com" target="_blank" class="tool-badge">Try Free</a>
+      </div>
+      <div class="tool-link">
+        <div>
+          <div class="tool-name">Malwarebytes</div>
+          <div style="font-size:11px;color:var(--text3);">Malware protection</div>
+        </div>
+        <a href="https://malwarebytes.com" target="_blank" class="tool-badge">Try Free</a>
+      </div>
+      <div class="tool-link">
+        <div>
+          <div class="tool-name">Surfshark</div>
+          <div style="font-size:11px;color:var(--text3);">Privacy suite</div>
+        </div>
+        <a href="https://surfshark.com" target="_blank" class="tool-badge">80% Off</a>
+      </div>
+    </div>
+
+    <!-- Second Ad -->
+    <div class="ad-placeholder" style="min-height:250px;display:flex;align-items:center;justify-content:center;">
+      <!-- Google AdSense goes here -->
+      Advertisement
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer id="about">
+  <div class="footer-inner">
+    <div class="footer-logo">[CyberWatch Daily]</div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Disclaimer</a>
+      <a href="#">Contact</a>
+      <a href="#">Advertise</a>
+    </div>
+    <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+  </div>
+</footer>
+
+<script>
+// Set date
+const now = new Date();
+document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+
+let allArticles = [];
+let activeFilter = 'All';
+
+const THREAT_LEVELS = {
+  5: { label: 'Critical', badgeClass: 'badge-critical', dots: ['#cc2222','#cc2222','#cc2222','#cc2222','#cc2222'] },
+  4: { label: 'High',     badgeClass: 'badge-high',     dots: ['#cc4422','#cc4422','#cc4422','#cc4422','#222'] },
+  3: { label: 'Medium',   badgeClass: 'badge-medium',   dots: ['#cc8800','#cc8800','#cc8800','#222','#222'] },
+  2: { label: 'Low',      badgeClass: 'badge-low',       dots: ['#446622','#446622','#222','#222','#222'] },
+  1: { label: 'Info',     badgeClass: 'badge-info',      dots: ['#0066cc','#222','#222','#222','#222'] },
+};
+
+async function fetchNews() {
+  const btn = document.getElementById('scan-btn');
+  btn.disabled = true;
+  btn.textContent = '⚡ Scanning...';
+
+  document.getElementById('feed').innerHTML = `
+    <div class="loading-state">
+      <div class="loading-text">// SCANNING THREAT INTELLIGENCE FEEDS...</div>
+      <div class="loading-bar"></div>
+    </div>`;
+
+  document.getElementById('filters').style.display = 'none';
+
+  try {
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 3000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{
+          role: "user",
+          content: `Search the web for the top 8 cybersecurity news stories from the last 24-48 hours. Find real, current articles.
+
+Return ONLY a valid JSON array, no markdown, no extra text:
+[
+  {
+    "title": "Full article headline",
+    "source": "Publication name",
+    "url": "https://direct-article-url",
+    "summary": "2-3 sentence plain English summary of what happened and why it matters to security professionals.",
+    "threat_level": 1,
+    "category": "Ransomware|Data Breach|Vulnerability|Malware|Nation-State|Phishing|Zero-Day|Regulation|Other"
+  }
+]
+threat_level: 1=Info, 2=Low, 3=Medium, 4=High, 5=Critical. Return ONLY the JSON array.`
+        }]
+      })
+    });
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const rawText = data.content.map(b => b.type === 'text' ? b.text : '').join('');
+    const match = rawText.match(/\[[\s\S]*?\]/);
+    if (!match) throw new Error('Could not parse AI response');
+
+    allArticles = JSON.parse(match[0]);
+    activeFilter = 'All';
+    renderFeed();
+
+    // Update stats
+    document.getElementById('stat-total').textContent = allArticles.length;
+    document.getElementById('stat-critical').textContent = allArticles.filter(a => a.threat_level >= 4).length;
+    document.getElementById('stat-breaches').textContent = allArticles.filter(a => ['Data Breach','Ransomware'].includes(a.category)).length;
+    document.getElementById('stat-vulns').textContent = allArticles.filter(a => ['Vulnerability','Zero-Day'].includes(a.category)).length;
+    document.getElementById('last-updated').textContent = '// Updated ' + new Date().toLocaleTimeString();
+
+  } catch (err) {
+    document.getElementById('feed').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-title" style="color:var(--red);">// ERROR: ${err.message}</div>
+        <div class="empty-sub" style="margin-top:0.5rem;">Please try again in a moment.</div>
+      </div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⚡ Refresh Feed';
+}
+
+function renderFeed() {
+  const articles = activeFilter === 'All' ? allArticles : allArticles.filter(a => a.category === activeFilter);
+
+  // Build filters
+  const cats = ['All', ...new Set(allArticles.map(a => a.category))];
+  const filterRow = document.getElementById('filters');
+  filterRow.style.display = 'flex';
+  filterRow.innerHTML = cats.map(c =>
+    `<button class="filter-btn ${c === activeFilter ? 'active' : ''}" onclick="setFilter('${c}',this)">${c}</button>`
+  ).join('');
+
+  if (articles.length === 0) {
+    document.getElementById('feed').innerHTML = `<div class="empty-state"><div class="empty-sub">No stories in this category.</div></div>`;
+    return;
+  }
+
+  document.getElementById('feed').innerHTML = `<div class="news-grid">${articles.map((a, i) => renderCard(a, i)).join('')}</div>`;
+}
+
+function renderCard(a, i) {
+  const tl = THREAT_LEVELS[a.threat_level] || THREAT_LEVELS[1];
+  const dots = tl.dots.map(c => `<div class="tdot" style="background:${c};"></div>`).join('');
+  return `
+  <div class="news-card" style="animation-delay:${i * 0.06}s">
+    <div class="card-meta">
+      <span class="badge ${tl.badgeClass}">${tl.label}</span>
+      <span class="badge badge-cat">${a.category}</span>
+      <span class="source-tag">${a.source}</span>
+    </div>
+    <div class="card-title"><a href="${a.url}" target="_blank" rel="noopener">${a.title}</a></div>
+    <div class="card-summary">${a.summary}</div>
+    <div class="card-footer">
+      <div class="threat-dots">${dots}</div>
+      <a href="${a.url}" target="_blank" rel="noopener" class="read-more">Full story →</a>
+    </div>
+  </div>`;
+}
+
+function setFilter(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderFeed();
+}
+
+function subscribe() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  // Replace this with your actual email service (Mailchimp, Beehiiv, etc.)
+  alert('Thanks for subscribing! Check your inbox for a confirmation email.');
+  document.getElementById('email-input').value = '';
+}
+</script>
+</body>
+</html>
