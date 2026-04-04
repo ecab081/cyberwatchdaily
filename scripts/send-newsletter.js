@@ -221,10 +221,18 @@ async function sendNewsletter(articles) {
       'Authorization': `Bearer ${BEEHIIV_API_KEY}`
     },
     body: JSON.stringify({
+      title: subject,
       subject,
-      content: { free: { html } },
+      content_tags: [],
+      authors: [],
       status: 'confirmed',
-      send_at: Math.floor(Date.now() / 1000) + 60, // send in 1 minute
+      send_at: Math.floor(Date.now() / 1000) + 120,
+      content: {
+        free: {
+          web: html,
+          email: html
+        }
+      },
       audience: 'free'
     })
   });
