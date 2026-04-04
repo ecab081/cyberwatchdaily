@@ -17,12 +17,12 @@ async function fetchNews() {
       'anthropic-beta': 'web-search-2025-03-05'
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 3000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{
         role: 'user',
-        content: `Search the web for the top 6 cybersecurity news stories from the last 24 hours.
+        content: `Search the web for the top 5 cybersecurity news stories from the last 24 hours.
 
 Return ONLY a valid JSON array, no markdown, no extra text:
 [
