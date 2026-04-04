@@ -745,8 +745,7 @@
       <div class="sidebar-title">Daily Digest</div>
       <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get today's top threats delivered to your inbox every morning. Free.</p>
       <div class="newsletter-form">
-        <input type="email" class="newsletter-input" placeholder="your@email.com" id="email-input">
-        <button class="newsletter-btn" onclick="subscribe()">Subscribe — It's Free</button>
+        <button class="newsletter-btn" onclick="subscribe()">Subscribe — It's Free →</button>
         <div class="newsletter-note">No spam. Unsubscribe anytime.</div>
       </div>
     </div>
@@ -926,14 +925,7 @@ function setFilter(cat, btn) {
 }
 
 function subscribe() {
-  const email = document.getElementById('email-input').value.trim();
-  if (!email || !email.includes('@')) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-  // Replace this with your actual email service (Mailchimp, Beehiiv, etc.)
-  alert('Thanks for subscribing! Check your inbox for a confirmation email.');
-  document.getElementById('email-input').value = '';
+  window.open('https://cyberwatchdaily.beehiiv.com/subscribe', '_blank');
 }
 </script>
 </body>
