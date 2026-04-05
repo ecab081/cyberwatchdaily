@@ -89,8 +89,7 @@ ${critical > 0 ? `<tr><td style="background:#3d000022;border-left:3px solid #cc0
   <p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// Recommended Security Tools</p>
   <table width="100%" cellpadding="0" cellspacing="0">
     <tr><td style="padding:6px 0;border-bottom:1px solid #1e2d1e;"><span style="color:#e0edd6;font-size:13px;">NordVPN</span> <span style="color:#7a9e8a;font-size:12px;">Best-in-class VPN</span><a href="https://nordvpn.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Get 70% Off</a></td></tr>
-    <tr><td style="padding:6px 0;border-bottom:1px solid #1e2d1e;"><span style="color:#e0edd6;font-size:13px;">1Password</span> <span style="color:#7a9e8a;font-size:12px;">Password manager</span><a href="https://1password.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Try Free</a></td></tr>
-    <tr><td style="padding:6px 0;"><span style="color:#e0edd6;font-size:13px;">Malwarebytes</span> <span style="color:#7a9e8a;font-size:12px;">Malware protection</span><a href="https://malwarebytes.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Try Free</a></td></tr>
+    <tr><td style="padding:6px 0;"><span style="color:#e0edd6;font-size:13px;">Bitwarden</span> <span style="color:#7a9e8a;font-size:12px;">Open-source password manager</span><a href="https://bitwarden.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Try Free</a></td></tr>
   </table>
 </td></tr>
 <tr><td style="background:#080c0f;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);text-align:center;">
