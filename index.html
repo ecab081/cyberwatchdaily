@@ -686,7 +686,7 @@
 </section>
 
 <!-- STATS -->
-<div class="stats-bar">
+<div class="stats-bar" id="stats-bar">
   <div class="stats-inner">
     <div class="stat">
       <div class="stat-num" id="stat-total">—</div>
@@ -975,11 +975,26 @@ function renderCard(a, i) {
   <div class="news-card" style="animation-delay:${i * 0.06}s">
     <div class="card-meta">
       <span class="badge ${tl.badgeClass}">${tl.label}</span>
-      <span class="badge badge-cat">${a.category}</span>
-      <span class="source-tag">${a.source}</span>
+      <span class="badge badge-cat">${a.category || 'General'}</span>
+      <span class="source-tag">${a.source || 'Unknown source'}</span>
     </div>
-    <div class="card-title"><a href="${a.url}" target="_blank" rel="noopener">${a.title}</a></div>
-    <div class="card-summary">${a.summary}</div>
+    <div class="card-title"><a href="${a.url || '#'}" target="_blank" rel="noopener">${a.title || 'Untitled story'}</a></div>
+    <div class="card-summary">${a.summary || 'No summary available.'}</div>
     <div class="card-footer">
       <div class="threat-dots">${dots}</div>
-      <a 
+      <a class="read-more" href="${a.url || '#'}" target="_blank" rel="noopener">Read full story →</a>
+    </div>
+  </div>`;
+}
+
+function setFilter(category) {
+  activeFilter = category;
+  renderFeed();
+}
+
+function subscribe() {
+  window.open('https://cyberwatchdaily.beehiiv.com/subscribe', '_blank', 'noopener');
+}
+</script>
+</body>
+</html>
