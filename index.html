@@ -677,9 +677,9 @@
   <div class="hero-inner">
     <div class="hero-tag">AI-Powered Threat Intelligence</div>
     <h1>Stay ahead of every<br><span>cyber threat</span>.</h1>
-    <p class="hero-sub">Real-time cybersecurity news, curated and analyzed by AI. Updated daily with threat ratings, breach alerts, and vulnerability reports.</p>
+    <p class="hero-sub">Real-time cybersecurity news, curated and analyzed by AI. Stories load automatically every 24 hours — no clicking needed.</p>
     <div class="hero-actions">
-      <button class="btn-primary" onclick="fetchNews()" id="scan-btn">⚡ Load Today's Threats</button>
+      <button class="btn-secondary" onclick="fetchNews()" id="scan-btn" style="font-size:12px; padding:6px 14px;">↻ Refresh</button>
       <button class="btn-secondary" onclick="document.getElementById('newsletter').scrollIntoView({behavior:'smooth'})">Get Daily Digest →</button>
     </div>
   </div>
@@ -724,8 +724,8 @@
     <div id="feed">
       <div class="empty-state">
         <div class="empty-icon">[ ]</div>
-        <div class="empty-title">No threats loaded</div>
-        <div class="empty-sub">Click "Scan Today's Threats" to pull the latest cybersecurity news</div>
+        <div class="empty-title">Loading today's threats...</div>
+        <div class="empty-sub">Scanning cybersecurity feeds, please wait a moment</div>
       </div>
     </div>
   </div>
@@ -812,11 +812,11 @@
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Email</span>
-          <a href="mailto:ecab@mail.com" style="font-family: var(--mono); font-size: 13px; color: var(--green);">ecab@mail.com</a>
+          <a href="/cdn-cgi/l/email-protection#7217111310321f131b1e5c111d1f" style="font-family: var(--mono); font-size: 13px; color: var(--green);"><span class="__cf_email__" data-cfemail="d2b7b1b3b092bfb3bbbefcb1bdbf">[email&#160;protected]</span></a>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Advertise</span>
-          <a href="mailto:ecab@mail.com?subject=Advertising Inquiry - CyberWatch Daily" style="font-family: var(--mono); font-size: 13px; color: var(--green);">Get in touch</a>
+          <a href="/cdn-cgi/l/email-protection#7015131112301d11191c5e131f1d4f0305121a1513044d3114061502041903191e1750391e0105190209505d5033091215022711041318503411191c09" style="font-family: var(--mono); font-size: 13px; color: var(--green);">Get in touch</a>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Newsletter</span>
@@ -838,15 +838,15 @@
     <div class="footer-logo">[CyberWatch Daily]</div>
     <div class="footer-links">
       <a href="#about">About</a>
-      <a href="mailto:ecab@mail.com">Contact</a>
-      <a href="mailto:ecab@mail.com?subject=Advertising Inquiry - CyberWatch Daily">Advertise</a>
+      <a href="/cdn-cgi/l/email-protection#04616765664469656d682a676b69">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#fd989e9c9fbd909c9491d39e9290c28e889f97989e89c0bc998b988f89948e94939addb4938c88948f84ddd0ddbe849f988faa9c899e95ddb99c949184">Advertise</a>
       <a href="#">Privacy Policy</a>
     </div>
     <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Set date
 const now = new Date();
 document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
@@ -889,10 +889,8 @@ function saveToCache(articles) {
   } catch(e) {}
 }
 
-// Auto-load when page opens
-window.addEventListener('load', () => {
-  setTimeout(loadCachedOrFetch, 500);
-});
+// Auto-load immediately when DOM is ready
+document.addEventListener('DOMContentLoaded', loadCachedOrFetch);
 
 let allArticles = [];
 let activeFilter = 'All';
@@ -948,7 +946,7 @@ async function fetchNews() {
   }
 
   btn.disabled = false;
-  btn.textContent = '⚡ Refresh Feed';
+  btn.textContent = '↻ Refresh';
 }
 
 function renderFeed() {
@@ -984,21 +982,4 @@ function renderCard(a, i) {
     <div class="card-summary">${a.summary}</div>
     <div class="card-footer">
       <div class="threat-dots">${dots}</div>
-      <a href="${a.url}" target="_blank" rel="noopener" class="read-more">Full story →</a>
-    </div>
-  </div>`;
-}
-
-function setFilter(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderFeed();
-}
-
-function subscribe() {
-  window.open('https://cyberwatchdaily.beehiiv.com/subscribe', '_blank');
-}
-</script>
-</body>
-</html>
+      <a 
