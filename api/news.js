@@ -14,6 +14,16 @@ const SOURCES = [
     url: 'https://krebsonsecurity.com/',
     isArticle: (url) => /^https:\/\/krebsonsecurity\.com\/\d{4}\/\d{2}\/.+\/$/.test(url),
   },
+  {
+    name: 'Hackread',
+    url: 'https://hackread.com/latest/',
+    isArticle: (url) => /^https:\/\/hackread\.com\/(?!latest\/$|about-us\/$|our-team\/$|contact-us\/$|our-mission\/$|privacy-policy\/$|tag\/|category\/|author\/)[^?#]+\/$/i.test(url),
+  },
+  {
+    name: 'Dark Reading',
+    url: 'https://www.darkreading.com/latest-news',
+    isArticle: (url) => /^https:\/\/www\.darkreading\.com\/[a-z0-9-]+\/[a-z0-9-]+(?:\?.*)?$/i.test(url),
+  },
 ];
 
 const BLOCKLIST = [
@@ -32,6 +42,10 @@ const BLOCKLIST = [
   'contact us',
   'master',
   'report',
+  'press release',
+  'resource library',
+  'partner perspectives',
+  'dark reading confidential',
 ];
 
 function decodeHtml(text = '') {
@@ -144,7 +158,7 @@ function extractArticleData(html, fallbackTitle) {
     fallbackTitle;
 
   return {
-    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security).*$/i, '').trim(),
+    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading).*$/i, '').trim(),
     summary: summary.trim(),
   };
 }
@@ -193,7 +207,7 @@ function uniqueByUrl(items) {
 async function getSourceArticles(source) {
   try {
     const html = await fetchText(source.url);
-    return extractAnchors(html, source.url, source).slice(0, 4);
+    return extractAnchors(html, source.url, source).slice(0, 5);
   } catch (error) {
     console.error(`Failed to fetch ${source.name}:`, error.message);
     return [];
@@ -247,12 +261,12 @@ export default async function handler(req, res) {
 
   try {
     const rawGroups = await Promise.all(SOURCES.map(getSourceArticles));
-    const rawArticles = uniqueByUrl(rawGroups.flat()).slice(0, 10);
+    const rawArticles = uniqueByUrl(rawGroups.flat()).slice(0, 15);
 
     const enriched = await Promise.all(rawArticles.map(enrichArticle));
     const articles = uniqueByUrl(enriched)
       .filter((article) => article.title && article.summary && article.url)
-      .slice(0, 10);
+      .slice(0, 15);
 
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
