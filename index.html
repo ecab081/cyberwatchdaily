@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CyberWatch Daily — Cybersecurity Threat Intelligence</title>
 <meta name="description" content="Daily AI-curated cybersecurity news, threat alerts, and vulnerability reports. Stay ahead of the latest breaches, ransomware, and zero-days.">
+<link rel="canonical" href="https://cyberwatchdaily.net/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -679,7 +680,7 @@
     <h1>Stay ahead of every<br><span>cyber threat</span>.</h1>
     <p class="hero-sub">Real-time cybersecurity news, curated and analyzed by AI. Stories load automatically every 24 hours — no clicking needed.</p>
     <div class="hero-actions">
-      <button class="btn-secondary" onclick="fetchNews()" id="scan-btn" style="font-size:12px; padding:6px 14px;">↻ Refresh</button>
+      <button class="btn-secondary" id="scan-btn" style="font-size:12px; padding:6px 14px;">↻ Refresh</button>
     </div>
   </div>
 </section>
@@ -717,7 +718,7 @@
     </div>
 
     <div class="filters" id="filters" style="display:none;">
-      <button class="filter-btn active" onclick="setFilter('All',this)">All</button>
+      <button class="filter-btn active" data-category="All">All</button>
     </div>
 
     <div id="feed">
@@ -743,7 +744,7 @@
       <div class="sidebar-title">Daily Digest</div>
       <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get today's top threats delivered to your inbox every morning. Free.</p>
       <div class="newsletter-form">
-        <button class="newsletter-btn" onclick="subscribe()">Subscribe — It's Free →</button>
+        <button class="newsletter-btn" id="newsletter-btn">Subscribe — It's Free →</button>
         <div class="newsletter-note">No spam. Unsubscribe anytime.</div>
       </div>
     </div>
@@ -845,155 +846,7 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-// Set date
-const now = new Date();
-document.getElementById('header-date').textContent = now.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-
-// Auto-load news on page open, with 24hr cache
-const CACHE_KEY = 'cyberwatch_cache';
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in ms
-
-function loadCachedOrFetch() {
-  try {
-    const cached = sessionStorage.getItem(CACHE_KEY);
-    if (cached) {
-      const { articles, timestamp } = JSON.parse(cached);
-      const age = Date.now() - timestamp;
-      if (age < CACHE_DURATION && articles && articles.length > 0) {
-        allArticles = articles;
-        activeFilter = 'All';
-        renderFeed();
-        document.getElementById('stat-total').textContent = allArticles.length;
-        document.getElementById('stat-critical').textContent = allArticles.filter(a => a.threat_level >= 4).length;
-        document.getElementById('stat-breaches').textContent = allArticles.filter(a => ['Data Breach','Ransomware'].includes(a.category)).length;
-        document.getElementById('stat-vulns').textContent = allArticles.filter(a => ['Vulnerability','Zero-Day'].includes(a.category)).length;
-        document.getElementById('stats-bar').style.display = 'grid';
-        document.getElementById('last-updated').textContent = '// Cached · ' + new Date(timestamp).toLocaleTimeString();
-        document.getElementById('live-badge').style.display = 'inline';
-        document.getElementById('subtitle').textContent = 'Auto-refreshes every 24 hours · Last updated: ' + new Date(timestamp).toLocaleTimeString();
-        document.getElementById('scan-btn').textContent = '⚡ Refresh Feed';
-        return;
-      }
-    }
-  } catch(e) {}
-  // No valid cache — auto fetch
-  fetchNews();
-}
-
-// Save to cache after successful fetch
-function saveToCache(articles) {
-  try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ articles, timestamp: Date.now() }));
-  } catch(e) {}
-}
-
-// Auto-load immediately when DOM is ready
-document.addEventListener('DOMContentLoaded', loadCachedOrFetch);
-
-let allArticles = [];
-let activeFilter = 'All';
-
-const THREAT_LEVELS = {
-  5: { label: 'Critical', badgeClass: 'badge-critical', dots: ['#cc2222','#cc2222','#cc2222','#cc2222','#cc2222'] },
-  4: { label: 'High',     badgeClass: 'badge-high',     dots: ['#cc4422','#cc4422','#cc4422','#cc4422','#222'] },
-  3: { label: 'Medium',   badgeClass: 'badge-medium',   dots: ['#cc8800','#cc8800','#cc8800','#222','#222'] },
-  2: { label: 'Low',      badgeClass: 'badge-low',       dots: ['#446622','#446622','#222','#222','#222'] },
-  1: { label: 'Info',     badgeClass: 'badge-info',      dots: ['#0066cc','#222','#222','#222','#222'] },
-};
-
-async function fetchNews() {
-  const btn = document.getElementById('scan-btn');
-  btn.disabled = true;
-  btn.textContent = '⚡ Scanning...';
-
-  document.getElementById('feed').innerHTML = `
-    <div class="loading-state">
-      <div class="loading-text">// SCANNING THREAT INTELLIGENCE FEEDS...</div>
-      <div class="loading-bar"></div>
-    </div>`;
-
-  document.getElementById('filters').style.display = 'none';
-
-  try {
-    const resp = await fetch("/api/news", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error);
-
-    allArticles = data.articles;
-    saveToCache(allArticles);
-    activeFilter = 'All';
-    renderFeed();
-
-    // Update stats
-    document.getElementById('stat-total').textContent = allArticles.length;
-    document.getElementById('stat-critical').textContent = allArticles.filter(a => a.threat_level >= 4).length;
-    document.getElementById('stat-breaches').textContent = allArticles.filter(a => ['Data Breach','Ransomware'].includes(a.category)).length;
-    document.getElementById('stat-vulns').textContent = allArticles.filter(a => ['Vulnerability','Zero-Day'].includes(a.category)).length;
-    document.getElementById('last-updated').textContent = '// Updated ' + new Date().toLocaleTimeString();
-
-  } catch (err) {
-    document.getElementById('feed').innerHTML = `
-      <div class="empty-state">
-        <div class="empty-title" style="color:var(--red);">// ERROR: ${err.message}</div>
-        <div class="empty-sub" style="margin-top:0.5rem;">Please try again in a moment.</div>
-      </div>`;
-  }
-
-  btn.disabled = false;
-  btn.textContent = '↻ Refresh';
-}
-
-function renderFeed() {
-  const articles = activeFilter === 'All' ? allArticles : allArticles.filter(a => a.category === activeFilter);
-
-  // Build filters
-  const cats = ['All', ...new Set(allArticles.map(a => a.category))];
-  const filterRow = document.getElementById('filters');
-  filterRow.style.display = 'flex';
-  filterRow.innerHTML = cats.map(c =>
-    `<button class="filter-btn ${c === activeFilter ? 'active' : ''}" onclick="setFilter('${c}',this)">${c}</button>`
-  ).join('');
-
-  if (articles.length === 0) {
-    document.getElementById('feed').innerHTML = `<div class="empty-state"><div class="empty-sub">No stories in this category.</div></div>`;
-    return;
-  }
-
-  document.getElementById('feed').innerHTML = `<div class="news-grid">${articles.map((a, i) => renderCard(a, i)).join('')}</div>`;
-}
-
-function renderCard(a, i) {
-  const tl = THREAT_LEVELS[a.threat_level] || THREAT_LEVELS[1];
-  const dots = tl.dots.map(c => `<div class="tdot" style="background:${c};"></div>`).join('');
-  return `
-  <div class="news-card" style="animation-delay:${i * 0.06}s">
-    <div class="card-meta">
-      <span class="badge ${tl.badgeClass}">${tl.label}</span>
-      <span class="badge badge-cat">${a.category || 'General'}</span>
-      <span class="source-tag">${a.source || 'Unknown source'}</span>
-    </div>
-    <div class="card-title"><a href="${a.url || '#'}" target="_blank" rel="noopener">${a.title || 'Untitled story'}</a></div>
-    <div class="card-summary">${a.summary || 'No summary available.'}</div>
-    <div class="card-footer">
-      <div class="threat-dots">${dots}</div>
-      <a class="read-more" href="${a.url || '#'}" target="_blank" rel="noopener">Read full story →</a>
-    </div>
-  </div>`;
-}
-
-function setFilter(category) {
-  activeFilter = category;
-  renderFeed();
-}
-
-function subscribe() {
-  window.open('https://cyberwatchdaily.beehiiv.com/subscribe', '_blank', 'noopener');
-}
-</script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script src="/scripts/main.js" defer></script>
 </body>
 </html>
