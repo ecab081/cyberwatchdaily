@@ -653,35 +653,6 @@
     nav { display: none; }
     .hero::after { display: none; }
   }
-
-  /* ── COOKIE BANNER ── */
-  .cookie-banner {
-    position: fixed; bottom: 0; left: 0; right: 0;
-    background: #0d1317;
-    border-top: 2px solid rgba(0,255,136,0.3);
-    padding: 1rem 2rem;
-    display: flex; align-items: center;
-    justify-content: space-between;
-    gap: 1rem; flex-wrap: wrap;
-    z-index: 9999;
-    animation: slideUp 0.4s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .cookie-text { font-size: 13px; color: #7a9e8a; line-height: 1.6; flex: 1; min-width: 200px; }
-  .cookie-text a { color: #00ff88; }
-  .cookie-btns { display: flex; gap: 8px; flex-shrink: 0; }
-  .cookie-accept {
-    font-family: monospace; font-size: 12px; font-weight: 600;
-    padding: 8px 20px; background: #00ff88; color: #000;
-    border: none; cursor: pointer; transition: background 0.15s;
-  }
-  .cookie-accept:hover { background: #ffffff; }
-  .cookie-decline {
-    font-family: monospace; font-size: 12px;
-    padding: 8px 20px; background: transparent; color: #3d5a47;
-    border: 1px solid rgba(0,255,136,0.15); cursor: pointer; transition: all 0.15s;
-  }
-  .cookie-decline:hover { color: #7a9e8a; border-color: rgba(0,255,136,0.3); }
 </style>
 </head>
 <body>
@@ -695,6 +666,7 @@
     </div>
     <nav>
       <a href="#news">News</a>
+      <a href="/blog/">Blog</a>
       <a href="#newsletter">Newsletter</a>
       <a href="#about">About</a>
     </nav>
@@ -869,7 +841,7 @@
       <a href="#about">About</a>
       <a href="/cdn-cgi/l/email-protection#04616765664469656d682a676b69">Contact</a>
       <a href="/cdn-cgi/l/email-protection#fd989e9c9fbd909c9491d39e9290c28e889f97989e89c0bc998b988f89948e94939addb4938c88948f84ddd0ddbe849f988faa9c899e95ddb99c949184">Advertise</a>
-      <a href="/privacy-policy.html">Privacy Policy</a>
+      <a href="#">Privacy Policy</a>
     </div>
     <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
   </div>
@@ -877,32 +849,5 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
-
-<!-- COOKIE CONSENT BANNER -->
-<div class="cookie-banner" id="cookie-banner" style="display:none;">
-  <div class="cookie-text">
-    We use cookies for advertising and analytics. By clicking "Accept" you consent to our use of cookies as described in our <a href="/privacy-policy.html">Privacy Policy</a>.
-  </div>
-  <div class="cookie-btns">
-    <button class="cookie-decline" onclick="setCookieConsent('declined')">Decline</button>
-    <button class="cookie-accept" onclick="setCookieConsent('accepted')">Accept All</button>
-  </div>
-</div>
-<script>
-function setCookieConsent(val) {
-  try { localStorage.setItem('cwd_cookie_consent', val); } catch(e) {}
-  document.getElementById('cookie-banner').style.display = 'none';
-}
-(function() {
-  try {
-    if (!localStorage.getItem('cwd_cookie_consent')) {
-      setTimeout(function() {
-        var b = document.getElementById('cookie-banner');
-        if (b) b.style.display = 'flex';
-      }, 1500);
-    }
-  } catch(e) {}
-})();
-</script>
 </body>
 </html>
