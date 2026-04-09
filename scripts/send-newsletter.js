@@ -1,4 +1,6 @@
 const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
+const fs = require('fs');
+const path = require('path');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 const BEEHIIV_API_KEY   = process.env.BEEHIIV_API_KEY;
@@ -48,7 +50,7 @@ async function getSubscribers() {
   return emails;
 }
 
-function buildEmailHtml(articles) {
+function buildEmailHtml(articles, blogPost = null) {
   const today = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
   const LABELS = {1:'INFO',2:'LOW',3:'MEDIUM',4:'HIGH',5:'CRITICAL'};
   const COLORS = {1:'#0066cc',2:'#339900',3:'#cc8800',4:'#cc4400',5:'#cc0000'};
@@ -85,6 +87,15 @@ function buildEmailHtml(articles) {
 </td></tr>
 ${critical > 0 ? `<tr><td style="background:#3d000022;border-left:3px solid #cc0000;padding:12px 28px;"><span style="font-family:monospace;font-size:12px;color:#ff4444;">WARNING: ${critical} CRITICAL/HIGH SEVERITY THREAT${critical>1?'S':''} TODAY</span></td></tr>` : ''}
 <tr><td style="background:#0d1317;padding:8px 28px 0;"><table width="100%" cellpadding="0" cellspacing="0">${rows}</table></td></tr>
+${blogPost ? `<tr><td style="background:#0d1317;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);">
+  <p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// From the Blog</p>
+  <table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:12px;background:#121920;border:1px solid rgba(0,255,136,0.12);">
+    <span style="font-family:monospace;font-size:10px;padding:2px 8px;background:#003d1f;color:#00ff88;text-transform:uppercase;">${blogPost.category}</span>
+    <h3 style="margin:8px 0 6px;font-size:15px;font-weight:600;"><a href="${blogPost.url}" style="color:#e0edd6;text-decoration:none;">${blogPost.title}</a></h3>
+    <p style="margin:0 0 10px;color:#7a9e8a;font-size:13px;line-height:1.6;">${blogPost.excerpt}</p>
+    <a href="${blogPost.url}" style="font-family:monospace;font-size:12px;color:#00ff88;">Read full article</a>
+  </td></tr></table>
+</td></tr>` : ''}
 <tr><td style="background:#0d1317;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);">
   <p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// Recommended Security Tools</p>
   <table width="100%" cellpadding="0" cellspacing="0">
@@ -106,7 +117,8 @@ async function sendEmails(subscribers, articles) {
   const subject = critical > 0
     ? `WARNING: ${critical} Critical Threat${critical>1?'s':''} Today - CyberWatch Daily ${today}`
     : `CyberWatch Daily - Top ${articles.length} Cyber Threats for ${today}`;
-  const html = buildEmailHtml(articles);
+  const blogPost = getLatestBlogPost();
+  const html = buildEmailHtml(articles, blogPost);
 
   for (let i = 0; i < subscribers.length; i += 50) {
     const batch = subscribers.slice(i, i + 50);
