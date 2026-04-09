@@ -99,7 +99,8 @@ ${blogPost ? `<tr><td style="background:#0d1317;padding:20px 28px;border-top:1px
 <tr><td style="background:#0d1317;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);">
   <p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// Recommended Security Tools</p>
   <table width="100%" cellpadding="0" cellspacing="0">
-    <tr><td style="padding:6px 0;border-bottom:1px solid #1e2d1e;"><span style="color:#e0edd6;font-size:13px;">NordVPN</span> <span style="color:#7a9e8a;font-size:12px;">Best-in-class VPN</span><a href="https://nordvpn.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Get 70% Off</a></td></tr>
+    <tr><td style="padding:6px 0;border-bottom:1px solid #1e2d1e;"><span style="color:#e0edd6;font-size:13px;">NordVPN</span> <span style="color:#7a9e8a;font-size:12px;">Best-in-class VPN</span><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Get 70% Off</a></td></tr>
+    <tr><td style="padding:6px 0;border-bottom:1px solid #1e2d1e;"><span style="color:#e0edd6;font-size:13px;">NordPass</span> <span style="color:#7a9e8a;font-size:12px;">Password manager by Nord</span><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Try Free</a></td></tr>
     <tr><td style="padding:6px 0;"><span style="color:#e0edd6;font-size:13px;">Bitwarden</span> <span style="color:#7a9e8a;font-size:12px;">Open-source password manager</span><a href="https://bitwarden.com" style="float:right;font-family:monospace;font-size:11px;color:#00ff88;">Try Free</a></td></tr>
   </table>
 </td></tr>
