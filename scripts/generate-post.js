@@ -60,7 +60,7 @@ Return ONLY a valid JSON object (no markdown, no extra text):
   "title": "Compelling SEO-friendly blog post title (60 chars max)",
   "category": "How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer",
   "excerpt": "2-3 sentence compelling summary that makes people want to read more",
-  "content": "Full HTML blog post content. Use <h2> for sections, <p> for paragraphs, <ul>/<li> for lists, <strong> for emphasis. Write 600-900 words. Include practical actionable advice. Naturally mention NordVPN or Bitwarden where relevant with affiliate links: NordVPN=https://nordvpn.com and Bitwarden=https://bitwarden.com. Do not include <html>, <head>, <body> or outer structure tags.",
+  "content": "Full HTML blog post content. Use <h2> for sections, <p> for paragraphs, <ul>/<li> for lists, <strong> for emphasis. Write 600-900 words. Include practical actionable advice. Naturally mention NordVPN or Bitwarden where relevant with affiliate links: NordVPN=https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902 and Bitwarden=https://bitwarden.com. Do not include <html>, <head>, <body> or outer structure tags.",
   "seo_description": "Meta description 150-160 chars for SEO"
 }
 Return ONLY the JSON object.`
@@ -204,7 +204,8 @@ function buildPostHTML(post, slug, dateStr) {
 
     <div class="affiliate-cta">
       <p><strong>Stay protected</strong> — the tools our security experts recommend:</p>
-      <a href="https://nordvpn.com" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+      <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+      <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
       <a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
     </div>
   </article>
@@ -220,7 +221,7 @@ function buildPostHTML(post, slug, dateStr) {
       <div class="sidebar-title">Recommended Tools</div>
       <div class="tool-link">
         <div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN</div></div>
-        <a href="https://nordvpn.com" target="_blank" class="tool-badge">70% Off</a>
+        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tool-badge">70% Off</a>
       </div>
       <div class="tool-link">
         <div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Password manager</div></div>
@@ -261,7 +262,8 @@ function updateBlogIndex(post, slug, dateStr) {
     year: 'numeric', month: 'long', day: 'numeric'
   });
 
-  const newPostCard = `<a href="/blog/${slug}.html" class="post-card">
+  const newPostCard = `
+      <a href="/blog/${slug}.html" class="post-card">
         <div class="post-meta">
           <span class="post-category">${post.category}</span>
           <span class="post-date">${formattedDate}</span>
@@ -274,35 +276,21 @@ function updateBlogIndex(post, slug, dateStr) {
         </div>
       </a>`;
 
-  // Remove empty state if present, insert new post
-  if (indexContent.includes('<!-- POSTS_PLACEHOLDER -->')) {
-    indexContent = indexContent.replace(
-      /<!-- POSTS_PLACEHOLDER -->[\s\S]*?<\/div>\s*<\/div>/,
-      `<!-- POSTS_PLACEHOLDER -->\n      ${newPostCard}\n    </div>`
-    );
-  } else {
-    indexContent = indexContent.replace(
-      '<!-- POSTS_PLACEHOLDER -->',
-      `<!-- POSTS_PLACEHOLDER -->\n      ${newPostCard}`
-    );
-  }
-
-  // If empty state is still there, replace it
+  // Remove the entire empty state block if present
   indexContent = indexContent.replace(
-    /\s*<div class="empty-state">[\s\S]*?<\/div>/,
-    ''
+    /\s*<div class="empty-state">[\s\S]*?<\/div>\s*/g,
+    '
+      '
   );
 
-  // Prepend new post before first existing post card
-  if (!indexContent.includes('<!-- POSTS_PLACEHOLDER -->')) {
-    indexContent = indexContent.replace(
-      '<div class="posts-grid" id="posts-grid">',
-      `<div class="posts-grid" id="posts-grid">\n      ${newPostCard}`
-    );
-  }
+  // Insert new post right after the posts-grid opening tag
+  indexContent = indexContent.replace(
+    '<div class="posts-grid" id="posts-grid">',
+    `<div class="posts-grid" id="posts-grid">${newPostCard}`
+  );
 
   fs.writeFileSync(indexPath, indexContent);
-  console.log('Blog index updated');
+  console.log('Blog index updated with: ' + post.title);
 }
 
 async function main() {
