@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — CyberWatch Daily</title>
+<meta name="description" content="Contact CyberWatch Daily for general inquiries, advertising opportunities, or partnership requests.">
+<link rel="canonical" href="https://cyberwatchdaily.net/contact.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;
+    --border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);
+    --green:#00ff88;--green-dark:#003d1f;--red:#ff4444;
+    --text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;
+    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;}
+  a{color:var(--green);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+  .header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+  .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+  nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}
+  nav a{color:var(--text2);}
+  nav a:hover{color:var(--green);text-decoration:none;}
+
+  .hero{border-bottom:1px solid var(--border);padding:2.5rem 2rem;background:var(--bg2);}
+  .hero-inner{max-width:1100px;margin:0 auto;}
+  .hero-tag{font-family:var(--mono);font-size:11px;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.75rem;display:flex;align-items:center;gap:8px;}
+  .hero-tag::before{content:'';display:block;width:20px;height:1px;background:var(--green);}
+  h1{font-family:var(--mono);font-size:28px;font-weight:600;margin-bottom:0.5rem;}
+  .hero-sub{font-size:14px;color:var(--text2);max-width:520px;line-height:1.7;}
+
+  .main{max-width:1100px;margin:0 auto;padding:2.5rem 2rem;display:grid;grid-template-columns:1fr 340px;gap:3rem;}
+
+  /* Contact types */
+  .contact-types{display:flex;flex-direction:column;gap:1px;background:var(--border);margin-bottom:2rem;}
+  .contact-type{background:var(--surface);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;}
+  .contact-icon{font-family:var(--mono);font-size:18px;color:var(--green);width:32px;flex-shrink:0;}
+  .contact-type-title{font-weight:500;font-size:14px;color:var(--text);margin-bottom:2px;}
+  .contact-type-desc{font-size:12px;color:var(--text3);}
+
+  /* Form */
+  .form-section-title{font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+  .form-section-title::before{content:'//';color:var(--green);}
+
+  .form-group{margin-bottom:1.25rem;}
+  label{display:block;font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea{
+    width:100%;background:var(--bg2);border:1px solid var(--border);
+    color:var(--text);font-family:var(--sans);font-size:14px;
+    padding:10px 12px;outline:none;transition:border-color 0.15s;
+    -webkit-appearance:none;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--green);}
+  input::placeholder,textarea::placeholder{color:var(--text3);}
+  select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%233d5a47' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
+  select option{background:var(--bg2);color:var(--text);}
+  textarea{resize:vertical;min-height:140px;line-height:1.6;}
+
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+  .submit-btn{
+    width:100%;font-family:var(--mono);font-size:13px;font-weight:600;
+    padding:12px;background:var(--green);color:#000;
+    border:none;cursor:pointer;transition:background 0.15s;
+    letter-spacing:0.5px;
+  }
+  .submit-btn:hover{background:#fff;}
+  .submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+  .form-note{font-size:12px;color:var(--text3);margin-top:8px;text-align:center;}
+
+  /* Success / Error states */
+  .form-success{display:none;background:var(--green-dark);border:1px solid var(--border2);padding:1.25rem;text-align:center;}
+  .form-success p{font-family:var(--mono);font-size:14px;color:var(--green);}
+  .form-error{display:none;background:#3d000022;border:1px solid var(--red);padding:1rem;margin-bottom:1rem;}
+  .form-error p{font-size:13px;color:var(--red);}
+
+  /* Sidebar */
+  .sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+  .sidebar-card{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+  .sidebar-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+  .sidebar-title::before{content:'//';color:var(--green);}
+  .sidebar-item{padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+  .sidebar-item:last-child{border-bottom:none;padding-bottom:0;}
+  .sidebar-label{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+  .sidebar-value{color:var(--text2);}
+
+  .response-time{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--text2);padding:10px 0;border-bottom:1px solid var(--border);}
+  .response-time:last-child{border-bottom:none;}
+  .response-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+  footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+  .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+  .footer-logo{font-family:var(--mono);font-size:14px;color:var(--green);}
+  .footer-links{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+  .footer-links a{color:var(--text3);}
+  .footer-links a:hover{color:var(--green);text-decoration:none;}
+  .footer-copy{font-family:var(--mono);font-size:11px;color:var(--text3);}
+
+  @media(max-width:768px){.main{grid-template-columns:1fr;}.form-row{grid-template-columns:1fr;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+    <nav>
+      <a href="/">News</a>
+      <a href="/blog/">Blog</a>
+      <a href="/#newsletter">Newsletter</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Get in Touch</div>
+    <h1>Contact Us</h1>
+    <p class="hero-sub">General inquiries, advertising opportunities, tips, or partnership requests — we'd love to hear from you.</p>
+  </div>
+</div>
+
+<div class="main">
+  <div>
+    <!-- Contact type quick reference -->
+    <div class="contact-types" style="margin-bottom:2rem;">
+      <div class="contact-type">
+        <div class="contact-icon">📢</div>
+        <div>
+          <div class="contact-type-title">Advertising & Sponsorship</div>
+          <div class="contact-type-desc">Newsletter sponsorships, banner ads, sponsored posts, or product features</div>
+        </div>
+      </div>
+      <div class="contact-type">
+        <div class="contact-icon">🤝</div>
+        <div>
+          <div class="contact-type-title">Partnerships & Affiliates</div>
+          <div class="contact-type-desc">Affiliate programs, tool partnerships, or co-marketing opportunities</div>
+        </div>
+      </div>
+      <div class="contact-type">
+        <div class="contact-icon">📰</div>
+        <div>
+          <div class="contact-type-title">News Tips & Press</div>
+          <div class="contact-type-desc">Breaking cybersecurity news, vulnerability disclosures, or press inquiries</div>
+        </div>
+      </div>
+      <div class="contact-type">
+        <div class="contact-icon">💬</div>
+        <div>
+          <div class="contact-type-title">General Inquiry</div>
+          <div class="contact-type-desc">Feedback, suggestions, corrections, or anything else</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section-title">Send a Message</div>
+
+    <div class="form-error" id="form-error">
+      <p>Something went wrong. Please try again or email us directly.</p>
+    </div>
+
+    <form id="contact-form" action="https://formspree.io/f/xnjokgno" method="POST">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Your Name *</label>
+          <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Your Email *</label>
+          <input type="email" id="email" name="email" placeholder="jane@company.com" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="company">Company / Organization</label>
+        <input type="text" id="company" name="company" placeholder="Optional">
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject *</label>
+        <select id="subject" name="subject" required>
+          <option value="" disabled selected>Select a topic...</option>
+          <option value="Advertising & Sponsorship">Advertising & Sponsorship</option>
+          <option value="Newsletter Sponsorship">Newsletter Sponsorship</option>
+          <option value="Affiliate Partnership">Affiliate Partnership</option>
+          <option value="News Tip">News Tip / Story Submission</option>
+          <option value="Press Inquiry">Press Inquiry</option>
+          <option value="Feedback">Feedback / Suggestion</option>
+          <option value="General Inquiry">General Inquiry</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message *</label>
+        <textarea id="message" name="message" placeholder="Tell us more about your inquiry..." required></textarea>
+      </div>
+
+      <!-- Honeypot spam field -->
+      <input type="text" name="_gotcha" style="display:none">
+      <input type="hidden" name="_subject" value="New CyberWatch Daily Contact Form Submission">
+
+      <button type="submit" class="submit-btn" id="submit-btn">Send Message →</button>
+      <p class="form-note">We typically respond within 24–48 hours on business days.</p>
+    </form>
+
+    <div class="form-success" id="form-success">
+      <p>✓ Message received!</p>
+      <p style="font-size:13px;color:var(--text2);margin-top:6px;font-family:var(--sans);">Thanks for reaching out. We'll get back to you within 24–48 hours.</p>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-title">Response Times</div>
+      <div class="response-time">
+        <div class="response-dot" style="background:#00ff88;"></div>
+        <div><div style="font-size:13px;color:var(--text);">Advertising</div><div style="font-size:11px;color:var(--text3);">Within 24 hours</div></div>
+      </div>
+      <div class="response-time">
+        <div class="response-dot" style="background:#00ff88;"></div>
+        <div><div style="font-size:13px;color:var(--text);">Partnerships</div><div style="font-size:11px;color:var(--text3);">Within 24 hours</div></div>
+      </div>
+      <div class="response-time">
+        <div class="response-dot" style="background:#ffaa00;"></div>
+        <div><div style="font-size:13px;color:var(--text);">News Tips</div><div style="font-size:11px;color:var(--text3);">Within 48 hours</div></div>
+      </div>
+      <div class="response-time">
+        <div class="response-dot" style="background:#ffaa00;"></div>
+        <div><div style="font-size:13px;color:var(--text);">General</div><div style="font-size:11px;color:var(--text3);">Within 48 hours</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Advertising Info</div>
+      <div class="sidebar-item">
+        <div class="sidebar-label">Newsletter</div>
+        <div class="sidebar-value">Daily sends to engaged cybersecurity audience</div>
+      </div>
+      <div class="sidebar-item">
+        <div class="sidebar-label">Audience</div>
+        <div class="sidebar-value">Security professionals, IT admins, privacy-conscious users</div>
+      </div>
+      <div class="sidebar-item">
+        <div class="sidebar-label">Formats</div>
+        <div class="sidebar-value">Newsletter sponsor, sidebar banner, sponsored post</div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-title">Quick Links</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <a href="/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">→ News Feed</a>
+        <a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">→ Blog</a>
+        <a href="https://cyberwatchdaily.beehiiv.com/subscribe" target="_blank" style="font-family:var(--mono);font-size:12px;color:var(--text2);">→ Subscribe to Newsletter</a>
+        <a href="/privacy-policy.html" style="font-family:var(--mono);font-size:12px;color:var(--text2);">→ Privacy Policy</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">[CyberWatch Daily]</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/#about">About</a>
+      <a href="/privacy-policy.html">Privacy Policy</a>
+    </div>
+    <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+  </div>
+</footer>
+
+<script>
+const form = document.getElementById('contact-form');
+const btn = document.getElementById('submit-btn');
+const success = document.getElementById('form-success');
+const error = document.getElementById('form-error');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  error.style.display = 'none';
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      form.style.display = 'none';
+      success.style.display = 'block';
+    } else {
+      throw new Error('Failed');
+    }
+  } catch(err) {
+    error.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Send Message →';
+  }
+});
+</script>
+
+</body>
+</html>
