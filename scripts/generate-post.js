@@ -4,19 +4,17 @@ const path = require('path');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-// Blog post topics that rotate - AI picks the most relevant/trending one
-const TOPIC_PROMPTS = [
-  "Write about a practical how-to guide for everyday internet users to improve their security",
-  "Write an explainer about a current cybersecurity threat or attack technique",
-  "Write a comparison/review of popular security tools people should use",
-  "Write a beginner's guide to an important cybersecurity concept",
-  "Write about how to protect yourself from a specific type of cyber attack",
-  "Write about recent data breaches and what people should do to protect themselves"
+const TOPICS = [
+  'Write a practical how-to guide for everyday users to improve their online security',
+  'Write an explainer about a current cybersecurity threat or attack technique people should know about',
+  'Write a comparison of popular security tools people should use to stay safe online',
+  'Write a beginners guide to an important cybersecurity concept everyone should understand',
+  'Write about how to protect yourself from a specific type of cyber attack',
+  'Write about data breaches and what people should do to protect themselves'
 ];
 
-function getTodayTopic() {
-  const day = new Date().getDay();
-  return TOPIC_PROMPTS[day % TOPIC_PROMPTS.length];
+function getTopic() {
+  return TOPICS[new Date().getDay() % TOPICS.length];
 }
 
 function slugify(title) {
@@ -29,16 +27,11 @@ function slugify(title) {
 }
 
 function getReadTime(content) {
-  const words = content.split(' ').length;
-  return Math.max(3, Math.ceil(words / 200));
+  return Math.max(3, Math.ceil(content.split(' ').length / 200));
 }
 
 async function generatePost() {
   console.log('Generating blog post...');
-
-  const topicPrompt = getTodayTopic();
-  const today = new Date().toISOString().split('T')[0];
-
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -53,279 +46,177 @@ async function generatePost() {
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{
         role: 'user',
-        content: `${topicPrompt}. Search the web first for current/relevant information if needed.
-
-Return ONLY a valid JSON object (no markdown, no extra text):
-{
-  "title": "Compelling SEO-friendly blog post title (60 chars max)",
-  "category": "How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer",
-  "excerpt": "2-3 sentence compelling summary that makes people want to read more",
-  "content": "Full HTML blog post content. Use <h2> for sections, <p> for paragraphs, <ul>/<li> for lists, <strong> for emphasis. Write 600-900 words. Include practical actionable advice. Naturally mention NordVPN or Bitwarden where relevant with affiliate links: NordVPN=https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902 and Bitwarden=https://bitwarden.com. Do not include <html>, <head>, <body> or outer structure tags.",
-  "seo_description": "Meta description 150-160 chars for SEO"
-}
-Return ONLY the JSON object.`
+        content: getTopic() + '. Search the web for current relevant info if needed. Return ONLY a valid JSON object, no markdown, no extra text: {"title":"SEO-friendly title under 60 chars","category":"How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer","excerpt":"2-3 sentence summary","content":"Full HTML using h2 p ul li strong tags, 600-900 words, mention NordVPN at https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902 or Bitwarden at https://bitwarden.com where relevant","seo_description":"Meta description 150-160 chars"}'
       }]
     })
   });
 
   const data = await res.json();
-  if (data.error) throw new Error(`API error: ${data.error.message}`);
-
-  const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+  if (data.error) throw new Error('API error: ' + data.error.message);
+  const text = data.content.filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('');
   const match = text.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('Could not parse response');
-
   return JSON.parse(match[0]);
 }
 
 function buildPostHTML(post, slug, dateStr) {
   const readTime = getReadTime(post.content);
-  const formattedDate = new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
+  const formattedDate = new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${post.title} — CyberWatch Daily</title>
-<meta name="description" content="${post.seo_description}">
-<link rel="canonical" href="https://cyberwatchdaily.net/blog/${slug}.html">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- Open Graph -->
-<meta property="og:title" content="${post.title}">
-<meta property="og:description" content="${post.excerpt}">
-<meta property="og:url" content="https://cyberwatchdaily.net/blog/${slug}.html">
-<meta property="og:type" content="article">
-<style>
-  :root {
-    --bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;
-    --border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);
-    --green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;
-    --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
-  a{color:var(--green);text-decoration:none;}
-  a:hover{text-decoration:underline;}
-  header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
-  .header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
-  .logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
-  .live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
-  nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}
-  nav a{color:var(--text2);}
-  nav a:hover{color:var(--green);text-decoration:none;}
+  return '<!DOCTYPE html>\n<html lang="en">\n<head>\n' +
+    '<meta charset="UTF-8">\n' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+    '<title>' + post.title + ' - CyberWatch Daily</title>\n' +
+    '<meta name="description" content="' + post.seo_description + '">\n' +
+    '<link rel="canonical" href="https://cyberwatchdaily.net/blog/' + slug + '.html">\n' +
+    '<meta property="og:title" content="' + post.title + '">\n' +
+    '<meta property="og:description" content="' + post.excerpt + '">\n' +
+    '<meta property="og:url" content="https://cyberwatchdaily.net/blog/' + slug + '.html">\n' +
+    '<meta property="og:type" content="article">\n' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">\n' +
+    '<style>\n' +
+    ':root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}\n' +
+    '*{box-sizing:border-box;margin:0;padding:0;}\n' +
+    'body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}\n' +
+    'a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}\n' +
+    'header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}\n' +
+    '.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}\n' +
+    '.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}\n' +
+    '.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}\n' +
+    '@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}\n' +
+    'nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}\n' +
+    '.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}\n' +
+    '.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}\n' +
+    '.back:hover{color:var(--green);text-decoration:none;}\n' +
+    '.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}\n' +
+    '.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}\n' +
+    '.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}\n' +
+    '.date{font-family:var(--mono);font-size:11px;color:var(--text3);}\n' +
+    '.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}\n' +
+    'h1{font-family:var(--mono);font-size:clamp(20px,3vw,28px);font-weight:600;line-height:1.3;margin-bottom:1rem;}\n' +
+    '.excerpt{font-size:16px;color:var(--text2);line-height:1.7;padding:1rem 1.25rem;background:var(--bg2);border-left:3px solid var(--green);}\n' +
+    '.content h2{font-family:var(--mono);font-size:18px;font-weight:500;margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}\n' +
+    '.content p{color:var(--text2);margin-bottom:1.25rem;line-height:1.8;font-size:15px;}\n' +
+    '.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.25rem;font-size:15px;}\n' +
+    '.content li{margin-bottom:0.5rem;line-height:1.7;}\n' +
+    '.content strong{color:var(--text);font-weight:500;}\n' +
+    '.content a{color:var(--green);}\n' +
+    '.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.25rem;margin:2rem 0;}\n' +
+    '.cta p{color:var(--text2);font-size:14px;margin-bottom:0.75rem;}\n' +
+    '.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 18px;background:var(--green);color:#000;margin-right:8px;margin-bottom:4px;}\n' +
+    '.cta-btn:hover{background:#fff;text-decoration:none;}\n' +
+    '.sidebar{display:flex;flex-direction:column;gap:1.5rem;}\n' +
+    '.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}\n' +
+    '.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}\n' +
+    '.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}\n' +
+    '.tl:last-child{border-bottom:none;padding-bottom:0;}\n' +
+    '.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}\n' +
+    '.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}\n' +
+    '.nb:hover{background:#fff;}\n' +
+    'footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}\n' +
+    '.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}\n' +
+    '.fl{font-family:var(--mono);font-size:14px;color:var(--green);}\n' +
+    '.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}\n' +
+    '.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}\n' +
+    '.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}\n' +
+    '@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}\n' +
+    '</style>\n</head>\n<body>\n\n' +
 
-  .article-layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+    '<header><div class="header-inner">\n' +
+    '<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>\n' +
+    '<nav><a href="/">News</a><a href="/blog/">Blog</a><a href="/#newsletter">Newsletter</a><a href="/contact.html">Contact</a></nav>\n' +
+    '</div></header>\n\n' +
 
-  /* Article styles */
-  .article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
-  .article-meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
-  .category-badge{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
-  .article-date{font-family:var(--mono);font-size:11px;color:var(--text3);}
-  .read-time{font-family:var(--mono);font-size:11px;color:var(--text3);}
-  h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
-  .article-excerpt{font-size:16px;color:var(--text2);line-height:1.7;padding:1rem 1.25rem;background:var(--bg2);border-left:3px solid var(--green);}
+    '<div class="layout">\n<article>\n' +
+    '<a href="/blog/" class="back">← Back to Blog</a>\n' +
+    '<div class="article-header">\n' +
+    '<div class="meta"><span class="cat">' + post.category + '</span><span class="date">' + formattedDate + '</span><span class="rt">' + readTime + ' min read</span></div>\n' +
+    '<h1>' + post.title + '</h1>\n' +
+    '<div class="excerpt">' + post.excerpt + '</div>\n' +
+    '</div>\n' +
+    '<div class="content">\n' + post.content + '\n</div>\n' +
+    '<div class="cta">\n' +
+    '<p><strong>Stay protected</strong> with tools our security experts recommend:</p>\n' +
+    '<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN - 70% Off</a>\n' +
+    '<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>\n' +
+    '<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>\n' +
+    '</div>\n</article>\n\n' +
 
-  /* Content styles */
-  .article-content h2{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text);margin:2rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
-  .article-content p{color:var(--text2);margin-bottom:1.25rem;line-height:1.8;font-size:15px;}
-  .article-content ul,.article-content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.25rem;font-size:15px;}
-  .article-content li{margin-bottom:0.5rem;line-height:1.7;}
-  .article-content strong{color:var(--text);font-weight:500;}
-  .article-content a{color:var(--green);}
-  .article-content blockquote{border-left:3px solid var(--green);padding:0.75rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+    '<aside class="sidebar">\n' +
+    '<div class="sc"><div class="st">Daily Newsletter</div>\n' +
+    '<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence in your inbox. Free.</p>\n' +
+    '<button class="nb" onclick="window.open(\'https://cyberwatchdaily.beehiiv.com/subscribe\',\'_blank\')">Subscribe Free</button>\n' +
+    '</div>\n' +
+    '<div class="sc"><div class="st">Recommended Tools</div>\n' +
+    '<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>\n' +
+    '<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>\n' +
+    '<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>\n' +
+    '</div>\n' +
+    '<div class="sc"><div class="st">More Articles</div>\n' +
+    '<a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">View all articles</a>\n' +
+    '</div>\n</aside>\n</div>\n\n' +
 
-  /* CTA box */
-  .affiliate-cta{background:var(--bg2);border:1px solid var(--border2);padding:1.25rem;margin:2rem 0;}
-  .affiliate-cta p{color:var(--text2);font-size:14px;margin-bottom:0.75rem;}
-  .cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:8px 18px;background:var(--green);color:#000;margin-right:8px;margin-bottom:4px;transition:background 0.15s;}
-  .cta-btn:hover{background:#fff;text-decoration:none;}
-
-  /* Sidebar */
-  .sidebar{display:flex;flex-direction:column;gap:1.5rem;}
-  .sidebar-card{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
-  .sidebar-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
-  .sidebar-title::before{content:'//';color:var(--green);}
-  .tool-link{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-  .tool-link:last-child{border-bottom:none;padding-bottom:0;}
-  .tool-badge{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
-  .newsletter-btn{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;transition:background 0.15s;}
-  .newsletter-btn:hover{background:#fff;}
-
-  /* Back to blog */
-  .back-link{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
-  .back-link:hover{color:var(--green);text-decoration:none;}
-
-  footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
-  .footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
-  .footer-logo{font-family:var(--mono);font-size:14px;color:var(--green);}
-  .footer-links{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
-  .footer-links a{color:var(--text3);}
-  .footer-copy{font-family:var(--mono);font-size:11px;color:var(--text3);}
-
-  @media(max-width:768px){.article-layout{grid-template-columns:1fr;}nav{display:none;}.sidebar{display:none;}}
-</style>
-</head>
-<body>
-
-<header>
-  <div class="header-inner">
-    <a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
-    <nav>
-      <a href="/">News</a>
-      <a href="/blog/">Blog</a>
-      <a href="/#newsletter">Newsletter</a>
-      <a href="/#about">About</a>
-    </nav>
-  </div>
-</header>
-
-<div class="article-layout">
-  <article>
-    <a href="/blog/" class="back-link">← Back to Blog</a>
-
-    <div class="article-header">
-      <div class="article-meta">
-        <span class="category-badge">${post.category}</span>
-        <span class="article-date">${formattedDate}</span>
-        <span class="read-time">${readTime} min read</span>
-      </div>
-      <h1>${post.title}</h1>
-      <div class="article-excerpt">${post.excerpt}</div>
-    </div>
-
-    <div class="article-content">
-      ${post.content}
-    </div>
-
-    <div class="affiliate-cta">
-      <p><strong>Stay protected</strong> — the tools our security experts recommend:</p>
-      <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
-      <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
-      <a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
-    </div>
-  </article>
-
-  <aside class="sidebar">
-    <div class="sidebar-card">
-      <div class="sidebar-title">Daily Newsletter</div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence in your inbox. Free.</p>
-      <button class="newsletter-btn" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
-    </div>
-
-    <div class="sidebar-card">
-      <div class="sidebar-title">Recommended Tools</div>
-      <div class="tool-link">
-        <div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN</div></div>
-        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tool-badge">70% Off</a>
-      </div>
-      <div class="tool-link">
-        <div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Password manager</div></div>
-        <a href="https://bitwarden.com" target="_blank" class="tool-badge">Free</a>
-      </div>
-    </div>
-
-    <div class="sidebar-card">
-      <div class="sidebar-title">More Articles</div>
-      <a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">← View all articles</a>
-    </div>
-  </aside>
-</div>
-
-<footer>
-  <div class="footer-inner">
-    <div class="footer-logo">[CyberWatch Daily]</div>
-    <div class="footer-links">
-      <a href="/">Home</a>
-      <a href="/blog/">Blog</a>
-      <a href="/#about">About</a>
-      <a href="/privacy-policy.html">Privacy Policy</a>
-    </div>
-    <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
-  </div>
-</footer>
-
-</body>
-</html>`;
+    '<footer><div class="fi">\n' +
+    '<div class="fl">[CyberWatch Daily]</div>\n' +
+    '<div class="fli"><a href="/">Home</a><a href="/blog/">Blog</a><a href="/contact.html">Contact</a><a href="/privacy-policy.html">Privacy</a></div>\n' +
+    '<div class="fc">2026 CyberWatch Daily</div>\n' +
+    '</div></footer>\n\n</body>\n</html>';
 }
 
 function updateBlogIndex(post, slug, dateStr) {
   const indexPath = path.join(__dirname, '../blog/index.html');
-  let indexContent = fs.readFileSync(indexPath, 'utf8');
+  let html = fs.readFileSync(indexPath, 'utf8');
 
   const readTime = getReadTime(post.content);
-  const formattedDate = new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
+  const formattedDate = new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
-  const newPostCard = `
-      <a href="/blog/${slug}.html" class="post-card">
-        <div class="post-meta">
-          <span class="post-category">${post.category}</span>
-          <span class="post-date">${formattedDate}</span>
-        </div>
-        <div class="post-title">${post.title}</div>
-        <div class="post-excerpt">${post.excerpt}</div>
-        <div class="post-footer">
-          <span class="read-time">${readTime} min read</span>
-          <span class="read-more">Read article →</span>
-        </div>
-      </a>`;
+  const card = '\n      <a href="/blog/' + slug + '.html" class="post-card">' +
+    '<div class="post-meta"><span class="post-category">' + post.category + '</span><span class="post-date">' + formattedDate + '</span></div>' +
+    '<div class="post-title">' + post.title + '</div>' +
+    '<div class="post-excerpt">' + post.excerpt + '</div>' +
+    '<div class="post-footer"><span class="read-time">' + readTime + ' min read</span><span class="read-more">Read article</span></div>' +
+    '</a>';
 
-  // Remove the entire empty state block if present
-  indexContent = indexContent.replace(
-    /\s*<div class="empty-state">[\s\S]*?<\/div>\s*/g,
-    '
-      '
-  );
+  // Remove empty state
+  html = html.replace(/<div class="empty-state">[\s\S]*?<\/div>\s*/g, '');
 
-  // Insert new post right after the posts-grid opening tag
-  indexContent = indexContent.replace(
+  // Insert after opening posts-grid tag
+  html = html.replace(
     '<div class="posts-grid" id="posts-grid">',
-    `<div class="posts-grid" id="posts-grid">${newPostCard}`
+    '<div class="posts-grid" id="posts-grid">' + card
   );
 
-  fs.writeFileSync(indexPath, indexContent);
-  console.log('Blog index updated with: ' + post.title);
+  fs.writeFileSync(indexPath, html);
+  console.log('Blog index updated');
 }
 
 async function main() {
   try {
-    console.log('CyberWatch Daily Blog Post Generator Starting...');
+    console.log('CyberWatch Blog Post Generator Starting...');
 
     const post = await generatePost();
-    console.log(`Generated post: "${post.title}"`);
+    console.log('Generated: ' + post.title);
 
     const today = new Date().toISOString().split('T')[0];
     const slug = slugify(post.title) + '-' + today;
 
-    // Write the blog post HTML
     const postHTML = buildPostHTML(post, slug, today);
-    const postPath = path.join(__dirname, '../blog', `${slug}.html`);
+    const postPath = path.join(__dirname, '../blog', slug + '.html');
     fs.writeFileSync(postPath, postHTML);
-    console.log(`Post saved: blog/${slug}.html`);
+    console.log('Post saved: blog/' + slug + '.html');
 
-    // Update blog index
     updateBlogIndex(post, slug, today);
 
     // Update sitemap
     const sitemapPath = path.join(__dirname, '../sitemap.xml');
     let sitemap = fs.readFileSync(sitemapPath, 'utf8');
-    const newUrl = `  <url>
-    <loc>https://cyberwatchdaily.net/blog/${slug}.html</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>never</changefreq>
-    <priority>0.7</priority>
-  </url>`;
-    sitemap = sitemap.replace('</urlset>', `${newUrl}\n</urlset>`);
+    const newUrl = '  <url>\n    <loc>https://cyberwatchdaily.net/blog/' + slug + '.html</loc>\n    <lastmod>' + today + '</lastmod>\n    <changefreq>never</changefreq>\n    <priority>0.7</priority>\n  </url>';
+    sitemap = sitemap.replace('</urlset>', newUrl + '\n</urlset>');
     fs.writeFileSync(sitemapPath, sitemap);
     console.log('Sitemap updated');
 
-    console.log('Done! Post published successfully.');
+    console.log('Done!');
   } catch (err) {
     console.error('Error:', err.message);
     process.exit(1);
