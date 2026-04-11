@@ -160,7 +160,12 @@ function buildEmailHtml(articles, blogPost) {
 
     '<tr><td style="background:#080c0f;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);text-align:center;">' +
       '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 8px;"><a href="https://cyberwatchdaily.net" style="color:#00ff88;text-decoration:none;">cyberwatchdaily.net</a> · AI-powered threat intelligence</p>' +
-      '<p style="font-family:monospace;font-size:10px;color:#2a3a2a;margin:0;">You received this because you subscribed at cyberwatchdaily.net</p>' +
+      '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 8px;">You received this because you subscribed at cyberwatchdaily.net</p>' +
+      '<p style="font-family:monospace;font-size:11px;margin:0;">' +
+        '<a href="https://cyberwatchdaily.beehiiv.com/unsubscribe" style="color:#3d5a47;text-decoration:underline;">Unsubscribe</a>' +
+        ' &nbsp;·&nbsp; ' +
+        '<a href="https://cyberwatchdaily.beehiiv.com/manage-preferences" style="color:#3d5a47;text-decoration:underline;">Manage Preferences</a>' +
+      '</p>' +
     '</td></tr>' +
 
     '</table></td></tr></table></body></html>';
