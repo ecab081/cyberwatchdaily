@@ -2,35 +2,27 @@ name: Generate Blog Post
 
 on:
   schedule:
-    - cron: '0 14 * * 1'  # Monday    9 AM ET
-    - cron: '0 14 * * 3'  # Wednesday 9 AM ET
-    - cron: '0 14 * * 5'  # Friday    9 AM ET
-  workflow_dispatch:        # Manual trigger for testing
+    - cron: '0 14 * * 1'
+    - cron: '0 14 * * 3'
+    - cron: '0 14 * * 5'
+  workflow_dispatch:
 
 jobs:
   generate-post:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install node-fetch
-
+          node-version: '22'
+      - run: npm install node-fetch
       - name: Generate blog post
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/generate-post.js
-
-      - name: Commit and push new post
+      - name: Commit and push
         run: |
           git config --global user.name "CyberWatch Bot"
           git config --global user.email "bot@cyberwatchdaily.net"
