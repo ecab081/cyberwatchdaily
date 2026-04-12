@@ -2,25 +2,18 @@ name: Daily CyberWatch Newsletter
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Runs every day at 8:00 AM ET (12:00 UTC)
-  workflow_dispatch:        # Allows manual trigger from GitHub UI
+    - cron: '0 12 * * *'
+  workflow_dispatch:
 
 jobs:
   send-newsletter:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm install node-fetch
-
+          node-version: '22'
+      - run: npm install node-fetch
       - name: Send daily newsletter
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
