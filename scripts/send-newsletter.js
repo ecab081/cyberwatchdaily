@@ -58,14 +58,33 @@ function getLatestBlogPost() {
     var latestFile = files[0].file;
     var html = fs.readFileSync(path.join(blogDir, latestFile), 'utf8');
 
+    // Try multiple title patterns
     var titleMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
     var title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : null;
+    // Fallback: og:title meta tag
+    if (!title) {
+      var ogTitle = html.match(/property="og:title"[^>]*content="([^"]+)"/);
+      if (!ogTitle) ogTitle = html.match(/content="([^"]+)"[^>]*property="og:title"/);
+      if (ogTitle) title = ogTitle[1].replace(' - CyberWatch Daily', '').replace(' — CyberWatch Daily', '').trim();
+    }
 
+    // Try multiple excerpt patterns
     var excerptMatch = html.match(/class="article-excerpt"[^>]*>([\s\S]*?)<\/div>/);
+    if (!excerptMatch) excerptMatch = html.match(/class="excerpt"[^>]*>([\s\S]*?)<\/div>/);
     var excerpt = excerptMatch ? excerptMatch[1].replace(/<[^>]+>/g, '').trim().substring(0, 180) + '...' : null;
+    // Fallback: og:description or meta description
+    if (!excerpt) {
+      var ogDesc = html.match(/property="og:description"[^>]*content="([^"]+)"/);
+      if (!ogDesc) ogDesc = html.match(/content="([^"]+)"[^>]*property="og:description"/);
+      if (!ogDesc) ogDesc = html.match(/name="description"[^>]*content="([^"]+)"/);
+      if (!ogDesc) ogDesc = html.match(/content="([^"]+)"[^>]*name="description"/);
+      if (ogDesc) excerpt = ogDesc[1].substring(0, 180) + '...';
+    }
 
+    // Try multiple category patterns
     var catMatch = html.match(/class="cat"[^>]*>([\s\S]*?)<\/span>/);
     if (!catMatch) catMatch = html.match(/class="category-badge"[^>]*>([\s\S]*?)<\/span>/);
+    if (!catMatch) catMatch = html.match(/class="post-category"[^>]*>([\s\S]*?)<\/span>/);
     var category = catMatch ? catMatch[1].trim() : 'Article';
 
     var url = 'https://cyberwatchdaily.net/blog/' + latestFile;
