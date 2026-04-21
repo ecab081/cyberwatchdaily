@@ -23,7 +23,7 @@ async function fetchNews() {
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{
         role: 'user',
-        content: 'Search the web for the top 5 cybersecurity news stories from the last 24 hours. Return ONLY a valid JSON array, no markdown, no extra text: [{"title":"headline","source":"publication","url":"https://url","summary":"2-3 sentence summary","threat_level":3,"category":"Ransomware|Data Breach|Vulnerability|Malware|Nation-State|Phishing|Zero-Day|Regulation|Other"}] threat_level: 1=Info,2=Low,3=Medium,4=High,5=Critical. Return ONLY the JSON array.'
+        content: 'Search the web for the top 5 cybersecurity news stories from the last 24 hours. Return ONLY a valid JSON array, no markdown: [{"title":"headline","source":"publication","url":"https://url","summary":"2-3 sentence summary","threat_level":3,"category":"Ransomware|Data Breach|Vulnerability|Malware|Nation-State|Phishing|Zero-Day|Regulation|Other"}] threat_level: 1=Info,2=Low,3=Medium,4=High,5=Critical.'
       }]
     })
   });
@@ -37,39 +37,41 @@ async function fetchNews() {
 
 function getLatestBlogPost() {
   try {
-    const blogDir = path.join(process.cwd(), 'blog');
+    // Use process.cwd() - always points to repo root in GitHub Actions
+    var blogDir = path.join(process.cwd(), 'blog');
+    console.log('Looking for blog posts in: ' + blogDir);
+
     if (!fs.existsSync(blogDir)) {
-      console.log('No blog directory, skipping blog section');
+      console.log('Blog directory not found at: ' + blogDir);
       return null;
     }
-    const files = fs.readdirSync(blogDir)
+
+    var files = fs.readdirSync(blogDir)
       .filter(function(f) { return f.endsWith('.html') && f !== 'index.html'; })
       .map(function(f) { return { file: f, time: fs.statSync(path.join(blogDir, f)).mtime.getTime() }; })
       .sort(function(a, b) { return b.time - a.time; });
 
-    if (files.length === 0) {
-      console.log('No blog posts found, skipping blog section');
-      return null;
-    }
+    console.log('Found ' + files.length + ' blog post files');
 
-    const latestFile = files[0].file;
-    const html = fs.readFileSync(path.join(blogDir, latestFile), 'utf8');
+    if (files.length === 0) return null;
 
-    const titleMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
-    const title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : null;
+    var latestFile = files[0].file;
+    var html = fs.readFileSync(path.join(blogDir, latestFile), 'utf8');
 
-    const excerptMatch = html.match(/class="article-excerpt"[^>]*>([\s\S]*?)<\/div>/);
-    const excerpt = excerptMatch
-      ? excerptMatch[1].replace(/<[^>]+>/g, '').trim().substring(0, 180) + '...'
-      : null;
+    var titleMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+    var title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : null;
 
-    const catMatch = html.match(/class="category-badge"[^>]*>([\s\S]*?)<\/span>/);
-    const category = catMatch ? catMatch[1].trim() : 'Article';
+    var excerptMatch = html.match(/class="article-excerpt"[^>]*>([\s\S]*?)<\/div>/);
+    var excerpt = excerptMatch ? excerptMatch[1].replace(/<[^>]+>/g, '').trim().substring(0, 180) + '...' : null;
 
-    const url = 'https://cyberwatchdaily.net/blog/' + latestFile;
+    var catMatch = html.match(/class="cat"[^>]*>([\s\S]*?)<\/span>/);
+    if (!catMatch) catMatch = html.match(/class="category-badge"[^>]*>([\s\S]*?)<\/span>/);
+    var category = catMatch ? catMatch[1].trim() : 'Article';
+
+    var url = 'https://cyberwatchdaily.net/blog/' + latestFile;
 
     if (!title || !excerpt) {
-      console.log('Could not parse blog post, skipping');
+      console.log('Could not parse title or excerpt from: ' + latestFile);
       return null;
     }
 
@@ -83,26 +85,26 @@ function getLatestBlogPost() {
 
 async function getSubscribers() {
   console.log('Fetching subscribers from Beehiiv...');
-  const res = await fetch(
+  var res = await fetch(
     'https://api.beehiiv.com/v2/publications/' + BEEHIIV_PUB_ID + '/subscriptions?status=active&limit=100',
     { headers: { 'Authorization': 'Bearer ' + BEEHIIV_API_KEY } }
   );
-  const data = await res.json();
+  var data = await res.json();
   if (data.errors) throw new Error('Beehiiv error: ' + JSON.stringify(data.errors));
-  const emails = (data.data || []).map(function(s) { return s.email; }).filter(Boolean);
+  var emails = (data.data || []).map(function(s) { return s.email; }).filter(Boolean);
   console.log('Found ' + emails.length + ' subscribers');
   return emails;
 }
 
 function buildEmailHtml(articles, blogPost) {
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  const LABELS = { 1:'INFO', 2:'LOW', 3:'MEDIUM', 4:'HIGH', 5:'CRITICAL' };
-  const COLORS = { 1:'#0066cc', 2:'#339900', 3:'#cc8800', 4:'#cc4400', 5:'#cc0000' };
-  const critical = articles.filter(function(a) { return a.threat_level >= 4; }).length;
+  var today = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  var LABELS = { 1:'INFO', 2:'LOW', 3:'MEDIUM', 4:'HIGH', 5:'CRITICAL' };
+  var COLORS = { 1:'#0066cc', 2:'#339900', 3:'#cc8800', 4:'#cc4400', 5:'#cc0000' };
+  var critical = articles.filter(function(a) { return a.threat_level >= 4; }).length;
 
-  const rows = articles.map(function(a) {
-    const c = COLORS[a.threat_level] || '#888';
-    const l = LABELS[a.threat_level] || 'INFO';
+  var rows = articles.map(function(a) {
+    var c = COLORS[a.threat_level] || '#888';
+    var l = LABELS[a.threat_level] || 'INFO';
     return '<tr><td style="padding:20px 0;border-bottom:1px solid #1e2d1e;">' +
       '<div style="margin-bottom:8px;">' +
         '<span style="background:' + c + '22;color:' + c + ';border:1px solid ' + c + '44;font-family:monospace;font-size:11px;font-weight:bold;padding:2px 8px;margin-right:8px;">' + l + '</span>' +
@@ -117,17 +119,23 @@ function buildEmailHtml(articles, blogPost) {
     '</td></tr>';
   }).join('');
 
-  const blogSection = blogPost
-    ? '<tr><td style="background:#0d1317;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);">' +
-        '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// From the Blog</p>' +
-        '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:14px;background:#121920;border:1px solid rgba(0,255,136,0.12);">' +
-          '<span style="font-family:monospace;font-size:10px;padding:2px 8px;background:#003d1f;color:#00ff88;text-transform:uppercase;">' + blogPost.category + '</span>' +
-          '<h3 style="margin:8px 0 6px;font-size:15px;font-weight:600;"><a href="' + blogPost.url + '" style="color:#e0edd6;text-decoration:none;">' + blogPost.title + '</a></h3>' +
-          '<p style="margin:0 0 10px;color:#7a9e8a;font-size:13px;line-height:1.6;">' + blogPost.excerpt + '</p>' +
-          '<a href="' + blogPost.url + '" style="font-family:monospace;font-size:12px;color:#00ff88;">Read full article</a>' +
-        '</td></tr></table>' +
-      '</td></tr>'
-    : '';
+  var blogSection = '';
+  if (blogPost) {
+    console.log('Adding blog section for: ' + blogPost.title);
+    blogSection = '<tr><td style="background:#0d1317;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);">' +
+      '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 12px;text-transform:uppercase;letter-spacing:2px;">// From the Blog</p>' +
+      '<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:14px;background:#121920;border:1px solid rgba(0,255,136,0.12);">' +
+        '<span style="font-family:monospace;font-size:10px;padding:2px 8px;background:#003d1f;color:#00ff88;text-transform:uppercase;">' + blogPost.category + '</span>' +
+        '<h3 style="margin:8px 0 6px;font-size:15px;font-weight:600;">' +
+          '<a href="' + blogPost.url + '" style="color:#e0edd6;text-decoration:none;">' + blogPost.title + '</a>' +
+        '</h3>' +
+        '<p style="margin:0 0 10px;color:#7a9e8a;font-size:13px;line-height:1.6;">' + blogPost.excerpt + '</p>' +
+        '<a href="' + blogPost.url + '" style="font-family:monospace;font-size:12px;color:#00ff88;">Read full article</a>' +
+      '</td></tr></table>' +
+    '</td></tr>';
+  } else {
+    console.log('No blog post to include in email');
+  }
 
   return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head>' +
     '<body style="margin:0;padding:0;background:#080c0f;font-family:Arial,sans-serif;">' +
@@ -161,11 +169,7 @@ function buildEmailHtml(articles, blogPost) {
     '<tr><td style="background:#080c0f;padding:20px 28px;border-top:1px solid rgba(0,255,136,0.1);text-align:center;">' +
       '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 8px;"><a href="https://cyberwatchdaily.net" style="color:#00ff88;text-decoration:none;">cyberwatchdaily.net</a> · AI-powered threat intelligence</p>' +
       '<p style="font-family:monospace;font-size:11px;color:#3d5a47;margin:0 0 8px;">You received this because you subscribed at cyberwatchdaily.net</p>' +
-      '<p style="font-family:monospace;font-size:11px;margin:0;">' +
-        '<a href="https://cyberwatchdaily.beehiiv.com/unsubscribe" style="color:#3d5a47;text-decoration:underline;">Unsubscribe</a>' +
-        ' &nbsp;·&nbsp; ' +
-        '<a href="https://cyberwatchdaily.beehiiv.com/manage-preferences" style="color:#3d5a47;text-decoration:underline;">Manage Preferences</a>' +
-      '</p>' +
+      '<p style="font-family:monospace;font-size:11px;margin:0;"><a href="https://cyberwatchdaily.beehiiv.com/unsubscribe" style="color:#3d5a47;text-decoration:underline;">Unsubscribe</a> &nbsp;·&nbsp; <a href="https://cyberwatchdaily.beehiiv.com/manage-preferences" style="color:#3d5a47;text-decoration:underline;">Manage Preferences</a></p>' +
     '</td></tr>' +
 
     '</table></td></tr></table></body></html>';
@@ -173,17 +177,17 @@ function buildEmailHtml(articles, blogPost) {
 
 async function sendEmails(subscribers, articles, blogPost) {
   console.log('Sending to ' + subscribers.length + ' subscribers via Resend...');
-  const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  const critical = articles.filter(function(a) { return a.threat_level >= 4; }).length;
-  const subject = critical > 0
+  var today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  var critical = articles.filter(function(a) { return a.threat_level >= 4; }).length;
+  var subject = critical > 0
     ? 'WARNING: ' + critical + ' Critical Threat' + (critical > 1 ? 's' : '') + ' Today - CyberWatch Daily ' + today
     : 'CyberWatch Daily - Top ' + articles.length + ' Cyber Threats for ' + today;
 
-  const html = buildEmailHtml(articles, blogPost);
+  var html = buildEmailHtml(articles, blogPost);
 
-  for (let i = 0; i < subscribers.length; i += 50) {
-    const batch = subscribers.slice(i, i + 50);
-    const res = await fetch('https://api.resend.com/emails', {
+  for (var i = 0; i < subscribers.length; i += 50) {
+    var batch = subscribers.slice(i, i + 50);
+    var res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + RESEND_API_KEY },
       body: JSON.stringify({
@@ -193,27 +197,27 @@ async function sendEmails(subscribers, articles, blogPost) {
         html: html
       })
     });
-    const result = await res.json();
+    var result = await res.json();
     if (result.statusCode >= 400 || result.name === 'validation_error') {
       throw new Error('Resend error: ' + JSON.stringify(result));
     }
-    console.log('Sent batch - ' + Math.min(i + 50, subscribers.length) + '/' + subscribers.length + ' subscribers');
+    console.log('Sent batch - ' + Math.min(i + 50, subscribers.length) + '/' + subscribers.length);
     if (i + 50 < subscribers.length) await new Promise(function(r) { setTimeout(r, 500); });
   }
 }
 
 (async function() {
   try {
-    console.log('CyberWatch Daily Newsletter Automation Starting...');
-    const results = await Promise.all([fetchNews(), getSubscribers()]);
-    const articles = results[0];
-    const subscribers = results[1];
+    console.log('CyberWatch Daily Newsletter Starting...');
+    var results = await Promise.all([fetchNews(), getSubscribers()]);
+    var articles = results[0];
+    var subscribers = results[1];
     console.log('Found ' + articles.length + ' stories and ' + subscribers.length + ' subscribers');
     if (subscribers.length === 0) {
-      console.log('No active subscribers - skipping send.');
+      console.log('No subscribers - skipping.');
       process.exit(0);
     }
-    const blogPost = getLatestBlogPost();
+    var blogPost = getLatestBlogPost();
     await sendEmails(subscribers, articles, blogPost);
     console.log('Done! Newsletter sent successfully.');
   } catch (err) {
