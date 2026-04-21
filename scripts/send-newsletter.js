@@ -37,7 +37,7 @@ async function fetchNews() {
 
 function getLatestBlogPost() {
   try {
-    const blogDir = path.join(__dirname, '../blog');
+    const blogDir = path.join(process.cwd(), 'blog');
     if (!fs.existsSync(blogDir)) {
       console.log('No blog directory, skipping blog section');
       return null;
