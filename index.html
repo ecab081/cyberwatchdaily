@@ -897,11 +897,24 @@
 <script src="/scripts/main.js" defer></script>
 
 <script>
+<script>
 // Load latest blog posts for homepage preview
 (function() {
   var posts = [
-    { title: "5 Essential Security Steps to Protect Your Online Accounts", category: "How-To Guide", url: "/blog/5-essential-security-steps-to-protect-your-online-accounts-2026-04-11.html", date: "April 11, 2026", excerpt: "Discover the five most critical steps security professionals recommend to keep your online accounts safe from hackers, phishing, and data breaches." },
-    { title: "Phishing Attacks: 8 Essential Defense Strategies for 2026", category: "How-To Guide", url: "/blog/phishing-attacks-8-essential-defense-strategies-for-2026-2026-04-09.html", date: "April 9, 2026", excerpt: "Phishing attacks have surged dramatically. Learn eight proven strategies to identify and defend against modern phishing attempts." }
+    {
+      title: "5 Essential Security Steps to Protect Your Online Accounts",
+      category: "How-To Guide",
+      url: "/blog/5-essential-security-steps-to-protect-your-online-accounts-2026-04-11.html",
+      date: "April 11, 2026",
+      excerpt: "Discover the five most critical steps security professionals recommend to keep your online accounts safe from hackers, phishing, and data breaches."
+    },
+    {
+      title: "Phishing Attacks: 8 Essential Defense Strategies for 2026",
+      category: "How-To Guide",
+      url: "/blog/phishing-attacks-8-essential-defense-strategies-for-2026-2026-04-09.html",
+      date: "April 9, 2026",
+      excerpt: "Learn eight proven strategies to identify and defend against modern phishing attempts before they compromise your accounts."
+    }
   ];
 
   var container = document.getElementById('blog-preview');
@@ -909,7 +922,7 @@
 
   container.style.background = 'transparent';
   container.innerHTML = posts.map(function(p) {
-    return '<a href="' + p.url + '" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">' +
+    return '<a href="' + p.url + '" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">' +
       '<div style="margin-bottom:8px;">' +
         '<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">' + p.category + '</span>' +
         '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">' + p.date + '</span>' +
