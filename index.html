@@ -76,17 +76,19 @@
     align-items: center;
     justify-content: space-between;
     height: 60px;
+    gap: 1rem;
   }
 
   .logo {
     font-family: var(--mono);
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--green);
     letter-spacing: -0.5px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    white-space: nowrap;
   }
 
   .logo-bracket { color: var(--text3); }
@@ -670,8 +672,7 @@
 <header>
   <div class="header-inner">
     <div class="logo">
-      <div class="live-dot" style="flex-shrink:0;"></div>
-      <span style="display:inline-flex;align-items:center;gap:0;"><span class="logo-bracket">[</span>CyberWatch Daily<span class="logo-bracket">]</span></span>
+      <div class="live-dot"></div><span class="logo-bracket">[</span>CyberWatch Daily<span class="logo-bracket">]</span>
     </div>
     <nav>
       <a href="#news">News</a>
