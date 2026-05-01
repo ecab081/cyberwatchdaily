@@ -803,7 +803,7 @@
           <div class="tool-name">NordVPN</div>
           <div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div>
         </div>
-        <a href="https://nordvpn.com" target="_blank" class="tool-badge">Get 70% Off</a>
+        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tool-badge">Get 70% Off</a>
       </div>
       <div class="tool-link">
         <div>
@@ -825,6 +825,19 @@
 
 <!-- FOOTER -->
 <!-- ABOUT SECTION -->
+
+<!-- BLOG PREVIEW SECTION -->
+<section style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:2.5rem 2rem;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <div style="font-family:var(--mono);font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:2px;">// Latest from the Blog</div>
+      <a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--green);">View all articles →</a>
+    </div>
+    <div id="blog-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border);">
+      <div style="background:var(--surface);padding:1.5rem;text-align:center;color:var(--text3);font-family:var(--mono);font-size:12px;">Loading latest articles...</div>
+    </div>
+  </div>
+</section>
 <section style="background: var(--bg2); border-top: 1px solid var(--border); padding: 3rem 2rem;" id="about">
   <div style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; flex-wrap: wrap;">
     <div>
@@ -846,11 +859,11 @@
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Email</span>
-          <a href="/cdn-cgi/l/email-protection#7217111310321f131b1e5c111d1f" style="font-family: var(--mono); font-size: 13px; color: var(--green);"><span class="__cf_email__" data-cfemail="d2b7b1b3b092bfb3bbbefcb1bdbf">[email&#160;protected]</span></a>
+          <a href="/contact.html" style="font-family: var(--mono); font-size: 13px; color: var(--green);"><span class="__cf_email__" data-cfemail="d2b7b1b3b092bfb3bbbefcb1bdbf">[email&#160;protected]</span></a>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Advertise</span>
-          <a href="/cdn-cgi/l/email-protection#7015131112301d11191c5e131f1d4f0305121a1513044d3114061502041903191e1750391e0105190209505d5033091215022711041318503411191c09" style="font-family: var(--mono); font-size: 13px; color: var(--green);">Get in touch</a>
+          <a href="/contact.html" style="font-family: var(--mono); font-size: 13px; color: var(--green);">Get in touch</a>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Newsletter</span>
@@ -872,9 +885,9 @@
     <div class="footer-logo">[CyberWatch Daily]</div>
     <div class="footer-links">
       <a href="#about">About</a>
-      <a href="/cdn-cgi/l/email-protection#04616765664469656d682a676b69">Contact</a>
-      <a href="/cdn-cgi/l/email-protection#fd989e9c9fbd909c9491d39e9290c28e889f97989e89c0bc998b988f89948e94939addb4938c88948f84ddd0ddbe849f988faa9c899e95ddb99c949184">Advertise</a>
-      <a href="#">Privacy Policy</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/contact.html">Advertise</a>
+      <a href="/privacy-policy.html">Privacy Policy</a>
     </div>
     <div class="footer-copy">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
   </div>
@@ -882,5 +895,31 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
+
+<script>
+// Load latest blog posts for homepage preview
+(function() {
+  var posts = [
+    { title: "5 Essential Security Steps to Protect Your Online Accounts", category: "How-To Guide", url: "/blog/5-essential-security-steps-to-protect-your-online-accounts-2026-04-11.html", date: "April 11, 2026", excerpt: "Discover the five most critical steps security professionals recommend to keep your online accounts safe from hackers, phishing, and data breaches." },
+    { title: "Phishing Attacks: 8 Essential Defense Strategies for 2026", category: "How-To Guide", url: "/blog/phishing-attacks-8-essential-defense-strategies-for-2026-2026-04-09.html", date: "April 9, 2026", excerpt: "Phishing attacks have surged dramatically. Learn eight proven strategies to identify and defend against modern phishing attempts." }
+  ];
+
+  var container = document.getElementById('blog-preview');
+  if (!container) return;
+
+  container.style.background = 'transparent';
+  container.innerHTML = posts.map(function(p) {
+    return '<a href="' + p.url + '" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">' +
+      '<div style="margin-bottom:8px;">' +
+        '<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">' + p.category + '</span>' +
+        '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">' + p.date + '</span>' +
+      '</div>' +
+      '<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">' + p.title + '</div>' +
+      '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">' + p.excerpt + '</div>' +
+      '<span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>' +
+    '</a>';
+  }).join('');
+})();
+</script>
 </body>
 </html>
