@@ -192,6 +192,37 @@ function updateBlogIndex(post, slug, dateStr) {
   console.log('Blog index updated');
 }
 
+function updateHomepageBlogPreview(post, slug, dateStr) {
+  var indexPath = path.join(process.cwd(), 'index.html');
+  if (!fs.existsSync(indexPath)) {
+    console.log('index.html not found, skipping homepage update');
+    return;
+  }
+
+  var html = fs.readFileSync(indexPath, 'utf8');
+  var formattedDate = new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  var newEntry = '{\n      title: "' + post.title.replace(/"/g, '\\"') + '",\n      category: "' + post.category + '",\n      url: "/blog/' + slug + '.html",\n      date: "' + formattedDate + '",\n      excerpt: "' + post.excerpt.replace(/"/g, '\\"').substring(0, 150) + '..."\n    }';
+
+  // Insert new post at the beginning of the posts array
+  html = html.replace('  var posts = [', '  var posts = [\n    ' + newEntry + ',');
+
+  // Keep only 2 posts by removing extras (find third occurrence of closing brace pattern)
+  var postsMatch = html.match(/var posts = \[([\s\S]*?)\];/);
+  if (postsMatch) {
+    var postsContent = postsMatch[1];
+    var entries = postsContent.split('},\n    {');
+    if (entries.length > 2) {
+      var trimmed = entries.slice(0, 2).join('},\n    {');
+      if (!trimmed.endsWith('}')) trimmed += '}';
+      html = html.replace(postsMatch[0], 'var posts = [' + trimmed + '\n  ];');
+    }
+  }
+
+  fs.writeFileSync(indexPath, html);
+  console.log('Homepage blog preview updated');
+}
+
 async function main() {
   try {
     console.log('CyberWatch Blog Post Generator Starting...');
@@ -208,6 +239,7 @@ async function main() {
     console.log('Post saved: blog/' + slug + '.html');
 
     updateBlogIndex(post, slug, today);
+    updateHomepageBlogPreview(post, slug, today);
 
     // Update sitemap
     const sitemapPath = path.join(__dirname, '../sitemap.xml');
