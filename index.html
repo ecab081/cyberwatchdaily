@@ -388,6 +388,11 @@
     border: 1px solid var(--border);
   }
 
+  /* Domain badges */
+  .badge-domain-cybersecurity { background: var(--green-dark); color: var(--green); border: 1px solid var(--border2); }
+  .badge-domain-crypto { background: #3d2000; color: #ff8800; border: 1px solid rgba(255,136,0,0.3); }
+  .badge-domain-quantum { background: #1a0d3d; color: #aa88ff; border: 1px solid rgba(170,136,255,0.3); }
+
   .source-tag {
     font-family: var(--mono);
     font-size: 11px;
@@ -737,6 +742,14 @@
       <div style="font-family:var(--mono);font-size:11px;color:var(--text3);" id="last-updated"></div>
     </div>
 
+    <!-- Domain Filters -->
+    <div style="display:flex;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);">
+      <span style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;padding-right:4px;">Domain:</span>
+      <button class="filter-btn active" id="domain-all" onclick="setDomain('all')">All</button>
+      <button class="filter-btn" id="domain-cybersecurity" onclick="setDomain('cybersecurity')" style="border-color:rgba(0,255,136,0.3);">Cybersecurity</button>
+      <button class="filter-btn" id="domain-crypto" onclick="setDomain('crypto')" style="border-color:rgba(255,136,0,0.3);color:#ff8800;">Crypto</button>
+      <button class="filter-btn" id="domain-quantum" onclick="setDomain('quantum')" style="border-color:rgba(170,136,255,0.3);color:#aa88ff;">Quantum</button>
+    </div>
     <div class="filters" id="filters" style="display:none;">
       <button class="filter-btn active" data-category="All">All</button>
     </div>
@@ -922,6 +935,101 @@
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
+<script>
+// Domain filter state
+var activeDomain = 'all';
+var allArticles = [];
+
+function setDomain(domain) {
+  activeDomain = domain;
+  // Update domain button styles
+  ['all','cybersecurity','crypto','quantum'].forEach(function(d) {
+    var btn = document.getElementById('domain-' + d);
+    if (!btn) return;
+    btn.classList.toggle('active', d === domain);
+  });
+  // Re-render with current category filter too
+  var activecat = (document.querySelector('.filter-btn[data-category].active') || {}).dataset && document.querySelector('.filter-btn[data-category].active').dataset.category || 'All';
+  renderArticles(allArticles, activecat);
+}
+
+function getDomainBadge(domain) {
+  if (domain === 'crypto') return '<span class="badge badge-domain-crypto">Crypto</span>';
+  if (domain === 'quantum') return '<span class="badge badge-domain-quantum">Quantum</span>';
+  return '';
+}
+
+function renderArticles(articles, category) {
+  var feed = document.getElementById('feed');
+  if (!feed) return;
+
+  // Apply domain filter first
+  var domainFiltered = activeDomain === 'all' ? articles : articles.filter(function(a) {
+    return (a.domain || 'cybersecurity') === activeDomain;
+  });
+
+  // Then apply category filter
+  var filtered = (category === 'All' || !category) ? domainFiltered : domainFiltered.filter(function(a) {
+    return a.category === category;
+  });
+
+  if (!filtered.length) {
+    feed.innerHTML = '<div class="empty-state"><div class="empty-icon">[ ]</div><div class="empty-title">No stories found</div><div class="empty-sub">Try a different filter or check back later</div></div>';
+    return;
+  }
+
+  feed.innerHTML = filtered.map(function(a, i) {
+    var level = a.threat_level || 1;
+    var levelMap = {5:'critical',4:'high',3:'medium',2:'low',1:'info'};
+    var levelName = levelMap[level] || 'info';
+    var levelLabel = levelName.charAt(0).toUpperCase() + levelName.slice(1);
+    var dots = [5,4,3,2,1].map(function(n) {
+      var colors = {5:'#cc2222',4:'#cc4422',3:'#cc8800',2:'#446622',1:'#0066cc'};
+      return '<div class="tdot" style="background:' + (n <= level ? colors[level] : 'var(--bg3)') + ';"></div>';
+    }).join('');
+    var domainBadge = getDomainBadge(a.domain || 'cybersecurity');
+    return '<div class="news-card" style="animation-delay:' + (i * 0.05) + 's">' +
+      '<div class="card-meta">' +
+        '<span class="badge badge-' + levelName + '">' + levelLabel + '</span>' +
+        '<span class="badge badge-cat">' + (a.category || 'Intel') + '</span>' +
+        domainBadge +
+        '<span class="source-tag">' + (a.source || '') + '</span>' +
+      '</div>' +
+      '<div class="card-title"><a href="' + (a.url || '#') + '" target="_blank" rel="noopener">' + (a.title || '') + '</a></div>' +
+      '<div class="card-summary">' + (a.summary || '') + '</div>' +
+      '<div class="card-footer">' +
+        '<div class="threat-dots">' + dots + '</div>' +
+        '<a href="' + (a.url || '#') + '" target="_blank" rel="noopener" class="read-more">Read full story →</a>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+// Intercept fetch calls to capture articles before main.js renders them
+(function() {
+  var origFetch = window.fetch;
+  window.fetch = function(url, opts) {
+    var p = origFetch.apply(this, arguments);
+    if (typeof url === 'string' && url.includes('/api/news')) {
+      p.then(function(res) {
+        var clone = res.clone();
+        clone.json().then(function(data) {
+          if (data && data.articles) {
+            allArticles = data.articles;
+            // After main.js renders, apply domain filter if active
+            setTimeout(function() {
+              if (activeDomain !== 'all') {
+                renderArticles(allArticles, 'All');
+              }
+            }, 500);
+          }
+        }).catch(function(){});
+      }).catch(function(){});
+    }
+    return p;
+  };
+})();
+</script>
 
 <script>
 // Load latest blog posts for homepage preview
