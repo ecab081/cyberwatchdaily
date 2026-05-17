@@ -1,88 +1,80 @@
 const SOURCES = [
+  // Cybersecurity sources
   {
     name: 'The Hacker News',
     url: 'https://thehackernews.com/',
+    domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/thehackernews\.com\/\d{4}\/\d{2}\/.+\.html(?:\?.*)?$/.test(url),
   },
   {
     name: 'BleepingComputer',
     url: 'https://www.bleepingcomputer.com/news/security/',
+    domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/www\.bleepingcomputer\.com\/news\/security\/.+\/$/.test(url),
   },
   {
     name: 'Krebs on Security',
     url: 'https://krebsonsecurity.com/',
+    domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/krebsonsecurity\.com\/\d{4}\/\d{2}\/.+\/$/.test(url),
   },
   {
     name: 'Hackread',
     url: 'https://hackread.com/latest/',
+    domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/hackread\.com\/(?!latest\/$|about-us\/$|our-team\/$|contact-us\/$|our-mission\/$|privacy-policy\/$|tag\/|category\/|author\/)[^?#]+\/$/i.test(url),
   },
   {
     name: 'Dark Reading',
     url: 'https://www.darkreading.com/latest-news',
+    domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/www\.darkreading\.com\/[a-z0-9-]+\/[a-z0-9-]+(?:\?.*)?$/i.test(url),
+  },
+  // Crypto security sources
+  {
+    name: 'CoinTelegraph',
+    url: 'https://cointelegraph.com/tags/security',
+    domain: 'crypto',
+    isArticle: (url) => /^https:\/\/cointelegraph\.com\/news\/[a-z0-9-]+(?:\?.*)?$/.test(url),
+  },
+  {
+    name: 'The Block',
+    url: 'https://www.theblock.co/tag/hacks',
+    domain: 'crypto',
+    isArticle: (url) => /^https:\/\/www\.theblock\.co\/post\/\d+\/[a-z0-9-]+(?:\?.*)?$/.test(url),
+  },
+  {
+    name: 'Decrypt',
+    url: 'https://decrypt.co/news',
+    domain: 'crypto',
+    isArticle: (url) => /^https:\/\/decrypt\.co\/\d+\/[a-z0-9-]+(?:\?.*)?$/.test(url),
   },
 ];
 
 const BLOCKLIST = [
-  'webinar',
-  'whitepaper',
-  'ebook',
-  'training bundle',
-  'deals',
-  'podcast',
-  'jobs',
-  'awards',
-  'advertise',
-  'newsletter',
-  'subscribe',
-  'privacy policy',
-  'contact us',
-  'master',
-  'report',
-  'press release',
-  'resource library',
-  'partner perspectives',
-  'dark reading confidential',
+  'webinar', 'whitepaper', 'ebook', 'training bundle', 'deals', 'podcast',
+  'jobs', 'awards', 'advertise', 'newsletter', 'subscribe', 'privacy policy',
+  'contact us', 'master', 'report', 'press release', 'resource library',
+  'partner perspectives', 'dark reading confidential',
+  'price prediction', 'price today', 'market update', 'trading signals',
 ];
 
 function decodeHtml(text = '') {
   return text
-    .replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&apos;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&#x27;/gi, "'")
-    .replace(/&#x2F;/gi, '/')
-    .replace(/&#8217;/g, "'")
-    .replace(/&#8216;/g, "'")
-    .replace(/&#8220;/g, '"')
-    .replace(/&#8221;/g, '"')
-    .replace(/&#8230;/g, '...')
-    .replace(/&#038;/g, '&')
-    .replace(/&#(\d+);/g, (_, n) => {
-      const code = Number(n);
-      return Number.isFinite(code) ? String.fromCharCode(code) : _;
-    });
+    .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ').replace(/&#x27;/gi, "'").replace(/&#x2F;/gi, '/')
+    .replace(/&#8217;/g, "'").replace(/&#8216;/g, "'").replace(/&#8220;/g, '"')
+    .replace(/&#8221;/g, '"').replace(/&#8230;/g, '...').replace(/&#038;/g, '&')
+    .replace(/&#(\d+);/g, (_, n) => { const c = Number(n); return Number.isFinite(c) ? String.fromCharCode(c) : _; });
 }
 
 function stripTags(text = '') {
-  return decodeHtml(text.replace(/<[^>]*>/g, ' '))
-    .replace(/\s+/g, ' ')
-    .trim();
+  return decodeHtml(text.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
 function normalizeUrl(href, base) {
-  try {
-    return new URL(href, base).toString();
-  } catch {
-    return null;
-  }
+  try { return new URL(href, base).toString(); } catch { return null; }
 }
 
 function isGoodTitle(title) {
@@ -96,7 +88,6 @@ function isGoodTitle(title) {
 async function fetchText(url) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
-
   try {
     const resp = await fetch(url, {
       headers: {
@@ -105,11 +96,7 @@ async function fetchText(url) {
       },
       signal: controller.signal,
     });
-
-    if (!resp.ok) {
-      throw new Error(`${resp.status} ${resp.statusText}`);
-    }
-
+    if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}`);
     return await resp.text();
   } finally {
     clearTimeout(timeout);
@@ -120,27 +107,20 @@ function extractAnchors(html, baseUrl, source) {
   const results = [];
   const seen = new Set();
   const anchorRegex = /<a\b[^>]*href=(['"])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi;
-
   for (const match of html.matchAll(anchorRegex)) {
     const href = normalizeUrl(match[2], baseUrl);
     const title = stripTags(match[3]);
-
     if (!href || !source.isArticle(href) || !isGoodTitle(title)) continue;
     if (seen.has(href)) continue;
-
     seen.add(href);
-    results.push({ title, url: href, source: source.name });
+    results.push({ title, url: href, source: source.name, sourceDomain: source.domain });
   }
-
   return results;
 }
 
 function extractMeta(html, names) {
   for (const name of names) {
-    const regex = new RegExp(
-      `<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']+)["'][^>]*>`,
-      'i'
-    );
+    const regex = new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i');
     const match = html.match(regex);
     if (match?.[1]) return stripTags(match[1]);
   }
@@ -152,56 +132,57 @@ function extractArticleData(html, fallbackTitle) {
     extractMeta(html, ['og:title', 'twitter:title']) ||
     stripTags((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || '') ||
     fallbackTitle;
-
   const summary =
     extractMeta(html, ['description', 'og:description', 'twitter:description']) ||
     fallbackTitle;
-
   return {
-    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading).*$/i, '').trim(),
+    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading|CoinTelegraph|The Block|Decrypt).*$/i, '').trim(),
     summary: summary.trim(),
   };
 }
 
+function classifyDomain(title, summary, sourceDomain) {
+  const text = `${title} ${summary}`.toLowerCase();
+  const quantumTerms = ['quantum', 'post-quantum', 'pqc', 'qubit', "shor's algorithm", 'nist pqc',
+    'crystals-kyber', 'crystals-dilithium', 'lattice cryptograph', 'quantum computer',
+    'quantum threat', 'quantum resistant', 'harvest now decrypt later', 'crqc'];
+  if (quantumTerms.some(t => text.includes(t))) return 'quantum';
+  if (sourceDomain === 'crypto') return 'crypto';
+  const cryptoTerms = ['bitcoin', 'ethereum', 'cryptocurrency', 'crypto exchange', 'defi ', 'nft hack',
+    'blockchain hack', 'crypto wallet', 'crypto theft', 'crypto scam', 'rug pull',
+    'smart contract exploit', 'binance', 'coinbase hack', 'solana hack', 'crypto heist',
+    'web3 exploit', 'crypto fraud', 'ransomware bitcoin', 'crypto ransom'];
+  if (cryptoTerms.some(t => text.includes(t))) return 'crypto';
+  return 'cybersecurity';
+}
+
 function classifyArticle(title, summary) {
   const text = `${title} ${summary}`.toLowerCase();
-
   const hasAny = (...terms) => terms.some((term) => text.includes(term));
-
   let category = 'Threat Intel';
   let threatLevel = 3;
-
   if (hasAny('zero-day', '0-day', 'actively exploited', 'in the wild')) {
-    category = 'Zero-Day';
-    threatLevel = 5;
+    category = 'Zero-Day'; threatLevel = 5;
   } else if (hasAny('ransomware', 'extortion')) {
-    category = 'Ransomware';
-    threatLevel = 4;
-  } else if (hasAny('data breach', 'breach', 'leak', 'stolen data', 'exposed data')) {
-    category = 'Data Breach';
-    threatLevel = 4;
-  } else if (hasAny('cve-', 'vulnerability', 'patch', 'patched', 'security flaw')) {
-    category = 'Vulnerability';
-    threatLevel = hasAny('critical', 'cvss 9', 'actively exploited') ? 4 : 3;
-  } else if (hasAny('phishing', 'malware', 'trojan', 'botnet', 'backdoor', 'supply chain')) {
-    category = 'Malware';
-    threatLevel = 4;
+    category = 'Ransomware'; threatLevel = 4;
+  } else if (hasAny('data breach', 'breach', 'leak', 'stolen data', 'exposed data', 'hack', 'heist', 'theft', 'drained')) {
+    category = 'Data Breach'; threatLevel = 4;
+  } else if (hasAny('cve-', 'vulnerability', 'patch', 'patched', 'security flaw', 'exploit')) {
+    category = 'Vulnerability'; threatLevel = hasAny('critical', 'cvss 9', 'actively exploited') ? 4 : 3;
+  } else if (hasAny('phishing', 'malware', 'trojan', 'botnet', 'backdoor', 'supply chain', 'scam', 'fraud')) {
+    category = 'Malware'; threatLevel = 4;
+  } else if (hasAny('regulation', 'sec ', 'cftc', 'law enforcement', 'arrested', 'charged', 'indicted')) {
+    category = 'Regulation'; threatLevel = 2;
   }
-
-  if (hasAny('critical', 'mass exploitation', 'under active exploitation')) {
+  if (hasAny('critical', 'mass exploitation', 'under active exploitation', 'millions', 'billions')) {
     threatLevel = Math.max(threatLevel, 4);
   }
-
   return { category, threat_level: threatLevel };
 }
 
 function uniqueByUrl(items) {
   const seen = new Set();
-  return items.filter((item) => {
-    if (seen.has(item.url)) return false;
-    seen.add(item.url);
-    return true;
-  });
+  return items.filter((item) => { if (seen.has(item.url)) return false; seen.add(item.url); return true; });
 }
 
 async function getSourceArticles(source) {
@@ -219,55 +200,40 @@ async function enrichArticle(article) {
     const html = await fetchText(article.url);
     const data = extractArticleData(html, article.title);
     const summary = data.summary.length > 240 ? `${data.summary.slice(0, 237).trim()}...` : data.summary;
-
-    return {
-      title: data.title,
-      summary,
-      url: article.url,
-      source: article.source,
-      ...classifyArticle(data.title, summary),
-    };
+    const domain = classifyDomain(data.title, summary, article.sourceDomain);
+    return { title: data.title, summary, url: article.url, source: article.source, domain, ...classifyArticle(data.title, summary) };
   } catch (error) {
     console.error(`Failed to enrich ${article.url}:`, error.message);
+    const domain = classifyDomain(article.title, article.title, article.sourceDomain);
     return {
       title: article.title,
       summary: `Latest report from ${article.source}. Open the story for details.`,
-      url: article.url,
-      source: article.source,
+      url: article.url, source: article.source, domain,
       ...classifyArticle(article.title, article.title),
     };
   }
 }
 
 function fallbackArticles() {
-  const now = new Date().toISOString();
-  return [
-    {
-      title: 'Feed temporarily unavailable — check back shortly',
-      summary: 'CyberWatch Daily could not reach the upstream sources just now. The homepage is working, but the live feed needs another refresh.',
-      url: 'https://cyberwatchdaily.net',
-      source: 'CyberWatch Daily',
-      category: 'Info',
-      threat_level: 1,
-      published_at: now,
-    },
-  ];
+  return [{
+    title: 'Feed temporarily unavailable — check back shortly',
+    summary: 'CyberWatch Daily could not reach the upstream sources just now.',
+    url: 'https://cyberwatchdaily.net', source: 'CyberWatch Daily',
+    category: 'Info', threat_level: 1, domain: 'cybersecurity',
+  }];
 }
 
 export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-
   try {
     const rawGroups = await Promise.all(SOURCES.map(getSourceArticles));
-    const rawArticles = uniqueByUrl(rawGroups.flat()).slice(0, 15);
-
+    const rawArticles = uniqueByUrl(rawGroups.flat()).slice(0, 20);
     const enriched = await Promise.all(rawArticles.map(enrichArticle));
     const articles = uniqueByUrl(enriched)
       .filter((article) => article.title && article.summary && article.url)
-      .slice(0, 15);
-
+      .slice(0, 20);
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
   } catch (error) {
