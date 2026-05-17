@@ -135,9 +135,13 @@ function renderCard(a, i) {
 
   // Only show summary if it's genuinely different from the title
   const rawSum = (a.summary || '').trim();
-  const isDupe = !rawSum || rawSum === a.title ||
-    rawSum.toLowerCase() === (a.title || '').toLowerCase() ||
-    rawSum.length < 20;
+  const norm = s => s.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim();
+  const nSum = norm(rawSum);
+  const nTitle = norm(a.title || '');
+  const isDupe = !rawSum || rawSum.length < 20 ||
+    nSum === nTitle ||
+    nSum.startsWith(nTitle.slice(0, Math.min(nTitle.length, 55))) ||
+    nTitle.startsWith(nSum.slice(0, Math.min(nSum.length, 55)));
   const summaryHtml = isDupe
     ? ''
     : `<div class="card-summary">${escapeHtml(rawSum)}</div>`;
