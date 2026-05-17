@@ -237,4 +237,9 @@ function init() {
   loadCachedOrFetch();
 }
 
+// Expose functions globally so onclick attributes can call them
+window.setDomain = setDomain;
+window.setFilter = setFilter;
+window.subscribe = subscribe;
+
 document.addEventListener('DOMContentLoaded', init);
