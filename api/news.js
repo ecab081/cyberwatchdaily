@@ -199,7 +199,12 @@ async function enrichArticle(article) {
   try {
     const html = await fetchText(article.url);
     const data = extractArticleData(html, article.title);
-    const summary = data.summary.length > 240 ? `${data.summary.slice(0, 237).trim()}...` : data.summary;
+    // Avoid summary that duplicates the title
+    let rawSummary = data.summary.trim();
+    if (!rawSummary || rawSummary === data.title || rawSummary.toLowerCase() === data.title.toLowerCase() || rawSummary.length < 30) {
+      rawSummary = '';
+    }
+    const summary = rawSummary.length > 240 ? `${rawSummary.slice(0, 237).trim()}...` : rawSummary;
     const domain = classifyDomain(data.title, summary, article.sourceDomain);
     return { title: data.title, summary, url: article.url, source: article.source, domain, ...classifyArticle(data.title, summary) };
   } catch (error) {
@@ -207,7 +212,7 @@ async function enrichArticle(article) {
     const domain = classifyDomain(article.title, article.title, article.sourceDomain);
     return {
       title: article.title,
-      summary: `Latest report from ${article.source}. Open the story for details.`,
+      summary: '',
       url: article.url, source: article.source, domain,
       ...classifyArticle(article.title, article.title),
     };
