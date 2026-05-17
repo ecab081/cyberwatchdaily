@@ -936,132 +936,137 @@
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
 <script>
-// ── Domain Filter ─────────────────────────────────────────────
-var activeDomain = 'all';
-var activeCategory = 'All';
-var allArticles = [];
-var articlesLoaded = false;
+// ── Domain Filter (conflict-free, reads main.js sessionStorage) ──────────
+var _da = [];          // domain articles (avoid conflict with main.js allArticles)
+var _activeDomain = 'all';
+var _activeCat = 'All';
+var _daLoaded = false;
 
-// Client-side domain classifier — works even if API cache lacks domain field
-function classifyDomainClient(title, summary) {
-  var text = ((title || '') + ' ' + (summary || '')).toLowerCase();
-  var quantumTerms = ['quantum', 'post-quantum', 'pqc', 'qubit', 'shor', 'nist pqc',
-    'crystals-kyber', 'crystals-dilithium', 'lattice crypto', 'quantum computer',
-    'quantum threat', 'quantum resistant', 'crqc', 'harvest now decrypt'];
-  for (var i = 0; i < quantumTerms.length; i++) {
-    if (text.indexOf(quantumTerms[i]) !== -1) return 'quantum';
-  }
-  var cryptoTerms = ['bitcoin', 'ethereum', 'cryptocurrency', 'crypto exchange',
-    'defi ', 'nft hack', 'blockchain hack', 'crypto wallet', 'crypto theft',
-    'crypto scam', 'rug pull', 'smart contract exploit', 'binance', 'coinbase hack',
-    'solana hack', 'crypto heist', 'web3 exploit', 'crypto fraud', 'crypto ransom',
-    'cointelegraph', 'the block', 'decrypt.co', 'btc hack', 'eth hack'];
-  for (var j = 0; j < cryptoTerms.length; j++) {
-    if (text.indexOf(cryptoTerms[j]) !== -1) return 'crypto';
-  }
+function _classifyDomain(title, summary) {
+  var t = ((title||'') + ' ' + (summary||'')).toLowerCase();
+  var q = ['quantum','post-quantum','pqc','qubit','shor','nist pqc','crystals-kyber',
+    'crystals-dilithium','lattice crypto','quantum computer','quantum threat','crqc'];
+  for (var i=0;i<q.length;i++) if (t.indexOf(q[i])!==-1) return 'quantum';
+  var c = ['bitcoin','ethereum','cryptocurrency','crypto exchange','defi ','nft hack',
+    'blockchain hack','crypto wallet','crypto theft','crypto scam','rug pull',
+    'smart contract exploit','binance','coinbase hack','solana hack','crypto heist',
+    'web3 exploit','crypto fraud','crypto ransom','cointelegraph','theblock.co'];
+  for (var j=0;j<c.length;j++) if (t.indexOf(c[j])!==-1) return 'crypto';
   return 'cybersecurity';
 }
 
-// Fetch articles independently so domain filtering always works
-function loadArticlesForFilter() {
-  fetch('/api/news')
-    .then(function(res) { return res.json(); })
+function _loadDA() {
+  // Read from sessionStorage — same cache main.js uses (CACHE_KEY = 'cyberwatch_cache')
+  try {
+    var cached = sessionStorage.getItem('cyberwatch_cache');
+    if (cached) {
+      var data = JSON.parse(cached);
+      if (data.articles && data.articles.length) {
+        _da = data.articles.map(function(a) {
+          return Object.assign({}, a, { domain: a.domain || _classifyDomain(a.title, a.summary) });
+        });
+        _daLoaded = true;
+        return true;
+      }
+    }
+  } catch(e) {}
+  // sessionStorage empty — fetch with POST to match main.js
+  fetch('/api/news', { method:'POST', headers:{'Content-Type':'application/json'} })
+    .then(function(r){ return r.json(); })
     .then(function(data) {
       if (data && data.articles) {
-        // Apply client-side domain classification as fallback
-        allArticles = data.articles.map(function(a) {
-          return Object.assign({}, a, {
-            domain: a.domain || classifyDomainClient(a.title, a.summary)
-          });
+        _da = data.articles.map(function(a) {
+          return Object.assign({}, a, { domain: a.domain || _classifyDomain(a.title, a.summary) });
         });
-        articlesLoaded = true;
+        _daLoaded = true;
       }
-    })
-    .catch(function() {});
+    }).catch(function(){});
+  return false;
 }
 
-// Load immediately on script execution
-loadArticlesForFilter();
-
-function setDomain(domain) {
-  activeDomain = domain;
-  ['all','cybersecurity','crypto','quantum'].forEach(function(d) {
-    var btn = document.getElementById('domain-' + d);
-    if (btn) btn.classList.toggle('active', d === domain);
-  });
-  applyFilters();
-}
-
-function getDomainBadge(domain) {
+function _domainBadge(domain) {
   if (domain === 'crypto') return '<span class="badge badge-domain-crypto">Crypto</span>';
   if (domain === 'quantum') return '<span class="badge badge-domain-quantum">Quantum</span>';
   return '';
 }
 
-function getLevelColors() {
-  return {5:'#cc2222', 4:'#cc4422', 3:'#cc8800', 2:'#446622', 1:'#0066cc'};
+var _tlMap = {
+  5:{label:'Critical',cls:'badge-critical',dots:['#cc2222','#cc2222','#cc2222','#cc2222','#cc2222']},
+  4:{label:'High',    cls:'badge-high',    dots:['#cc4422','#cc4422','#cc4422','#cc4422','#222']},
+  3:{label:'Medium',  cls:'badge-medium',  dots:['#cc8800','#cc8800','#cc8800','#222','#222']},
+  2:{label:'Low',     cls:'badge-low',     dots:['#446622','#446622','#222','#222','#222']},
+  1:{label:'Info',    cls:'badge-info',    dots:['#0066cc','#222','#222','#222','#222']}
+};
+
+function _esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function renderArticles(articles) {
+function _renderDA(articles) {
   var feed = document.getElementById('feed');
   if (!feed) return;
   if (!articles.length) {
-    feed.innerHTML = '<div class="empty-state"><div class="empty-icon">[ ]</div><div class="empty-title">No stories in this category</div><div class="empty-sub">Try selecting a different filter</div></div>';
+    feed.innerHTML = '<div class="news-grid"><div class="empty-state"><div class="empty-icon">[ ]</div><div class="empty-title">No stories found</div><div class="empty-sub">No ' + _activeDomain + ' stories in this category. Try "All".</div></div></div>';
     return;
   }
-  var colors = getLevelColors();
-  var levelMap = {5:'critical', 4:'high', 3:'medium', 2:'low', 1:'info'};
-  feed.innerHTML = articles.map(function(a, i) {
-    var level = a.threat_level || 1;
-    var levelName = levelMap[level] || 'info';
-    var levelLabel = levelName.charAt(0).toUpperCase() + levelName.slice(1);
-    var dots = [5,4,3,2,1].map(function(n) {
-      return '<div class="tdot" style="background:' + (n <= level ? colors[level] : 'var(--bg3)') + ';"></div>';
-    }).join('');
-    var domainBadge = getDomainBadge(a.domain || 'cybersecurity');
-    var rawSum = (a.summary || '').trim();
-    var summary = (rawSum && rawSum !== a.title && rawSum.toLowerCase() !== (a.title || '').toLowerCase() && rawSum.length > 20)
-      ? '<div class="card-summary">' + rawSum + '</div>' : '';
-    return '<div class="news-card" style="animation-delay:' + (i * 0.04) + 's">' +
-      '<div class="card-meta">' +
-        '<span class="badge badge-' + levelName + '">' + levelLabel + '</span>' +
-        '<span class="badge badge-cat">' + (a.category || 'Intel') + '</span>' +
-        domainBadge +
-        '<span class="source-tag">' + (a.source || '') + '</span>' +
-      '</div>' +
-      '<div class="card-title"><a href="' + (a.url || '#') + '" target="_blank" rel="noopener">' + (a.title || '') + '</a></div>' +
-      summary +
-      '<div class="card-footer">' +
-        '<div class="threat-dots">' + dots + '</div>' +
-        '<a href="' + (a.url || '#') + '" target="_blank" rel="noopener" class="read-more">Read full story →</a>' +
-      '</div>' +
+  feed.innerHTML = '<div class="news-grid">' + articles.map(function(a, i) {
+    var tl = _tlMap[a.threat_level] || _tlMap[1];
+    var dots = tl.dots.map(function(c){ return '<div class="tdot" style="background:'+c+';"></div>'; }).join('');
+    var rawSum = (a.summary||'').trim();
+    var showSum = rawSum && rawSum !== a.title && rawSum.toLowerCase() !== (a.title||'').toLowerCase() && rawSum.length > 20;
+    var sumHtml = showSum ? '<div class="card-summary">'+_esc(rawSum)+'</div>' : '';
+    return '<div class="news-card" style="animation-delay:'+i*0.05+'s">'+
+      '<div class="card-meta">'+
+        '<span class="badge '+tl.cls+'">'+tl.label+'</span>'+
+        '<span class="badge badge-cat">'+_esc(a.category||'Intel')+'</span>'+
+        _domainBadge(a.domain)+
+        '<span class="source-tag">'+_esc(a.source||'')+'</span>'+
+      '</div>'+
+      '<div class="card-title"><a href="'+_esc(a.url||'#')+'" target="_blank" rel="noopener">'+_esc(a.title||'')+'</a></div>'+
+      sumHtml+
+      '<div class="card-footer">'+
+        '<div class="threat-dots">'+dots+'</div>'+
+        '<a class="read-more" href="'+_esc(a.url||'#')+'" target="_blank" rel="noopener">Read full story →</a>'+
+      '</div>'+
     '</div>';
-  }).join('');
+  }).join('') + '</div>';
 }
 
-function applyFilters() {
-  if (!articlesLoaded || !allArticles.length) {
-    // Articles not ready yet — try again shortly
-    setTimeout(applyFilters, 300);
-    return;
+function _applyDA() {
+  if (!_daLoaded) {
+    var loaded = _loadDA();
+    if (!loaded) { setTimeout(_applyDA, 400); return; }
   }
-  var domainFiltered = activeDomain === 'all'
-    ? allArticles
-    : allArticles.filter(function(a) { return (a.domain || 'cybersecurity') === activeDomain; });
-  var filtered = activeCategory === 'All'
-    ? domainFiltered
-    : domainFiltered.filter(function(a) { return a.category === activeCategory; });
-  renderArticles(filtered);
+  var byDomain = _activeDomain === 'all' ? _da : _da.filter(function(a){ return a.domain === _activeDomain; });
+  var filtered  = _activeCat === 'All'  ? byDomain : byDomain.filter(function(a){ return a.category === _activeCat; });
+  _renderDA(filtered);
+  // Sync category filter button states
+  document.querySelectorAll('#filters .filter-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.category === _activeCat);
+  });
 }
 
-// Also hook category filter buttons to use our render function
-document.addEventListener('click', function(e) {
-  var btn = e.target.closest('.filter-btn[data-category]');
-  if (!btn) return;
-  document.querySelectorAll('.filter-btn[data-category]').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-  activeCategory = btn.dataset.category || 'All';
-  applyFilters();
+function setDomain(domain) {
+  _activeDomain = domain;
+  ['all','cybersecurity','crypto','quantum'].forEach(function(d){
+    var btn = document.getElementById('domain-'+d);
+    if (btn) btn.classList.toggle('active', d === domain);
+  });
+  _applyDA();
+}
+
+// After DOMContentLoaded (main.js has run), override setFilter so category
+// clicks also respect the active domain filter
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    // Load articles from sessionStorage now that main.js may have populated it
+    _loadDA();
+    // Override main.js's setFilter
+    window.setFilter = function(category) {
+      _activeCat = category;
+      _applyDA();
+    };
+  }, 200);
 });
 </script>
 
