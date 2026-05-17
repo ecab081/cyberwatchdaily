@@ -942,13 +942,38 @@ var activeCategory = 'All';
 var allArticles = [];
 var articlesLoaded = false;
 
+// Client-side domain classifier — works even if API cache lacks domain field
+function classifyDomainClient(title, summary) {
+  var text = ((title || '') + ' ' + (summary || '')).toLowerCase();
+  var quantumTerms = ['quantum', 'post-quantum', 'pqc', 'qubit', 'shor', 'nist pqc',
+    'crystals-kyber', 'crystals-dilithium', 'lattice crypto', 'quantum computer',
+    'quantum threat', 'quantum resistant', 'crqc', 'harvest now decrypt'];
+  for (var i = 0; i < quantumTerms.length; i++) {
+    if (text.indexOf(quantumTerms[i]) !== -1) return 'quantum';
+  }
+  var cryptoTerms = ['bitcoin', 'ethereum', 'cryptocurrency', 'crypto exchange',
+    'defi ', 'nft hack', 'blockchain hack', 'crypto wallet', 'crypto theft',
+    'crypto scam', 'rug pull', 'smart contract exploit', 'binance', 'coinbase hack',
+    'solana hack', 'crypto heist', 'web3 exploit', 'crypto fraud', 'crypto ransom',
+    'cointelegraph', 'the block', 'decrypt.co', 'btc hack', 'eth hack'];
+  for (var j = 0; j < cryptoTerms.length; j++) {
+    if (text.indexOf(cryptoTerms[j]) !== -1) return 'crypto';
+  }
+  return 'cybersecurity';
+}
+
 // Fetch articles independently so domain filtering always works
 function loadArticlesForFilter() {
   fetch('/api/news')
     .then(function(res) { return res.json(); })
     .then(function(data) {
       if (data && data.articles) {
-        allArticles = data.articles;
+        // Apply client-side domain classification as fallback
+        allArticles = data.articles.map(function(a) {
+          return Object.assign({}, a, {
+            domain: a.domain || classifyDomainClient(a.title, a.summary)
+          });
+        });
         articlesLoaded = true;
       }
     })
@@ -994,7 +1019,9 @@ function renderArticles(articles) {
       return '<div class="tdot" style="background:' + (n <= level ? colors[level] : 'var(--bg3)') + ';"></div>';
     }).join('');
     var domainBadge = getDomainBadge(a.domain || 'cybersecurity');
-    var summary = (a.summary && a.summary !== a.title) ? '<div class="card-summary">' + a.summary + '</div>' : '';
+    var rawSum = (a.summary || '').trim();
+    var summary = (rawSum && rawSum !== a.title && rawSum.toLowerCase() !== (a.title || '').toLowerCase() && rawSum.length > 20)
+      ? '<div class="card-summary">' + rawSum + '</div>' : '';
     return '<div class="news-card" style="animation-delay:' + (i * 0.04) + 's">' +
       '<div class="card-meta">' +
         '<span class="badge badge-' + levelName + '">' + levelLabel + '</span>' +
