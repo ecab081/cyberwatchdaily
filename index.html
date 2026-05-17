@@ -936,21 +936,35 @@
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
 <script>
-// Domain filter state
+// ── Domain Filter ─────────────────────────────────────────────
 var activeDomain = 'all';
+var activeCategory = 'All';
 var allArticles = [];
+var articlesLoaded = false;
+
+// Fetch articles independently so domain filtering always works
+function loadArticlesForFilter() {
+  fetch('/api/news')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data && data.articles) {
+        allArticles = data.articles;
+        articlesLoaded = true;
+      }
+    })
+    .catch(function() {});
+}
+
+// Load immediately on script execution
+loadArticlesForFilter();
 
 function setDomain(domain) {
   activeDomain = domain;
-  // Update domain button styles
   ['all','cybersecurity','crypto','quantum'].forEach(function(d) {
     var btn = document.getElementById('domain-' + d);
-    if (!btn) return;
-    btn.classList.toggle('active', d === domain);
+    if (btn) btn.classList.toggle('active', d === domain);
   });
-  // Re-render with current category filter too
-  var activecat = (document.querySelector('.filter-btn[data-category].active') || {}).dataset && document.querySelector('.filter-btn[data-category].active').dataset.category || 'All';
-  renderArticles(allArticles, activecat);
+  applyFilters();
 }
 
 function getDomainBadge(domain) {
@@ -959,36 +973,29 @@ function getDomainBadge(domain) {
   return '';
 }
 
-function renderArticles(articles, category) {
+function getLevelColors() {
+  return {5:'#cc2222', 4:'#cc4422', 3:'#cc8800', 2:'#446622', 1:'#0066cc'};
+}
+
+function renderArticles(articles) {
   var feed = document.getElementById('feed');
   if (!feed) return;
-
-  // Apply domain filter first
-  var domainFiltered = activeDomain === 'all' ? articles : articles.filter(function(a) {
-    return (a.domain || 'cybersecurity') === activeDomain;
-  });
-
-  // Then apply category filter
-  var filtered = (category === 'All' || !category) ? domainFiltered : domainFiltered.filter(function(a) {
-    return a.category === category;
-  });
-
-  if (!filtered.length) {
-    feed.innerHTML = '<div class="empty-state"><div class="empty-icon">[ ]</div><div class="empty-title">No stories found</div><div class="empty-sub">Try a different filter or check back later</div></div>';
+  if (!articles.length) {
+    feed.innerHTML = '<div class="empty-state"><div class="empty-icon">[ ]</div><div class="empty-title">No stories in this category</div><div class="empty-sub">Try selecting a different filter</div></div>';
     return;
   }
-
-  feed.innerHTML = filtered.map(function(a, i) {
+  var colors = getLevelColors();
+  var levelMap = {5:'critical', 4:'high', 3:'medium', 2:'low', 1:'info'};
+  feed.innerHTML = articles.map(function(a, i) {
     var level = a.threat_level || 1;
-    var levelMap = {5:'critical',4:'high',3:'medium',2:'low',1:'info'};
     var levelName = levelMap[level] || 'info';
     var levelLabel = levelName.charAt(0).toUpperCase() + levelName.slice(1);
     var dots = [5,4,3,2,1].map(function(n) {
-      var colors = {5:'#cc2222',4:'#cc4422',3:'#cc8800',2:'#446622',1:'#0066cc'};
       return '<div class="tdot" style="background:' + (n <= level ? colors[level] : 'var(--bg3)') + ';"></div>';
     }).join('');
     var domainBadge = getDomainBadge(a.domain || 'cybersecurity');
-    return '<div class="news-card" style="animation-delay:' + (i * 0.05) + 's">' +
+    var summary = (a.summary && a.summary !== a.title) ? '<div class="card-summary">' + a.summary + '</div>' : '';
+    return '<div class="news-card" style="animation-delay:' + (i * 0.04) + 's">' +
       '<div class="card-meta">' +
         '<span class="badge badge-' + levelName + '">' + levelLabel + '</span>' +
         '<span class="badge badge-cat">' + (a.category || 'Intel') + '</span>' +
@@ -996,7 +1003,7 @@ function renderArticles(articles, category) {
         '<span class="source-tag">' + (a.source || '') + '</span>' +
       '</div>' +
       '<div class="card-title"><a href="' + (a.url || '#') + '" target="_blank" rel="noopener">' + (a.title || '') + '</a></div>' +
-      '<div class="card-summary">' + (a.summary || '') + '</div>' +
+      summary +
       '<div class="card-footer">' +
         '<div class="threat-dots">' + dots + '</div>' +
         '<a href="' + (a.url || '#') + '" target="_blank" rel="noopener" class="read-more">Read full story →</a>' +
@@ -1005,30 +1012,30 @@ function renderArticles(articles, category) {
   }).join('');
 }
 
-// Intercept fetch calls to capture articles before main.js renders them
-(function() {
-  var origFetch = window.fetch;
-  window.fetch = function(url, opts) {
-    var p = origFetch.apply(this, arguments);
-    if (typeof url === 'string' && url.includes('/api/news')) {
-      p.then(function(res) {
-        var clone = res.clone();
-        clone.json().then(function(data) {
-          if (data && data.articles) {
-            allArticles = data.articles;
-            // After main.js renders, apply domain filter if active
-            setTimeout(function() {
-              if (activeDomain !== 'all') {
-                renderArticles(allArticles, 'All');
-              }
-            }, 500);
-          }
-        }).catch(function(){});
-      }).catch(function(){});
-    }
-    return p;
-  };
-})();
+function applyFilters() {
+  if (!articlesLoaded || !allArticles.length) {
+    // Articles not ready yet — try again shortly
+    setTimeout(applyFilters, 300);
+    return;
+  }
+  var domainFiltered = activeDomain === 'all'
+    ? allArticles
+    : allArticles.filter(function(a) { return (a.domain || 'cybersecurity') === activeDomain; });
+  var filtered = activeCategory === 'All'
+    ? domainFiltered
+    : domainFiltered.filter(function(a) { return a.category === activeCategory; });
+  renderArticles(filtered);
+}
+
+// Also hook category filter buttons to use our render function
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.filter-btn[data-category]');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn[data-category]').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  activeCategory = btn.dataset.category || 'All';
+  applyFilters();
+});
 </script>
 
 <script>
