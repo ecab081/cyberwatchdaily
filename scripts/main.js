@@ -234,6 +234,12 @@ function init() {
   const newsletterBtn = document.getElementById('newsletter-btn');
   if (newsletterBtn) newsletterBtn.addEventListener('click', subscribe);
 
+  // Wire up domain filter buttons via event listeners (not onclick attributes)
+  ['all', 'cybersecurity', 'crypto', 'quantum'].forEach(domain => {
+    const btn = document.getElementById('domain-' + domain);
+    if (btn) btn.addEventListener('click', () => setDomain(domain));
+  });
+
   loadCachedOrFetch();
 }
 
