@@ -10,7 +10,11 @@ const TOPICS = [
   'Write a thorough comparison and review of the top security tools people should use to stay safe online, with pros, cons, and expert recommendations',
   'Write a comprehensive beginner-to-intermediate guide on an essential cybersecurity concept everyone must understand to stay safe in 2026',
   'Write a detailed guide on how to protect yourself and your organization from a specific high-impact type of cyber attack, with step-by-step instructions',
-  'Write an expert analysis of a major recent data breach — what happened, why it matters, what data was exposed, and exactly what affected users should do'
+  'Write an expert analysis of a major recent data breach — what happened, why it matters, what data was exposed, and exactly what affected users should do',
+  'Write a comprehensive guide on quantum computing and its impact on cybersecurity — what the quantum threat means for encryption, which algorithms are at risk, and how organizations should prepare for the post-quantum era in 2026',
+  'Write an in-depth analysis of cryptocurrency and Web3 security threats — including wallet security, smart contract vulnerabilities, DeFi exploits, and how crypto users can protect their digital assets',
+  'Write a detailed expert guide on AI-powered cyber attacks in 2026 — how threat actors are using artificial intelligence to launch more sophisticated attacks, and what defenders can do to stay ahead',
+  'Write a thorough guide on supply chain attacks and third-party security risks — real-world examples, why they are so dangerous, and step-by-step strategies to protect your organization'
 ];
 
 function getTopic() {
