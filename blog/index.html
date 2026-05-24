@@ -185,11 +185,13 @@
     <div class="sidebar-card">
       <div class="sidebar-title">Categories</div>
       <div style="display:flex;flex-direction:column;gap:6px;" id="categories-list">
-        <a href="#" style="font-family:var(--mono);font-size:12px;color:var(--text2);">How-To Guides</a>
-        <a href="#" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Threat Analysis</a>
-        <a href="#" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Tool Reviews</a>
-        <a href="#" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Beginner Guides</a>
-        <a href="#" style="font-family:var(--mono);font-size:12px;color:var(--text2);">News Explainers</a>
+        <a href="#" onclick="filterCat(event,'all')" data-cat="all" style="font-family:var(--mono);font-size:12px;color:var(--green);">All Posts</a>
+        <a href="#" onclick="filterCat(event,'How-To Guide')" data-cat="How-To Guide" style="font-family:var(--mono);font-size:12px;color:var(--text2);">How-To Guides</a>
+        <a href="#" onclick="filterCat(event,'Threat Analysis')" data-cat="Threat Analysis" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Threat Analysis</a>
+        <a href="#" onclick="filterCat(event,'Tool Review')" data-cat="Tool Review" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Tool Reviews</a>
+        <a href="#" onclick="filterCat(event,'Beginner Guide')" data-cat="Beginner Guide" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Beginner Guides</a>
+        <a href="#" onclick="filterCat(event,'News Explainer')" data-cat="News Explainer" style="font-family:var(--mono);font-size:12px;color:var(--text2);">News Explainers</a>
+        <a href="#" onclick="filterCat(event,'Security Deep Dive')" data-cat="Security Deep Dive" style="font-family:var(--mono);font-size:12px;color:var(--text2);">Security Deep Dives</a>
       </div>
     </div>
   </aside>
@@ -208,5 +210,36 @@
   </div>
 </footer>
 
+
+<script>
+function filterCat(e, cat) {
+  e.preventDefault();
+  // Update active link styling
+  document.querySelectorAll('#categories-list a').forEach(function(a) {
+    a.style.color = 'var(--text2)';
+    a.style.fontWeight = 'normal';
+  });
+  e.target.style.color = 'var(--green)';
+  e.target.style.fontWeight = '600';
+
+  // Filter post cards
+  var cards = document.querySelectorAll('.post-card');
+  var shown = 0;
+  cards.forEach(function(card) {
+    var catEl = card.querySelector('.post-category');
+    var cardCat = catEl ? catEl.textContent.trim() : '';
+    if (cat === 'all' || cardCat === cat) {
+      card.style.display = '';
+      shown++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Show/hide empty state
+  var empty = document.getElementById('no-posts');
+  if (empty) empty.style.display = shown === 0 ? 'block' : 'none';
+}
+</script>
 </body>
 </html>
