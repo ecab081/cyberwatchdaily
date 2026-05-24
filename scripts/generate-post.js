@@ -44,13 +44,16 @@ async function generatePost() {
 Search the web for the latest relevant information, recent examples, current statistics, and up-to-date advice.
 
 Write a comprehensive, authoritative article that would be useful to both beginners and intermediate users. The article must:
-- Be 1500-2000 words of substantive content (not counting HTML tags)
-- Include at least 6 distinct sections with h2 headings
-- Include real-world examples, specific statistics, and concrete actionable steps
+- Be 2500-3500 words of substantive content (not counting HTML tags) — longer articles rank better and satisfy Google AdSense content requirements
+- Include at least 8 distinct sections with h2 headings
+- Include h3 subheadings within sections for better structure and scannability
+- Include real-world examples, named incidents, specific statistics, and concrete actionable steps
 - Be written in a clear, expert but accessible voice
 - Include a "Key Takeaways" or "What You Need To Know" summary section
 - Include a practical step-by-step section where relevant
-- Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902) or Bitwarden (https://bitwarden.com) where genuinely relevant to the topic
+- Include a Frequently Asked Questions (FAQ) section with 4-5 questions and detailed answers
+- Include a strong conclusion that summarizes the key points and calls to action
+- Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356), or Bitwarden (https://bitwarden.com) where genuinely relevant to the topic
 - Be deeply useful — something a cybersecurity professional would be proud to share
 
 Return ONLY a valid JSON object with no markdown, no code fences, no extra text before or after:
