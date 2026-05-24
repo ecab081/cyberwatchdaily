@@ -158,6 +158,7 @@ function buildPostHTML(post, slug, dateStr) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
 <style>
 :root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -240,6 +241,9 @@ The tools below are independently selected by our team based on security audits,
 </article>
 
 <aside class="sidebar">
+<div class="sc" style="padding:0;overflow:hidden;">
+<div data-ea-publisher="cyberwatchdaily" data-ea-type="image" style="width:100%;"></div>
+</div>
 <div class="sc"><div class="st">Daily Newsletter</div>
 <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
 <button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
