@@ -248,6 +248,8 @@ The tools below are independently selected by our team based on security audits,
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
 </div>
 <div class="sc"><div class="st">More Articles</div>
 <a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">View all articles →</a>
