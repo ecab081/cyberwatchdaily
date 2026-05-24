@@ -147,9 +147,13 @@ function buildPostHTML(post, slug, dateStr) {
 <meta property="og:url" content="https://cyberwatchdaily.net/blog/${slug}.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.svg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${post.title}">
 <meta name="twitter:description" content="${post.excerpt}">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.svg">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <script type="application/ld+json">${schemaMarkup}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
