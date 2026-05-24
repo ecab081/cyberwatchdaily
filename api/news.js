@@ -1,5 +1,5 @@
 const SOURCES = [
-  // Cybersecurity sources
+  // ── Cybersecurity News Sites ──────────────────────────────────────
   {
     name: 'The Hacker News',
     url: 'https://thehackernews.com/',
@@ -19,18 +19,45 @@ const SOURCES = [
     isArticle: (url) => /^https:\/\/krebsonsecurity\.com\/\d{4}\/\d{2}\/.+\/$/.test(url),
   },
   {
-    name: 'Hackread',
-    url: 'https://hackread.com/latest/',
-    domain: 'cybersecurity',
-    isArticle: (url) => /^https:\/\/hackread\.com\/(?!latest\/$|about-us\/$|our-team\/$|contact-us\/$|our-mission\/$|privacy-policy\/$|tag\/|category\/|author\/)[^?#]+\/$/i.test(url),
-  },
-  {
     name: 'Dark Reading',
     url: 'https://www.darkreading.com/latest-news',
     domain: 'cybersecurity',
     isArticle: (url) => /^https:\/\/www\.darkreading\.com\/[a-z0-9-]+\/[a-z0-9-]+(?:\?.*)?$/i.test(url),
   },
-  // Crypto security sources
+  {
+    name: 'Hackread',
+    url: 'https://hackread.com/latest/',
+    domain: 'cybersecurity',
+    isArticle: (url) => /^https:\/\/hackread\.com\/(?!latest\/$|about-us\/$|our-team\/$|contact-us\/$|privacy-policy\/$|tag\/|category\/|author\/)[^?#]+\/$/i.test(url),
+  },
+
+  // ── Cybersecurity Influencer Blogs ────────────────────────────────
+  {
+    name: 'Troy Hunt',
+    url: 'https://www.troyhunt.com/',
+    domain: 'cybersecurity',
+    isArticle: (url) => /^https:\/\/www\.troyhunt\.com\/[a-z0-9-]+\/?(?:\?.*)?$/i.test(url) && !/troyhunt\.com\/$/.test(url),
+  },
+  {
+    name: 'Bruce Schneier',
+    url: 'https://www.schneier.com/blog/archives/',
+    domain: 'cybersecurity',
+    isArticle: (url) => /^https:\/\/www\.schneier\.com\/blog\/archives\/\d{4}\/\d{2}\/.+\.html(?:\?.*)?$/.test(url),
+  },
+  {
+    name: 'Graham Cluley',
+    url: 'https://grahamcluley.com/',
+    domain: 'cybersecurity',
+    isArticle: (url) => /^https:\/\/grahamcluley\.com\/[a-z0-9-]+\/?(?:\?.*)?$/i.test(url) && !/grahamcluley\.com\/$/.test(url),
+  },
+  {
+    name: 'Daniel Miessler',
+    url: 'https://danielmiessler.com/',
+    domain: 'cybersecurity',
+    isArticle: (url) => /^https:\/\/danielmiessler\.com\/blog\/.+(?:\?.*)?$/i.test(url),
+  },
+
+  // ── Crypto Security Sources ───────────────────────────────────────
   {
     name: 'CoinTelegraph',
     url: 'https://cointelegraph.com/tags/security',
@@ -48,6 +75,98 @@ const SOURCES = [
     url: 'https://decrypt.co/news',
     domain: 'crypto',
     isArticle: (url) => /^https:\/\/decrypt\.co\/\d+\/[a-z0-9-]+(?:\?.*)?$/.test(url),
+  },
+  {
+    name: 'CoinDesk',
+    url: 'https://www.coindesk.com/tag/security/',
+    domain: 'crypto',
+    isArticle: (url) => /^https:\/\/www\.coindesk\.com\/[a-z]+\/\d{4}\/\d{2}\/\d{2}\/.+(?:\?.*)?$/i.test(url),
+  },
+  {
+    name: 'Lookonchain',
+    url: 'https://lookonchain.com/',
+    domain: 'crypto',
+    isArticle: (url) => /^https:\/\/lookonchain\.com\/post\/.+(?:\?.*)?$/i.test(url),
+  },
+
+  // ── Quantum Computing Sources ─────────────────────────────────────
+  {
+    name: 'The Quantum Insider',
+    url: 'https://thequantuminsider.com/',
+    domain: 'quantum',
+    isArticle: (url) => /^https:\/\/thequantuminsider\.com\/\d{4}\/\d{2}\/\d{2}\/.+\/?(?:\?.*)?$/i.test(url),
+  },
+  {
+    name: 'Scott Aaronson (Shtetl-Optimized)',
+    url: 'https://scottaaronson.blog/',
+    domain: 'quantum',
+    isArticle: (url) => /^https:\/\/scottaaronson\.blog\/\?p=\d+(?:&.*)?$/i.test(url),
+  },
+  {
+    name: 'IBM Research Blog',
+    url: 'https://research.ibm.com/blog',
+    domain: 'quantum',
+    isArticle: (url) => /^https:\/\/research\.ibm\.com\/blog\/.+(?:\?.*)?$/i.test(url),
+  },
+  {
+    name: 'Quantum Computing Report',
+    url: 'https://quantumcomputingreport.com/',
+    domain: 'quantum',
+    isArticle: (url) => /^https:\/\/quantumcomputingreport\.com\/\d{4}\/\d{2}\/\d{2}\/.+\/?(?:\?.*)?$/i.test(url),
+  },
+];
+
+// ── Google News RSS feeds for X/social influencers ─────────────────
+// These surface news articles mentioning these accounts/experts
+// without needing X API access
+const RSS_SOURCES = [
+  // Cybersecurity X influencers
+  {
+    name: 'SwiftOnSecurity',
+    url: 'https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity&hl=en-US&gl=US&ceid=US:en',
+    domain: 'cybersecurity',
+  },
+  {
+    name: 'Mikko Hyppönen',
+    url: 'https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat&hl=en-US&gl=US&ceid=US:en',
+    domain: 'cybersecurity',
+  },
+  {
+    name: 'CISA Alerts',
+    url: 'https://www.cisa.gov/cybersecurity-advisories/all.xml',
+    domain: 'cybersecurity',
+  },
+  // Crypto X influencers
+  {
+    name: 'Andreas Antonopoulos',
+    url: 'https://news.google.com/rss/search?q=%22Andreas+Antonopoulos%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en',
+    domain: 'crypto',
+  },
+  {
+    name: 'Pomp (Anthony Pompliano)',
+    url: 'https://news.google.com/rss/search?q=%22Pompliano%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en',
+    domain: 'crypto',
+  },
+  {
+    name: 'CoinDesk RSS',
+    url: 'https://www.coindesk.com/arc/outboundfeeds/rss/',
+    domain: 'crypto',
+  },
+  // Quantum X influencers
+  {
+    name: 'Scott Aaronson News',
+    url: 'https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'IBM Quantum News',
+    url: 'https://news.google.com/rss/search?q=%22IBM+Quantum%22+OR+%22Google+Quantum%22+computing&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'Quantum Threat',
+    url: 'https://news.google.com/rss/search?q=quantum+computing+cryptography+security+threat&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
   },
 ];
 
@@ -118,6 +237,46 @@ function extractAnchors(html, baseUrl, source) {
   return results;
 }
 
+// ── RSS Parser ────────────────────────────────────────────────────────
+function parseRSS(xml, sourceName, sourceDomain) {
+  const results = [];
+  const seen = new Set();
+  const itemRegex = /<item[\s\S]*?<\/item>/gi;
+  const items = xml.match(itemRegex) || [];
+  for (const item of items.slice(0, 6)) {
+    // Extract title
+    const titleMatch = item.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
+    const title = stripTags(titleMatch?.[1] || '').trim();
+    // Extract link — try <link> then <guid>
+    const linkMatch = item.match(/<link[^>]*>([\s\S]*?)<\/link>/i) ||
+                      item.match(/<guid[^>]*>(https?:\/\/[^\s<]+)<\/guid>/i);
+    let url = stripTags(linkMatch?.[1] || '').trim();
+    // Google News wraps URLs — decode if needed
+    if (url.includes('news.google.com')) {
+      const realUrl = item.match(/url=(https?[^&"<\s]+)/i)?.[1];
+      if (realUrl) url = decodeURIComponent(realUrl);
+    }
+    // Extract description
+    const descMatch = item.match(/<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
+    const summary = stripTags(descMatch?.[1] || '').slice(0, 240).trim();
+    if (!title || !url || !isGoodTitle(title)) continue;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    results.push({ title, url, summary, source: sourceName, sourceDomain });
+  }
+  return results;
+}
+
+async function getRSSArticles(source) {
+  try {
+    const xml = await fetchText(source.url);
+    return parseRSS(xml, source.name, source.domain);
+  } catch (error) {
+    console.error(`RSS fetch failed for ${source.name}:`, error.message);
+    return [];
+  }
+}
+
 function extractMeta(html, names) {
   for (const name of names) {
     const regex = new RegExp(`<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']+)["'][^>]*>`, 'i');
@@ -136,7 +295,7 @@ function extractArticleData(html, fallbackTitle) {
     extractMeta(html, ['description', 'og:description', 'twitter:description']) ||
     fallbackTitle;
   return {
-    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading|CoinTelegraph|The Block|Decrypt).*$/i, '').trim(),
+    title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading|CoinTelegraph|The Block|Decrypt|CoinDesk|Troy Hunt|Bruce Schneier|Graham Cluley).*$/i, '').trim(),
     summary: summary.trim(),
   };
 }
@@ -147,6 +306,7 @@ function classifyDomain(title, summary, sourceDomain) {
     'crystals-kyber', 'crystals-dilithium', 'lattice cryptograph', 'quantum computer',
     'quantum threat', 'quantum resistant', 'harvest now decrypt later', 'crqc'];
   if (quantumTerms.some(t => text.includes(t))) return 'quantum';
+  if (sourceDomain === 'quantum') return 'quantum';
   if (sourceDomain === 'crypto') return 'crypto';
   const cryptoTerms = ['bitcoin', 'ethereum', 'cryptocurrency', 'crypto exchange', 'defi ', 'nft hack',
     'blockchain hack', 'crypto wallet', 'crypto theft', 'crypto scam', 'rug pull',
@@ -173,6 +333,8 @@ function classifyArticle(title, summary) {
     category = 'Malware'; threatLevel = 4;
   } else if (hasAny('regulation', 'sec ', 'cftc', 'law enforcement', 'arrested', 'charged', 'indicted')) {
     category = 'Regulation'; threatLevel = 2;
+  } else if (hasAny('quantum', 'post-quantum', 'pqc')) {
+    category = 'Quantum'; threatLevel = 3;
   }
   if (hasAny('critical', 'mass exploitation', 'under active exploitation', 'millions', 'billions')) {
     threatLevel = Math.max(threatLevel, 4);
@@ -196,10 +358,14 @@ async function getSourceArticles(source) {
 }
 
 async function enrichArticle(article) {
+  // RSS articles already have summaries — skip fetching the full page
+  if (article.summary && article.summary.length > 60) {
+    const domain = classifyDomain(article.title, article.summary, article.sourceDomain);
+    return { ...article, domain, ...classifyArticle(article.title, article.summary) };
+  }
   try {
     const html = await fetchText(article.url);
     const data = extractArticleData(html, article.title);
-    // Avoid summary that duplicates the title
     let rawSummary = data.summary.trim();
     if (!rawSummary || rawSummary === data.title || rawSummary.toLowerCase() === data.title.toLowerCase() || rawSummary.length < 30) {
       rawSummary = '';
@@ -212,7 +378,7 @@ async function enrichArticle(article) {
     const domain = classifyDomain(article.title, article.title, article.sourceDomain);
     return {
       title: article.title,
-      summary: '',
+      summary: article.summary || '',
       url: article.url, source: article.source, domain,
       ...classifyArticle(article.title, article.title),
     };
@@ -233,12 +399,23 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
   try {
-    const rawGroups = await Promise.all(SOURCES.map(getSourceArticles));
-    const rawArticles = uniqueByUrl(rawGroups.flat()).slice(0, 20);
-    const enriched = await Promise.all(rawArticles.map(enrichArticle));
+    // Fetch HTML sources and RSS sources in parallel
+    const [htmlGroups, rssGroups] = await Promise.all([
+      Promise.all(SOURCES.map(getSourceArticles)),
+      Promise.all(RSS_SOURCES.map(getRSSArticles)),
+    ]);
+
+    const allRaw = uniqueByUrl([
+      ...htmlGroups.flat(),
+      ...rssGroups.flat(),
+    ]).slice(0, 30);
+
+    const enriched = await Promise.all(allRaw.map(enrichArticle));
+
     const articles = uniqueByUrl(enriched)
-      .filter((article) => article.title && article.summary && article.url)
-      .slice(0, 20);
+      .filter((article) => article.title && article.url)
+      .slice(0, 25);
+
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
   } catch (error) {
