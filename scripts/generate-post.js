@@ -217,7 +217,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
 
 <header><div class="header-inner">
 <a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
-<nav><a href="/">News</a><a href="/blog/">Blog</a><a href="/tools.html">Tools</a><a href="/best-vpn-2026.html">VPN Guide</a><a href="/#newsletter">Newsletter</a><a href="/contact.html">Contact</a></nav>
+<nav><a href="/">News</a><a href="/blog/">Blog</a><a href="/tools.html">Tools</a><a href="/best-vpn-2026.html">VPN Guide</a><a href="/podcast.html">Podcast</a><a href="/#newsletter">Newsletter</a><a href="/contact.html">Contact</a></nav>
 </div></header>
 
 <div class="layout">
