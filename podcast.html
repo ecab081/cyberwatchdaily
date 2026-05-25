@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberWatch Weekly Podcast</title>
+<meta name="description" content="Dennis Miller and Sara Cunningham break down the week's top cybersecurity, crypto, and quantum news every Monday.">
+<link rel="canonical" href="https://cyberwatchdaily.net/podcast.html">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.svg">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7340460-0030-40c3-8d06-93cad768271a1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--surface:#161e26;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover,nav a.active{color:var(--green);text-decoration:none;}
+.wrap{max-width:860px;margin:0 auto;padding:2rem;}
+.hero{padding:2.5rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem;}
+.label{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:3px;color:var(--text3);margin-bottom:1rem;}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+h2{font-family:var(--mono);font-size:17px;font-weight:500;margin:2rem 0 1.25rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);}
+.tagline{color:var(--text2);font-size:15px;line-height:1.8;max-width:640px;margin-bottom:1.5rem;}
+.hosts{display:flex;gap:1.25rem;margin-top:1.5rem;flex-wrap:wrap;}
+.host-card{background:var(--surface);border:1px solid var(--border);padding:1.25rem;flex:1;min-width:210px;}
+.host-name{font-family:var(--mono);font-size:14px;font-weight:600;margin-bottom:0.4rem;}
+.host-desc{color:var(--text2);font-size:13px;line-height:1.6;}
+.launch-box{background:var(--bg2);border:1px solid var(--border2);padding:2.5rem;text-align:center;margin:2rem 0;}
+.launch-box h3{font-family:var(--mono);font-size:17px;margin-bottom:1rem;}
+.launch-box p{color:var(--text2);font-size:14px;line-height:1.8;margin-bottom:1.5rem;max-width:540px;margin-left:auto;margin-right:auto;}
+.platforms{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;}
+.platform-btn{font-family:var(--mono);font-size:11px;padding:7px 13px;background:var(--surface);border:1px solid var(--border2);color:var(--green);}
+.platform-btn:hover{background:var(--green-dark);text-decoration:none;}
+.sub-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:11px 26px;background:var(--green);color:#000;margin-top:1rem;}
+.sub-btn:hover{background:#fff;text-decoration:none;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1rem;margin-top:1rem;}
+.grid-item{background:var(--surface);border:1px solid var(--border);padding:1rem;}
+.grid-title{font-family:var(--mono);font-size:13px;color:var(--green);margin-bottom:0.4rem;}
+.grid-desc{color:var(--text2);font-size:13px;line-height:1.6;}
+.tools-box{background:var(--surface);border:1px solid var(--border);padding:1.5rem;margin:2rem 0;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){nav{display:none;}.hosts{flex-direction:column;}}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav><a href="/">News</a><a href="/blog/">Blog</a><a href="/tools.html">Tools</a><a href="/best-vpn-2026.html">VPN Guide</a><a href="/podcast.html" class="active">Podcast</a><a href="/#newsletter">Newsletter</a><a href="/contact.html">Contact</a></nav>
+</div></header>
+<div class="wrap">
+<div class="hero">
+  <div class="label">// CyberWatch Weekly</div>
+  <h1>The Cybersecurity Podcast That Doesn't Put You to Sleep</h1>
+  <p class="tagline">Every Monday, Dennis Miller and Sara Cunningham break down the biggest stories in cybersecurity, crypto, and quantum computing. Sharp takes. Real analysis. Zero fluff.</p>
+  <div class="hosts">
+    <div class="host-card"><div class="host-name">🎙️ Dennis Miller</div><div class="host-desc">The cynical veteran with a quip for every zero-day. Sharp, worldly, and done watching bad actors win.</div></div>
+    <div class="host-card"><div class="host-name">🎙️ Sara Cunningham</div><div class="host-desc">The technical sharp-shooter. Makes ransomware and quantum threats understandable. Always right.</div></div>
+  </div>
+</div>
+<div class="launch-box">
+  <h3>🎙️ Launching This Monday</h3>
+  <p>CyberWatch Weekly drops every Monday with the past week's top stories. Subscribe to get notified when Episode 1 goes live.</p>
+  <div class="platforms">
+    <a href="https://cyberwatchdaily.beehiiv.com/subscribe" class="platform-btn">📧 Email Alerts</a>
+    <a href="#" class="platform-btn">🎵 Spotify — Soon</a>
+    <a href="#" class="platform-btn">🍎 Apple Podcasts — Soon</a>
+    <a href="#" class="platform-btn">▶️ YouTube — Soon</a>
+  </div>
+  <a href="https://cyberwatchdaily.beehiiv.com/subscribe" class="sub-btn">Get Notified Free →</a>
+</div>
+<h2>Every Monday You Get</h2>
+<div class="grid">
+  <div class="grid-item"><div class="grid-title">🔒 Cybersecurity</div><div class="grid-desc">Top breaches, zero-days, and ransomware — with context on what they mean for you.</div></div>
+  <div class="grid-item"><div class="grid-title">₿ Crypto &amp; DeFi</div><div class="grid-desc">Exchange hacks, smart contract exploits, and who got drained and how.</div></div>
+  <div class="grid-item"><div class="grid-title">⚛️ Quantum</div><div class="grid-desc">The slow-burning threat to modern encryption — where the timeline actually stands.</div></div>
+  <div class="grid-item"><div class="grid-title">🎯 Action Items</div><div class="grid-desc">Every episode ends with what you should actually do about the week's threats.</div></div>
+</div>
+<div class="tools-box">
+  <div class="st">Tools Mentioned On The Show</div>
+  <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+  <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+  <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy</a></div>
+  <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+</div>
+</div>
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli"><a href="/">Home</a><a href="/blog/">Blog</a><a href="/tools.html">Tools</a><a href="/best-vpn-2026.html">VPN Guide</a><a href="/podcast.html">Podcast</a><a href="/contact.html">Contact</a><a href="/privacy-policy.html">Privacy</a></div>
+<div class="fc">© 2026 CyberWatch Daily</div>
+</div></footer>
+</body></html>
