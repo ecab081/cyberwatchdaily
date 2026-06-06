@@ -152,7 +152,7 @@ const RSS_SOURCES = [
     url: 'https://www.coindesk.com/arc/outboundfeeds/rss/',
     domain: 'crypto',
   },
-  // Quantum X influencers
+  // Quantum X influencers + expanded sources
   {
     name: 'Scott Aaronson News',
     url: 'https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing&hl=en-US&gl=US&ceid=US:en',
@@ -166,6 +166,31 @@ const RSS_SOURCES = [
   {
     name: 'Quantum Threat',
     url: 'https://news.google.com/rss/search?q=quantum+computing+cryptography+security+threat&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'NIST Post-Quantum',
+    url: 'https://news.google.com/rss/search?q=NIST+post-quantum+cryptography&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'Post-Quantum Migration',
+    url: 'https://news.google.com/rss/search?q=%22post-quantum%22+OR+%22PQC%22+cryptography&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'Harvest Now Decrypt Later',
+    url: 'https://news.google.com/rss/search?q=%22harvest+now+decrypt+later%22+OR+%22quantum+threat%22+security&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'Quantum Computing Security 2026',
+    url: 'https://news.google.com/rss/search?q=quantum+computing+encryption+security&hl=en-US&gl=US&ceid=US:en',
+    domain: 'quantum',
+  },
+  {
+    name: 'The Quantum Insider RSS',
+    url: 'https://thequantuminsider.com/feed/',
     domain: 'quantum',
   },
 ];
