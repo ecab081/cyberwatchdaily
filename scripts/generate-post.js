@@ -18,7 +18,20 @@ const TOPICS = [
 ];
 
 function getTopic() {
-  return TOPICS[new Date().getDay() % TOPICS.length];
+  // Count existing blog posts to determine next topic sequentially
+  // This ensures all topics rotate evenly regardless of day of week
+  const blogDir = path.join(__dirname, '..', 'blog');
+  let postCount = 0;
+  try {
+    const files = fs.readdirSync(blogDir);
+    postCount = files.filter(f => f.endsWith('.html') && f !== 'index.html').length;
+  } catch (e) {
+    // fallback to day-based if blog dir not readable
+    postCount = new Date().getDay();
+  }
+  const topicIndex = postCount % TOPICS.length;
+  console.log('Post count:', postCount, '| Topic index:', topicIndex, '| Topic:', TOPICS[topicIndex].substring(0, 60) + '...');
+  return TOPICS[topicIndex];
 }
 
 function slugify(title) {
@@ -375,3 +388,4 @@ async function main() {
 }
 
 main();
+
