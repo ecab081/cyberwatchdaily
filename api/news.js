@@ -437,9 +437,19 @@ export default async function handler(req, res) {
 
     const enriched = await Promise.all(allRaw.map(enrichArticle));
 
-    const articles = uniqueByUrl(enriched)
-      .filter((article) => article.title && article.url)
-      .slice(0, 25);
+    // Ensure domain diversity — reserve slots for quantum and crypto
+    const allFiltered = uniqueByUrl(enriched).filter((article) => article.title && article.url);
+    
+    const cybersec = allFiltered.filter(a => a.domain === 'cybersecurity');
+    const crypto   = allFiltered.filter(a => a.domain === 'crypto');
+    const quantum  = allFiltered.filter(a => a.domain === 'quantum');
+    
+    // Build balanced feed: up to 5 quantum, up to 5 crypto, rest cybersecurity
+    const articles = uniqueByUrl([
+      ...quantum.slice(0, 5),
+      ...crypto.slice(0, 5),
+      ...cybersec.slice(0, 15),
+    ]).slice(0, 25);
 
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
