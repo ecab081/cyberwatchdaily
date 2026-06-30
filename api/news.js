@@ -430,20 +430,23 @@ export default async function handler(req, res) {
       Promise.all(RSS_SOURCES.map(getRSSArticles)),
     ]);
 
+    // Don't truncate before classification — process ALL raw articles so
+    // quantum/crypto RSS articles (which come later in the array) aren't
+    // cut off by an early slice. Cap total raw items higher to be safe.
     const allRaw = uniqueByUrl([
       ...htmlGroups.flat(),
       ...rssGroups.flat(),
-    ]).slice(0, 30);
+    ]).slice(0, 80);
 
     const enriched = await Promise.all(allRaw.map(enrichArticle));
 
     // Ensure domain diversity — reserve slots for quantum and crypto
     const allFiltered = uniqueByUrl(enriched).filter((article) => article.title && article.url);
-    
+
     const cybersec = allFiltered.filter(a => a.domain === 'cybersecurity');
     const crypto   = allFiltered.filter(a => a.domain === 'crypto');
     const quantum  = allFiltered.filter(a => a.domain === 'quantum');
-    
+
     // Build balanced feed: up to 5 quantum, up to 5 crypto, rest cybersecurity
     const articles = uniqueByUrl([
       ...quantum.slice(0, 5),
