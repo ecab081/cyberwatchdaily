@@ -27,17 +27,46 @@ async function fetchNews() {
       }]
     })
   });
+
   const data = await res.json();
   if (data.error) throw new Error('Anthropic error: ' + data.error.message);
-  const text = data.content.filter(function(b) { return b.type === 'text'; }).map(function(b) { return b.text; }).join('');
-  const match = text.match(/\[[\s\S]*\]/);
-  if (!match) throw new Error('Could not parse AI response');
-  return JSON.parse(match[0]);
+
+  // Join all text blocks
+  const raw = data.content
+    .filter(function(b) { return b.type === 'text'; })
+    .map(function(b) { return b.text; })
+    .join('');
+
+  console.log('Raw AI response (first 300 chars):', raw.substring(0, 300));
+
+  // Strip markdown code fences that Claude sometimes adds
+  const cleaned = raw
+    .replace(/```json\s*/g, '')
+    .replace(/```\s*/g, '')
+    .trim();
+
+  // Find the JSON array
+  const match = cleaned.match(/\[[\s\S]*\]/);
+  if (!match) {
+    console.log('Full cleaned response:', cleaned.substring(0, 800));
+    throw new Error('Could not parse AI response — no JSON array found');
+  }
+
+  // Trim to the last closing bracket in case trailing text was captured
+  const raw_json = match[0];
+  const lastBracket = raw_json.lastIndexOf(']');
+  const jsonStr = raw_json.substring(0, lastBracket + 1);
+
+  try {
+    return JSON.parse(jsonStr);
+  } catch (e) {
+    console.log('JSON parse failed. Attempted to parse:', jsonStr.substring(0, 500));
+    throw new Error('Could not parse AI response: ' + e.message);
+  }
 }
 
 function getLatestBlogPost() {
   try {
-    // Use process.cwd() - always points to repo root in GitHub Actions
     var blogDir = path.join(process.cwd(), 'blog');
     console.log('Looking for blog posts in: ' + blogDir);
 
@@ -52,39 +81,36 @@ function getLatestBlogPost() {
       .sort(function(a, b) { return b.time - a.time; });
 
     console.log('Found ' + files.length + ' blog post files');
-
     if (files.length === 0) return null;
 
     var latestFile = files[0].file;
     var html = fs.readFileSync(path.join(blogDir, latestFile), 'utf8');
 
-    // Try multiple title patterns
+    // Title
     var titleMatch = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
     var title = titleMatch ? titleMatch[1].replace(/<[^>]+>/g, '').trim() : null;
-    // Fallback: og:title meta tag
     if (!title) {
-      var ogTitle = html.match(/property="og:title"[^>]*content="([^"]+)"/);
-      if (!ogTitle) ogTitle = html.match(/content="([^"]+)"[^>]*property="og:title"/);
+      var ogTitle = html.match(/property="og:title"[^>]*content="([^"]+)"/) ||
+                   html.match(/content="([^"]+)"[^>]*property="og:title"/);
       if (ogTitle) title = ogTitle[1].replace(' - CyberWatch Daily', '').replace(' — CyberWatch Daily', '').trim();
     }
 
-    // Try multiple excerpt patterns
-    var excerptMatch = html.match(/class="article-excerpt"[^>]*>([\s\S]*?)<\/div>/);
-    if (!excerptMatch) excerptMatch = html.match(/class="excerpt"[^>]*>([\s\S]*?)<\/div>/);
+    // Excerpt
+    var excerptMatch = html.match(/class="article-excerpt"[^>]*>([\s\S]*?)<\/div>/) ||
+                       html.match(/class="excerpt"[^>]*>([\s\S]*?)<\/div>/);
     var excerpt = excerptMatch ? excerptMatch[1].replace(/<[^>]+>/g, '').trim().substring(0, 180) + '...' : null;
-    // Fallback: og:description or meta description
     if (!excerpt) {
-      var ogDesc = html.match(/property="og:description"[^>]*content="([^"]+)"/);
-      if (!ogDesc) ogDesc = html.match(/content="([^"]+)"[^>]*property="og:description"/);
-      if (!ogDesc) ogDesc = html.match(/name="description"[^>]*content="([^"]+)"/);
-      if (!ogDesc) ogDesc = html.match(/content="([^"]+)"[^>]*name="description"/);
+      var ogDesc = html.match(/property="og:description"[^>]*content="([^"]+)"/) ||
+                   html.match(/content="([^"]+)"[^>]*property="og:description"/) ||
+                   html.match(/name="description"[^>]*content="([^"]+)"/) ||
+                   html.match(/content="([^"]+)"[^>]*name="description"/);
       if (ogDesc) excerpt = ogDesc[1].substring(0, 180) + '...';
     }
 
-    // Try multiple category patterns
-    var catMatch = html.match(/class="cat"[^>]*>([\s\S]*?)<\/span>/);
-    if (!catMatch) catMatch = html.match(/class="category-badge"[^>]*>([\s\S]*?)<\/span>/);
-    if (!catMatch) catMatch = html.match(/class="post-category"[^>]*>([\s\S]*?)<\/span>/);
+    // Category
+    var catMatch = html.match(/class="cat"[^>]*>([\s\S]*?)<\/span>/) ||
+                   html.match(/class="category-badge"[^>]*>([\s\S]*?)<\/span>/) ||
+                   html.match(/class="post-category"[^>]*>([\s\S]*?)<\/span>/);
     var category = catMatch ? catMatch[1].trim() : 'Article';
 
     var url = 'https://cyberwatchdaily.net/blog/' + latestFile;
