@@ -4,33 +4,47 @@ const path = require('path');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
+// Topics weighted heavily toward phishing, ransomware, and threat actors
+// based on Google Search Console data showing these drive the most impressions
 const TOPICS = [
-  'Write a comprehensive, expert-level how-to guide for everyday users to dramatically improve their online security and privacy in 2026',
-  'Write an in-depth threat analysis of a major current cybersecurity attack technique, including how it works, real-world examples, and detailed defense strategies',
-  'Write a thorough comparison and review of the top security tools people should use to stay safe online, with pros, cons, and expert recommendations',
-  'Write a comprehensive beginner-to-intermediate guide on an essential cybersecurity concept everyone must understand to stay safe in 2026',
-  'Write a detailed guide on how to protect yourself and your organization from a specific high-impact type of cyber attack, with step-by-step instructions',
-  'Write an expert analysis of a major recent data breach — what happened, why it matters, what data was exposed, and exactly what affected users should do',
-  'Write a comprehensive guide on quantum computing and its impact on cybersecurity — what the quantum threat means for encryption, which algorithms are at risk, and how organizations should prepare for the post-quantum era in 2026',
-  'Write an in-depth analysis of cryptocurrency and Web3 security threats — including wallet security, smart contract vulnerabilities, DeFi exploits, and how crypto users can protect their digital assets',
-  'Write a detailed expert guide on AI-powered cyber attacks in 2026 — how threat actors are using artificial intelligence to launch more sophisticated attacks, and what defenders can do to stay ahead',
-  'Write a thorough guide on supply chain attacks and third-party security risks — real-world examples, why they are so dangerous, and step-by-step strategies to protect your organization'
+  // ── PHISHING (3 out of 12) ─────────────────────────────────────────────────
+  'Write a comprehensive, expert-level guide on phishing attacks in 2026 — the latest techniques attackers are using, real-world examples from this year, and a step-by-step defense playbook for individuals and organizations',
+  'Write an in-depth analysis of spear phishing and whaling attacks in 2026 — how cybercriminals target executives and high-value individuals, real named incidents, and exactly how to defend against highly targeted phishing campaigns',
+  'Write a detailed expert guide on how to recognize and defend against phishing attacks — including email phishing, SMS smishing, voice vishing, and QR code quishing, with concrete examples and actionable defense steps for 2026',
+
+  // ── RANSOMWARE (3 out of 12) ───────────────────────────────────────────────
+  'Write a comprehensive expert analysis of ransomware attacks in 2026 — the most active ransomware groups, their tactics techniques and procedures, real-world attack case studies, and a detailed incident response and prevention guide',
+  'Write an in-depth guide on how to protect your organization from ransomware in 2026 — covering backup strategies, network segmentation, endpoint detection, employee training, and what to do if you are hit with ransomware',
+  'Write a detailed threat intelligence report on the top ransomware groups operating in 2026 — including LockBit, ALPHV/BlackCat, Clop, and emerging groups, their attack patterns, victim industries, ransom demands, and how to defend against each',
+
+  // ── THREAT ACTORS (3 out of 12) ────────────────────────────────────────────
+  'Write a comprehensive threat intelligence analysis of the most dangerous nation-state cyber threat actors in 2026 — including APT groups from Russia, China, North Korea, and Iran, their targets, techniques, and what organizations can do to defend against state-sponsored attacks',
+  'Write an expert deep-dive on cybercriminal threat actor groups in 2026 — who the most prolific groups are, how they operate, what industries they target, how they monetize attacks, and actionable threat intelligence for defenders',
+  'Write a detailed analysis of how threat actors are evolving their tactics in 2026 — including AI-powered attacks, living-off-the-land techniques, supply chain compromises, and zero-day exploitation, with real named threat actors and defense recommendations',
+
+  // ── QUANTUM COMPUTING (1 out of 12) ────────────────────────────────────────
+  'Write a comprehensive guide on quantum computing and its impact on cybersecurity in 2026 — what the quantum threat means for encryption, which algorithms are at risk, the latest post-quantum cryptography standards from NIST, and how organizations should prepare now',
+
+  // ── CRYPTO & WEB3 SECURITY (1 out of 12) ───────────────────────────────────
+  'Write an in-depth analysis of cryptocurrency and Web3 security threats in 2026 — including the latest wallet hacks, smart contract vulnerabilities, DeFi exploits, exchange breaches, and how crypto users can protect their digital assets',
+
+  // ── AI-POWERED ATTACKS (1 out of 12) ───────────────────────────────────────
+  'Write a detailed expert guide on AI-powered cyber attacks in 2026 — how threat actors are using artificial intelligence to launch more sophisticated phishing, deepfake fraud, and automated attacks, and what defenders can do to stay ahead',
 ];
 
+// Weighted rotation: cycles through all 10 topics sequentially
+// Result: 40% phishing, 30% ransomware, 30% threat actors
 function getTopic() {
-  // Count existing blog posts to determine next topic sequentially
-  // This ensures all topics rotate evenly regardless of day of week
   const blogDir = path.join(__dirname, '..', 'blog');
   let postCount = 0;
   try {
     const files = fs.readdirSync(blogDir);
     postCount = files.filter(f => f.endsWith('.html') && f !== 'index.html').length;
   } catch (e) {
-    // fallback to day-based if blog dir not readable
     postCount = new Date().getDay();
   }
   const topicIndex = postCount % TOPICS.length;
-  console.log('Post count:', postCount, '| Topic index:', topicIndex, '| Topic:', TOPICS[topicIndex].substring(0, 60) + '...');
+  console.log('Post count:', postCount, '| Topic index:', topicIndex, '| Topic:', TOPICS[topicIndex].substring(0, 80) + '...');
   return TOPICS[topicIndex];
 }
 
@@ -54,7 +68,7 @@ async function generatePost() {
 
   const prompt = `${topic}
 
-Search the web for the latest relevant information, recent examples, current statistics, and up-to-date advice.
+Search the web for the latest relevant information, recent examples from 2026, current statistics, named threat actors, and up-to-date advice.
 
 Write a comprehensive, authoritative article that would be useful to both beginners and intermediate users. The article must:
 - Be 2500-3500 words of substantive content (not counting HTML tags) — longer articles rank better and satisfy Google AdSense content requirements
@@ -68,10 +82,11 @@ Write a comprehensive, authoritative article that would be useful to both beginn
 - Include a strong conclusion that summarizes the key points and calls to action
 - Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356), or Bitwarden (https://bitwarden.com) where genuinely relevant to the topic
 - Be deeply useful — something a cybersecurity professional would be proud to share
+- Include the year 2026 naturally in headings and content where relevant for SEO
 
 Return ONLY a valid JSON object with no markdown, no code fences, no extra text before or after:
 {
-  "title": "SEO-optimized title under 65 characters that includes the current year or a power word",
+  "title": "SEO-optimized title under 65 characters that includes 2026 or a power word",
   "category": "How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer|Security Deep Dive",
   "excerpt": "3-4 sentence compelling summary that explains exactly what the reader will learn and why it matters to them",
   "content": "Full HTML article using h2, h3, p, ul, ol, li, strong, em, blockquote tags. Minimum 1500 words of actual content. Rich with specific details, statistics, named examples, and actionable advice.",
@@ -101,15 +116,33 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text 
   const data = await res.json();
   if (data.error) throw new Error('API error: ' + data.error.message);
 
-  const text = data.content
+  // Join all text blocks and strip any markdown code fences
+  const raw = data.content
     .filter(b => b.type === 'text')
     .map(b => b.text)
     .join('');
 
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) throw new Error('Could not parse JSON response');
+  const cleaned = raw
+    .replace(/```json\s*/g, '')
+    .replace(/```\s*/g, '')
+    .trim();
 
-  const post = JSON.parse(match[0]);
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (!match) {
+    console.log('Raw response (first 500 chars):', raw.substring(0, 500));
+    throw new Error('Could not parse JSON response');
+  }
+
+  // Trim to last } in case trailing text was captured
+  const jsonStr = match[0].substring(0, match[0].lastIndexOf('}') + 1);
+
+  let post;
+  try {
+    post = JSON.parse(jsonStr);
+  } catch(e) {
+    console.log('JSON parse failed:', jsonStr.substring(0, 300));
+    throw new Error('Could not parse JSON response: ' + e.message);
+  }
 
   // Validate minimum content length
   const wordCount = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
@@ -388,4 +421,3 @@ async function main() {
 }
 
 main();
-
