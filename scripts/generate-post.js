@@ -4,8 +4,11 @@ const path = require('path');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
+const AUTHOR_NAME = 'E. Cab';
+const AUTHOR_TITLE = 'Cybersecurity Analyst';
+const AUTHOR_URL = 'https://cyberwatchdaily.net/about.html';
+
 // Topics weighted heavily toward phishing, ransomware, and threat actors
-// based on Google Search Console data showing these drive the most impressions
 const TOPICS = [
   // ── PHISHING (3 out of 12) ─────────────────────────────────────────────────
   'Write a comprehensive, expert-level guide on phishing attacks in 2026 — the latest techniques attackers are using, real-world examples from this year, and a step-by-step defense playbook for individuals and organizations',
@@ -32,8 +35,6 @@ const TOPICS = [
   'Write a detailed expert guide on AI-powered cyber attacks in 2026 — how threat actors are using artificial intelligence to launch more sophisticated phishing, deepfake fraud, and automated attacks, and what defenders can do to stay ahead',
 ];
 
-// Weighted rotation: cycles through all 10 topics sequentially
-// Result: 40% phishing, 30% ransomware, 30% threat actors
 function getTopic() {
   const blogDir = path.join(__dirname, '..', 'blog');
   let postCount = 0;
@@ -71,26 +72,27 @@ async function generatePost() {
 Search the web for the latest relevant information, recent examples from 2026, current statistics, named threat actors, and up-to-date advice.
 
 Write a comprehensive, authoritative article that would be useful to both beginners and intermediate users. The article must:
-- Be 2500-3500 words of substantive content (not counting HTML tags) — longer articles rank better and satisfy Google AdSense content requirements
+- Be 2500-3500 words of substantive content (not counting HTML tags)
 - Include at least 8 distinct sections with h2 headings
-- Include h3 subheadings within sections for better structure and scannability
+- Include h3 subheadings within sections for better structure
 - Include real-world examples, named incidents, specific statistics, and concrete actionable steps
 - Be written in a clear, expert but accessible voice
-- Include a "Key Takeaways" or "What You Need To Know" summary section
+- Include a "Key Takeaways" summary section
 - Include a practical step-by-step section where relevant
 - Include a Frequently Asked Questions (FAQ) section with 4-5 questions and detailed answers
-- Include a strong conclusion that summarizes the key points and calls to action
-- Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356), or Bitwarden (https://bitwarden.com) where genuinely relevant to the topic
+- Include a strong conclusion
+- Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356), or Bitwarden (https://bitwarden.com) where genuinely relevant
 - Be deeply useful — something a cybersecurity professional would be proud to share
 - Include the year 2026 naturally in headings and content where relevant for SEO
+- Do NOT repeat any paragraphs or sentences verbatim — every section must contain unique content
 
-Return ONLY a valid JSON object with no markdown, no code fences, no extra text before or after:
+Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
 {
   "title": "SEO-optimized title under 65 characters that includes 2026 or a power word",
   "category": "How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer|Security Deep Dive",
-  "excerpt": "3-4 sentence compelling summary that explains exactly what the reader will learn and why it matters to them",
-  "content": "Full HTML article using h2, h3, p, ul, ol, li, strong, em, blockquote tags. Minimum 1500 words of actual content. Rich with specific details, statistics, named examples, and actionable advice.",
-  "seo_description": "Meta description 150-160 characters that includes the primary keyword and a clear value proposition",
+  "excerpt": "3-4 sentence compelling summary that explains exactly what the reader will learn and why it matters",
+  "content": "Full HTML article using h2, h3, p, ul, ol, li, strong, em, blockquote tags. Minimum 1500 words. Rich with specific details, statistics, named examples, and actionable advice. No repeated paragraphs.",
+  "seo_description": "Meta description 150-160 characters with primary keyword and value proposition",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }`;
 
@@ -106,17 +108,13 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text 
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 8000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-      messages: [{
-        role: 'user',
-        content: prompt
-      }]
+      messages: [{ role: 'user', content: prompt }]
     })
   });
 
   const data = await res.json();
   if (data.error) throw new Error('API error: ' + data.error.message);
 
-  // Join all text blocks and strip any markdown code fences
   const raw = data.content
     .filter(b => b.type === 'text')
     .map(b => b.text)
@@ -133,7 +131,6 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text 
     throw new Error('Could not parse JSON response');
   }
 
-  // Trim to last } in case trailing text was captured
   const jsonStr = match[0].substring(0, match[0].lastIndexOf('}') + 1);
 
   let post;
@@ -144,11 +141,10 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text 
     throw new Error('Could not parse JSON response: ' + e.message);
   }
 
-  // Validate minimum content length
   const wordCount = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-  console.log(`Word count: ${wordCount}`);
+  console.log('Word count:', wordCount);
   if (wordCount < 1000) {
-    throw new Error(`Content too short: ${wordCount} words. Minimum 1000 required.`);
+    throw new Error('Content too short: ' + wordCount + ' words. Minimum 1000 required.');
   }
 
   return post;
@@ -164,6 +160,7 @@ function buildPostHTML(post, slug, dateStr) {
     `<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">${t}</span>`
   ).join(' ');
 
+  // Fixed schema: Person for author, not Organization
   const schemaMarkup = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",
@@ -171,13 +168,18 @@ function buildPostHTML(post, slug, dateStr) {
     "description": post.excerpt,
     "datePublished": dateStr,
     "dateModified": dateStr,
-    "author": { "@type": "Organization", "name": "CyberWatch Daily" },
+    "author": {
+      "@type": "Person",
+      "name": AUTHOR_NAME,
+      "jobTitle": AUTHOR_TITLE,
+      "url": AUTHOR_URL
+    },
     "publisher": {
       "@type": "Organization",
       "name": "CyberWatch Daily",
       "url": "https://cyberwatchdaily.net"
     },
-    "mainEntityOfPage": `https://cyberwatchdaily.net/blog/${slug}.html`
+    "mainEntityOfPage": "https://cyberwatchdaily.net/blog/" + slug + ".html"
   });
 
   return `<!DOCTYPE html>
@@ -227,6 +229,12 @@ nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:
 .rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
 h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
 .excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
 .content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
 .content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
@@ -237,7 +245,11 @@ h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-h
 .content em{color:var(--text2);font-style:italic;}
 .content a{color:var(--green);}
 .content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
-.ad-break{min-height:90px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:2rem 0;color:var(--text3);font-family:var(--mono);font-size:11px;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
 .cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
 .cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
 .cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
@@ -263,7 +275,15 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
 
 <header><div class="header-inner">
 <a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
-<nav><a href="/">News</a><a href="/blog/">Blog</a><a href="/tools.html">Tools</a><a href="/best-vpn-2026.html">VPN Guide</a><a href="/podcast.html">Podcast</a><a href="/#newsletter">Newsletter</a><a href="/contact.html">Contact</a></nav>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
 </div></header>
 
 <div class="layout">
@@ -273,14 +293,31 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
 <div class="meta"><span class="cat">${post.category}</span><span class="date">${formattedDate}</span><span class="rt">${readTime} min read</span></div>
 <h1>${post.title}</h1>
 <div class="excerpt">${post.excerpt}</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">${AUTHOR_NAME}</a></div>
+    <div class="author-byline-title">${AUTHOR_TITLE} · CyberWatch Daily</div>
+  </div>
+</div>
 <div class="tags">${tags}</div>
 </div>
 <div class="content">
 ${post.content}
 </div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">${AUTHOR_NAME}</a></h4>
+    <div class="role">${AUTHOR_TITLE}, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
 <div class="cta">
 <p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
-The tools below are independently selected by our team based on security audits, transparency, and real-world effectiveness.</p>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
 <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
 <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
 <a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
@@ -295,15 +332,16 @@ The tools below are independently selected by our team based on security audits,
 <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
 <button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
 </div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">${AUTHOR_NAME}</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
 <div class="sc"><div class="st">Recommended Tools</div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
-</div>
-<div class="sc"><div class="st">More Articles</div>
-<a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--text2);">View all articles →</a>
 </div>
 <div class="sc"><div class="st">Security Hardware</div>
 <div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
@@ -315,7 +353,13 @@ The tools below are independently selected by our team based on security audits,
 
 <footer><div class="fi">
 <div class="fl">[CyberWatch Daily]</div>
-<div class="fli"><a href="/">Home</a><a href="/blog/">Blog</a><a href="/contact.html">Contact</a><a href="/privacy-policy.html">Privacy</a></div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
 <div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
 </div></footer>
 
