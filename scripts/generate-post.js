@@ -406,25 +406,29 @@ function updateHomepageBlogPreview(post, slug, dateStr) {
     year: 'numeric', month: 'long', day: 'numeric'
   });
 
-  const newEntry = `{
-      title: "${post.title.replace(/"/g, '\\"')}",
-      category: "${post.category}",
-      url: "/blog/${slug}.html",
-      date: "${formattedDate}",
-      excerpt: "${post.excerpt.replace(/"/g, '\\"').substring(0, 150)}..."
-    }`;
+  // Robust regex — handles any whitespace/indentation around the array
+  const postsMatch = html.match(/var\s+posts\s*=\s*\[([\s\S]*?)\]\s*;/);
+  if (!postsMatch) {
+    console.log('WARNING: Could not find posts array in index.html — skipping homepage update');
+    return;
+  }
 
-  html = html.replace('  var posts = [', '  var posts = [\n    ' + newEntry + ',');
+  // Build new entry safely
+  const safeTitle   = post.title.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+  const safeExcerpt = post.excerpt.replace(/\\/g, '\\\\').replace(/"/g, '\\"').substring(0, 150);
+  const newEntry = `{\n      title: "${safeTitle}",\n      category: "${post.category}",\n      url: "/blog/${slug}.html",\n      date: "${formattedDate}",\n      excerpt: "${safeExcerpt}..."\n    }`;
 
-  const postsMatch = html.match(/var posts = \[([\s\S]*?)\];/);
-  if (postsMatch) {
-    const postsContent = postsMatch[1];
-    const entries = postsContent.split('},\n    {');
-    if (entries.length > 2) {
-      let trimmed = entries.slice(0, 2).join('},\n    {');
-      if (!trimmed.endsWith('}')) trimmed += '}';
-      html = html.replace(postsMatch[0], 'var posts = [' + trimmed + '\n  ];');
-    }
+  // Extract one previous entry to keep (so homepage always shows 2 posts)
+  const existing = postsMatch[1].trim();
+  const prevMatch = existing.match(/\{[\s\S]*?\}/);
+  const prevEntry  = prevMatch ? prevMatch[0] : null;
+  const allEntries = prevEntry ? [newEntry, prevEntry] : [newEntry];
+  const newArray   = 'var posts = [\n    ' + allEntries.join(',\n    ') + '\n  ]';
+
+  html = html.replace(/var\s+posts\s*=\s*\[[\s\S]*?\]\s*;/, newArray + ';');
+  fs.writeFileSync(indexPath, html);
+  console.log('Homepage blog preview updated with: ' + post.title);
+}
   }
 
   fs.writeFileSync(indexPath, html);
