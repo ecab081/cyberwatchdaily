@@ -1,0 +1,81 @@
+name: Fix Homepage
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fix homepage blog preview and about section
+        run: |
+          node - << 'EOF'
+          const fs = require('fs');
+          const path = require('path');
+
+          const ROOT     = process.cwd();
+          const BLOG_DIR = path.join(ROOT, 'blog');
+          const INDEX    = path.join(ROOT, 'index.html');
+
+          // Get 2 most recent blog posts
+          const posts = fs.readdirSync(BLOG_DIR)
+            .filter(f => f.endsWith('.html') && f !== 'index.html')
+            .map(f => ({ file: f, mtime: fs.statSync(path.join(BLOG_DIR, f)).mtimeMs }))
+            .sort((a, b) => b.mtime - a.mtime)
+            .slice(0, 2)
+            .map(({ file }) => {
+              const html  = fs.readFileSync(path.join(BLOG_DIR, file), 'utf8');
+              const t     = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+              const title = t ? t[1].replace(/<[^>]+>/g, '').trim() : file;
+              const og    = html.match(/property="og:description"[^>]*content="([^"]+)"/) ||
+                            html.match(/content="([^"]+)"[^>]*property="og:description"/);
+              const excerpt = og ? og[1].substring(0, 150) : '';
+              const c     = html.match(/class="cat"[^>]*>([\s\S]*?)<\/span>/);
+              const cat   = c ? c[1].trim() : 'Security Deep Dive';
+              const dm    = file.match(/(\d{4}-\d{2}-\d{2})\.html$/);
+              const date  = dm ? new Date(dm[1]).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }) : '';
+              console.log('Found post:', title, '|', date);
+              return { title, category: cat, url: '/blog/' + file, date, excerpt };
+            });
+
+          let html = fs.readFileSync(INDEX, 'utf8');
+
+          // Fix 1: nav About link
+          html = html.replace(/href="#about"/g, 'href="/about.html"');
+
+          // Fix 2: About section text
+          html = html.replace(
+            /CyberWatch Daily is run by a cybersecurity professional[\s\S]*?without having to wade through dozens of sources yourself\./,
+            'Written by <strong><a href="/about.html" style="color:inherit;">E. Cab</a></strong>, a cybersecurity analyst with hands-on experience in defensive operations, threat intelligence, and incident response. CyberWatch Daily delivers daily threat intelligence and expert analysis to help you stay ahead of the latest cyber threats. Every story is AI-curated, analyst-reviewed, and threat-rated so you can quickly understand what matters most — without having to wade through dozens of sources yourself.'
+          );
+
+          // Fix 3: Latest from Blog — replace var posts array
+          const entries = posts.map(p =>
+            '{\n      title: ' + JSON.stringify(p.title) +
+            ',\n      category: ' + JSON.stringify(p.category) +
+            ',\n      url: ' + JSON.stringify(p.url) +
+            ',\n      date: ' + JSON.stringify(p.date) +
+            ',\n      excerpt: ' + JSON.stringify(p.excerpt + '...') +
+            '\n    }'
+          ).join(',\n    ');
+          html = html.replace(
+            /var\s+posts\s*=\s*\[[\s\S]*?\]\s*;/,
+            'var posts = [\n    ' + entries + '\n  ];'
+          );
+
+          fs.writeFileSync(INDEX, html);
+          console.log('index.html updated successfully');
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          git commit -m "Fix homepage: recent posts + E. Cab about section + nav link" || echo "Nothing to commit"
+          git push
