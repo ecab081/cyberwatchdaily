@@ -429,11 +429,6 @@ function updateHomepageBlogPreview(post, slug, dateStr) {
   fs.writeFileSync(indexPath, html);
   console.log('Homepage blog preview updated with: ' + post.title);
 }
-  }
-
-  fs.writeFileSync(indexPath, html);
-  console.log('Homepage blog preview updated');
-}
 
 async function main() {
   try {
