@@ -142,6 +142,12 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
     throw new Error('Could not parse JSON response: ' + e.message);
   }
 
+  // Safety net: strip any leftover <cite> tags the model may have included
+  // despite the prompt instruction, keeping the enclosed text intact.
+  if (post.content) {
+    post.content = post.content.replace(/<cite[^>]*>([\s\S]*?)<\/cite>/g, '$1');
+  }
+
   const wordCount = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
   console.log('Word count:', wordCount);
   if (wordCount < 1000) {
