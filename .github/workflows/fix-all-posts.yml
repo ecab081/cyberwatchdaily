@@ -26,37 +26,37 @@ jobs:
           const AUTHOR_TITLE = 'Cybersecurity Analyst';
           const AUTHOR_URL  = 'https://cyberwatchdaily.net/about.html';
 
-          // ── New nav (no Podcast, About links to /about.html) ─────────────────
+          // ── New nav (no Podcast, About links to /about.html) ──────────────
           const NEW_NAV = `<nav>
-  <a href="/">News</a>
-  <a href="/blog/">Blog</a>
-  <a href="/tools.html">Tools</a>
-  <a href="/best-vpn-2026.html">VPN Guide</a>
-  <a href="/#newsletter">Newsletter</a>
-  <a href="/about.html">About</a>
-  <a href="/contact.html">Contact</a>
-</nav>`;
+            <a href="/">News</a>
+            <a href="/blog/">Blog</a>
+            <a href="/tools.html">Tools</a>
+            <a href="/best-vpn-2026.html">VPN Guide</a>
+            <a href="/#newsletter">Newsletter</a>
+            <a href="/about.html">About</a>
+            <a href="/contact.html">Contact</a>
+          </nav>`;
 
-          // ── Author byline HTML (inserted after .excerpt div) ─────────────────
+          // ── Author byline HTML (inserted after .excerpt div) ───────────────
           const byline = `<div class="author-byline" style="display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:#161e26;border:1px solid rgba(0,255,136,0.12);margin-bottom:1.5rem;">
-  <div style="width:40px;height:40px;background:#003d1f;border:1px solid rgba(0,255,136,0.25);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:13px;font-weight:600;color:#00ff88;flex-shrink:0;">EC</div>
-  <div>
-    <div style="color:#e0edd6;font-weight:500;font-size:13px;"><a href="${AUTHOR_URL}" style="color:#e0edd6;text-decoration:none;">${AUTHOR_NAME}</a></div>
-    <div style="color:#3d5a47;font-family:monospace;font-size:11px;margin-top:2px;">${AUTHOR_TITLE} · CyberWatch Daily</div>
-  </div>
-</div>`;
+            <div style="width:40px;height:40px;background:#003d1f;border:1px solid rgba(0,255,136,0.25);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:13px;font-weight:600;color:#00ff88;flex-shrink:0;">EC</div>
+            <div>
+              <div style="color:#e0edd6;font-weight:500;font-size:13px;"><a href="${AUTHOR_URL}" style="color:#e0edd6;text-decoration:none;">${AUTHOR_NAME}</a></div>
+              <div style="color:#3d5a47;font-family:monospace;font-size:11px;margin-top:2px;">${AUTHOR_TITLE} · CyberWatch Daily</div>
+            </div>
+          </div>`;
 
-          // ── Author bio box (inserted before .cta div) ────────────────────────
+          // ── Author bio box (inserted before .cta div) ───────────────────────
           const bioBox = `<div style="background:#0d1317;border:1px solid rgba(0,255,136,0.12);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;">
-  <div style="width:56px;height:56px;background:#003d1f;border:1px solid rgba(0,255,136,0.25);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:18px;font-weight:600;color:#00ff88;flex-shrink:0;">EC</div>
-  <div>
-    <div style="font-family:monospace;font-size:14px;font-weight:500;color:#e0edd6;margin-bottom:2px;"><a href="${AUTHOR_URL}" style="color:#e0edd6;text-decoration:none;">${AUTHOR_NAME}</a></div>
-    <div style="font-family:monospace;font-size:11px;color:#00ff88;margin-bottom:8px;">${AUTHOR_TITLE}, CyberWatch Daily</div>
-    <p style="color:#7a9e8a;font-size:13px;line-height:1.7;margin:0;">Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
-  </div>
-</div>`;
+            <div style="width:56px;height:56px;background:#003d1f;border:1px solid rgba(0,255,136,0.25);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:18px;font-weight:600;color:#00ff88;flex-shrink:0;">EC</div>
+            <div>
+              <div style="font-family:monospace;font-size:14px;font-weight:500;color:#e0edd6;margin-bottom:2px;"><a href="${AUTHOR_URL}" style="color:#e0edd6;text-decoration:none;">${AUTHOR_NAME}</a></div>
+              <div style="font-family:monospace;font-size:11px;color:#00ff88;margin-bottom:8px;">${AUTHOR_TITLE}, CyberWatch Daily</div>
+              <p style="color:#7a9e8a;font-size:13px;line-height:1.7;margin:0;">Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+            </div>
+          </div>`;
 
-          // ── Schema fix: replace Organization author with Person ───────────────
+          // ── Schema fix: replace Organization author with Person ────────────
           function fixSchema(html) {
             return html.replace(
               /"author"\s*:\s*\{\s*"@type"\s*:\s*"Organization"[\s\S]*?\}/,
@@ -64,7 +64,7 @@ jobs:
             );
           }
 
-          // ── Process each blog post ────────────────────────────────────────────
+          // ── Process each blog post ──────────────────────────────────────────────────────────────
           const files = fs.readdirSync(BLOG_DIR)
             .filter(f => f.endsWith('.html') && f !== 'index.html');
 
