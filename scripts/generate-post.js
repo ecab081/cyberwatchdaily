@@ -85,6 +85,7 @@ Write a comprehensive, authoritative article that would be useful to both beginn
 - Be deeply useful — something a cybersecurity professional would be proud to share
 - Include the year 2026 naturally in headings and content where relevant for SEO
 - Do NOT repeat any paragraphs or sentences verbatim — every section must contain unique content
+- Do NOT include <cite> tags, citation markers, footnote numbers, or any citation/reference markup of any kind in the content field — this HTML is published directly to a live webpage as-is, so write finished, plain narrative prose with no leftover citation syntax from source lookups
 
 Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
 {
