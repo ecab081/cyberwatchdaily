@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-07-10T16:00:06.797765+00:00",
-  "portfolio": 1589.64,
+  "timestamp": "2026-07-10T17:00:06.811653+00:00",
+  "portfolio": 1590.32,
   "cash": 1428.03,
   "positions": [
     {
       "symbol": "ETHUSD",
-      "pnl": 186.18,
-      "pnl_pct": 7.58
+      "pnl": 186.87,
+      "pnl_pct": 7.6
     }
   ],
   "total_pnl": -4.15,
