@@ -1,42 +1,10 @@
 {
-  "timestamp": "2026-07-11T12:00:04.978043+00:00",
+  "timestamp": "2026-07-11T13:00:04.403958+00:00",
   "portfolio": 1589.17,
   "cash": 1589.17,
   "positions": [],
   "total_pnl": -4.15,
   "wins": 11,
   "losses": 14,
-  "win_rate": 44.0,
-  "health": {
-    "last_check": "2026-07-11T12:00:07.337358+00:00",
-    "status": "HEALTHY",
-    "checks": {
-      "Bot service": {
-        "ok": true,
-        "msg": "active"
-      },
-      "Last cycle": {
-        "ok": true,
-        "msg": "Last cycle 13min ago"
-      },
-      "Error rate": {
-        "ok": true,
-        "msg": "0 errors in last hour"
-      },
-      "API status": {
-        "ok": true,
-        "msg": "API responding"
-      },
-      "Portfolio": {
-        "ok": true,
-        "msg": "Portfolio $1,589.17 (-0.1% from baseline)"
-      },
-      "Disk space": {
-        "ok": true,
-        "msg": "Disk 17% used"
-      }
-    },
-    "issues": [],
-    "warnings": []
-  }
+  "win_rate": 44.0
 }
