@@ -438,11 +438,29 @@ function updateHomepageBlogPreview(post, slug, dateStr) {
   console.log('Homepage blog preview updated with: ' + post.title);
 }
 
+async function generatePostWithRetry(maxAttempts = 3) {
+  let lastErr;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await generatePost();
+    } catch (err) {
+      lastErr = err;
+      console.error(`Attempt ${attempt}/${maxAttempts} failed: ${err.message}`);
+      if (attempt < maxAttempts) {
+        const waitMs = attempt * 20000;
+        console.log(`Retrying in ${waitMs / 1000}s...`);
+        await new Promise(r => setTimeout(r, waitMs));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 async function main() {
   try {
     console.log('CyberWatch Blog Post Generator Starting...');
 
-    const post = await generatePost();
+    const post = await generatePostWithRetry();
     console.log('Generated: ' + post.title);
 
     const today = new Date().toISOString().split('T')[0];
