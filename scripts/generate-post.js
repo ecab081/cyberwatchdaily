@@ -114,7 +114,8 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
   });
 
   const data = await res.json();
-  if (data.error) throw new Error('API error: ' + data.error.message);
+  if (data.error) throw new Error('API error (HTTP ' + res.status + ', type=' + (data.error.type || 'unknown') + '): ' + data.error.message);
+  if (!data.content) throw new Error('Unexpected API response shape (HTTP ' + res.status + '): ' + JSON.stringify(data).substring(0, 500));
 
   const raw = data.content
     .filter(b => b.type === 'text')
