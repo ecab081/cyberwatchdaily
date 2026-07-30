@@ -130,14 +130,23 @@ function getLatestBlogPost() {
 
 async function getSubscribers() {
   console.log('Fetching subscribers from Beehiiv...');
-  var res = await fetch(
-    'https://api.beehiiv.com/v2/publications/' + BEEHIIV_PUB_ID + '/subscriptions?status=active&limit=100',
-    { headers: { 'Authorization': 'Bearer ' + BEEHIIV_API_KEY } }
-  );
-  var data = await res.json();
-  if (data.errors) throw new Error('Beehiiv error: ' + JSON.stringify(data.errors));
-  var emails = (data.data || []).map(function(s) { return s.email; }).filter(Boolean);
-  console.log('Found ' + emails.length + ' subscribers');
+  var emails = [];
+  var page = 1;
+  var totalPages = 1;
+  do {
+    var res = await fetch(
+      'https://api.beehiiv.com/v2/publications/' + BEEHIIV_PUB_ID + '/subscriptions?status=active&limit=100&page=' + page,
+      { headers: { 'Authorization': 'Bearer ' + BEEHIIV_API_KEY } }
+    );
+    var data = await res.json();
+    if (data.errors) throw new Error('Beehiiv error: ' + JSON.stringify(data.errors));
+    var batch = (data.data || []).map(function(s) { return s.email; }).filter(Boolean);
+    emails = emails.concat(batch);
+    totalPages = data.total_pages || 1;
+    console.log('Beehiiv page ' + page + '/' + totalPages + ' — ' + batch.length + ' subscribers (running total: ' + emails.length + ')');
+    page++;
+  } while (page <= totalPages && page <= 20); // safety cap at 2000 subscribers
+  console.log('Found ' + emails.length + ' total active subscribers');
   return emails;
 }
 
