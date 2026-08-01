@@ -13,11 +13,25 @@ function classifyDomain(title, summary) {
     'crystals-kyber','crystals-dilithium','lattice crypto','quantum computer',
     'quantum threat','quantum resistant','crqc','harvest now decrypt'];
   if (quantum.some(k => t.includes(k))) return 'quantum';
+  // Nation-state — scoped to Russia, Iran, China, North Korea only, checked
+  // before crypto/AI so attribution wins over technique (mirrors api/news.js).
+  const nationstate = ['russian hacker','russia-linked','kremlin','gru','fsb','svr',
+    'sandworm','fancy bear','cozy bear','apt28','apt29','turla','gamaredon',
+    'chinese hacker','china-linked','beijing-backed','prc-linked','volt typhoon',
+    'salt typhoon','apt41','apt40','apt31','mustang panda','winnti',
+    'iranian hacker','iran-linked','irgc','apt34','apt35','charming kitten','muddywater','oilrig',
+    'north korean hacker','north korea-linked','dprk','lazarus group','kimsuky','apt38','bluenoroff','andariel'];
+  if (nationstate.some(k => t.includes(k))) return 'nationstate';
   const crypto = ['bitcoin','ethereum','cryptocurrency','crypto exchange','defi ',
     'nft hack','blockchain hack','crypto wallet','crypto theft','crypto scam',
     'rug pull','smart contract exploit','binance','coinbase hack','solana hack',
     'crypto heist','web3 exploit','crypto fraud','crypto ransom','cointelegraph'];
   if (crypto.some(k => t.includes(k))) return 'crypto';
+  const ai = ['artificial intelligence','generative ai','genai','large language model',
+    ' llm ','chatgpt','openai','prompt injection','ai model','ai chatbot','ai agent',
+    'deepfake','ai-generated','ai-powered attack','adversarial ai','jailbreak',
+    'ai security','copilot','claude ai','gemini ai','ai safety'];
+  if (ai.some(k => t.includes(k))) return 'ai';
   return 'cybersecurity';
 }
 
