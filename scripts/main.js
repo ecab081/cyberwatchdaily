@@ -134,8 +134,10 @@ function escapeHtml(value) {
 }
 
 function getDomainBadge(domain) {
-  if (domain === 'crypto')  return `<span class="badge badge-domain-crypto">Crypto</span>`;
-  if (domain === 'quantum') return `<span class="badge badge-domain-quantum">Quantum</span>`;
+  if (domain === 'crypto')      return `<span class="badge badge-domain-crypto">Crypto</span>`;
+  if (domain === 'quantum')     return `<span class="badge badge-domain-quantum">Quantum</span>`;
+  if (domain === 'ai')          return `<span class="badge badge-domain-ai">AI</span>`;
+  if (domain === 'nationstate') return `<span class="badge badge-domain-nationstate">Nation-State</span>`;
   return '';
 }
 
