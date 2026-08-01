@@ -252,7 +252,7 @@ function init() {
   if (newsletterBtn) newsletterBtn.addEventListener('click', subscribe);
 
   // Wire up domain filter buttons via event listeners (not onclick attributes)
-  ['all', 'cybersecurity', 'crypto', 'quantum'].forEach(domain => {
+  ['all', 'cybersecurity', 'crypto', 'quantum', 'ai', 'nationstate'].forEach(domain => {
     const btn = document.getElementById('domain-' + domain);
     if (btn) btn.addEventListener('click', () => setDomain(domain));
   });
