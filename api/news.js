@@ -193,6 +193,56 @@ const RSS_SOURCES = [
     url: 'https://thequantuminsider.com/feed/',
     domain: 'quantum',
   },
+
+  // ── AI Security sources ────────────────────────────────────────────────
+  {
+    name: 'AI Security News',
+    url: 'https://news.google.com/rss/search?q=%22AI+security%22+OR+%22AI+vulnerability%22+OR+%22prompt+injection%22&hl=en-US&gl=US&ceid=US:en',
+    domain: 'ai',
+  },
+  {
+    name: 'AI-Powered Attacks',
+    url: 'https://news.google.com/rss/search?q=%22AI-powered%22+cyberattack+OR+%22AI+malware%22+OR+deepfake+fraud&hl=en-US&gl=US&ceid=US:en',
+    domain: 'ai',
+  },
+  {
+    name: 'LLM Security',
+    url: 'https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability&hl=en-US&gl=US&ceid=US:en',
+    domain: 'ai',
+  },
+  {
+    name: 'AI Safety & Risk',
+    url: 'https://news.google.com/rss/search?q=%22AI+safety%22+cybersecurity+risk+OR+%22AI+agent%22+security&hl=en-US&gl=US&ceid=US:en',
+    domain: 'ai',
+  },
+
+  // ── Nation-State sources (Russia, Iran, China, North Korea only — ───────
+  // scoped per explicit request, not a generic "any government" bucket)
+  {
+    name: 'China State-Sponsored Hackers',
+    url: 'https://news.google.com/rss/search?q=%22Chinese+state-sponsored%22+OR+%22China+hackers%22+OR+%22Volt+Typhoon%22+OR+%22Salt+Typhoon%22+cyber&hl=en-US&gl=US&ceid=US:en',
+    domain: 'nationstate',
+  },
+  {
+    name: 'Russia APT Threats',
+    url: 'https://news.google.com/rss/search?q=%22Russian+hackers%22+OR+%22APT28%22+OR+%22APT29%22+OR+Sandworm+cyber&hl=en-US&gl=US&ceid=US:en',
+    domain: 'nationstate',
+  },
+  {
+    name: 'North Korea Lazarus Group',
+    url: 'https://news.google.com/rss/search?q=%22Lazarus+Group%22+OR+%22North+Korean+hackers%22+OR+Kimsuky+cyber&hl=en-US&gl=US&ceid=US:en',
+    domain: 'nationstate',
+  },
+  {
+    name: 'Iran Cyber Threats',
+    url: 'https://news.google.com/rss/search?q=%22Iranian+hackers%22+OR+IRGC+cyber+OR+APT34+OR+MuddyWater&hl=en-US&gl=US&ceid=US:en',
+    domain: 'nationstate',
+  },
+  {
+    name: 'Nation-State Advisories',
+    url: 'https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack&hl=en-US&gl=US&ceid=US:en',
+    domain: 'nationstate',
+  },
 ];
 
 const BLOCKLIST = [
