@@ -527,13 +527,17 @@ export default async function handler(req, res) {
     const cybersec = allFiltered.filter(a => a.domain === 'cybersecurity');
     const crypto   = allFiltered.filter(a => a.domain === 'crypto');
     const quantum  = allFiltered.filter(a => a.domain === 'quantum');
+    const ai          = allFiltered.filter(a => a.domain === 'ai');
+    const nationstate  = allFiltered.filter(a => a.domain === 'nationstate');
 
-    // Build balanced feed: up to 5 quantum, up to 5 crypto, rest cybersecurity
+    // Build balanced feed: reserve slots per specialty domain, rest cybersecurity
     const articles = uniqueByUrl([
       ...quantum.slice(0, 5),
       ...crypto.slice(0, 5),
+      ...ai.slice(0, 5),
+      ...nationstate.slice(0, 5),
       ...cybersec.slice(0, 15),
-    ]).slice(0, 25);
+    ]).slice(0, 35);
 
     res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
     return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
