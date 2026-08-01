@@ -382,12 +382,43 @@ function classifyDomain(title, summary, sourceDomain) {
     'quantum threat', 'quantum resistant', 'harvest now decrypt later', 'crqc'];
   if (quantumTerms.some(t => text.includes(t))) return 'quantum';
   if (sourceDomain === 'quantum') return 'quantum';
+
+  // Nation-state — scoped specifically to Russia, Iran, China, and North
+  // Korea per explicit request, not a catch-all for any government actor.
+  // Checked before crypto/AI so e.g. "Lazarus Group drains crypto exchange"
+  // or "China-linked group uses AI phishing kit" classify by attribution
+  // (the more newsworthy angle) rather than by technique.
+  const nationStateTerms = [
+    // Russia
+    'russian hacker', 'russia-linked', 'russian state', 'kremlin', 'gru', 'fsb', 'svr',
+    'sandworm', 'fancy bear', 'cozy bear', 'apt28', 'apt29', 'turla', 'gamaredon',
+    // China
+    'chinese hacker', 'china-linked', 'chinese state', 'beijing-backed', 'prc-linked',
+    'volt typhoon', 'salt typhoon', 'apt41', 'apt40', 'apt31', 'mustang panda', 'winnti',
+    // Iran
+    'iranian hacker', 'iran-linked', 'irgc', 'apt34', 'apt35', 'charming kitten',
+    'muddywater', 'oilrig',
+    // North Korea
+    'north korean hacker', 'north korea-linked', 'dprk', 'lazarus group', 'kimsuky',
+    'apt38', 'bluenoroff', 'andariel',
+  ];
+  if (nationStateTerms.some(t => text.includes(t))) return 'nationstate';
+  if (sourceDomain === 'nationstate') return 'nationstate';
+
   if (sourceDomain === 'crypto') return 'crypto';
   const cryptoTerms = ['bitcoin', 'ethereum', 'cryptocurrency', 'crypto exchange', 'defi ', 'nft hack',
     'blockchain hack', 'crypto wallet', 'crypto theft', 'crypto scam', 'rug pull',
     'smart contract exploit', 'binance', 'coinbase hack', 'solana hack', 'crypto heist',
     'web3 exploit', 'crypto fraud', 'ransomware bitcoin', 'crypto ransom'];
   if (cryptoTerms.some(t => text.includes(t))) return 'crypto';
+
+  const aiTerms = ['artificial intelligence', 'generative ai', 'genai', 'large language model',
+    ' llm ', 'chatgpt', 'openai', 'prompt injection', 'ai model', 'ai chatbot', 'ai agent',
+    'deepfake', 'ai-generated', 'ai-powered attack', 'adversarial ai', 'jailbreak',
+    'ai security', 'copilot', 'claude ai', 'gemini ai', 'ai safety'];
+  if (aiTerms.some(t => text.includes(t))) return 'ai';
+  if (sourceDomain === 'ai') return 'ai';
+
   return 'cybersecurity';
 }
 
