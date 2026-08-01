@@ -201,11 +201,12 @@ function renderFeed() {
   });
 
   if (!articles.length) {
+    const domainLabels = { all: '', cybersecurity: 'cybersecurity ', crypto: 'crypto ', quantum: 'quantum ', ai: 'AI ', nationstate: 'nation-state ' };
     document.getElementById('feed').innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">[ ]</div>
         <div class="empty-title">No stories found</div>
-        <div class="empty-sub">No ${activeDomain === 'all' ? '' : activeDomain + ' '}stories in this category.</div>
+        <div class="empty-sub">No ${domainLabels[activeDomain] ?? ''}stories in this category.</div>
       </div>`;
     return;
   }
