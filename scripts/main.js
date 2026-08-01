@@ -225,7 +225,7 @@ function setDomain(domain) {
   activeDomain = domain;
   activeFilter = 'All'; // reset category filter when switching domain
   // Update domain button styles
-  ['all','cybersecurity','crypto','quantum'].forEach(d => {
+  ['all','cybersecurity','crypto','quantum','ai','nationstate'].forEach(d => {
     const btn = document.getElementById('domain-' + d);
     if (btn) btn.classList.toggle('active', d === domain);
   });
