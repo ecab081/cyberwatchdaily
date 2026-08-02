@@ -243,6 +243,29 @@ const RSS_SOURCES = [
     url: 'https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
+
+  // ── Dedicated outlet feeds (added to strengthen sourcing beyond Google
+  // News keyword search) ──────────────────────────────────────────────────
+  {
+    name: 'The Record (Recorded Future)',
+    url: 'https://therecord.media/feed/',
+    // Tagged 'cybersecurity', not 'nationstate' — this outlet covers all of
+    // cybersecurity, not just nation-state actors. Term-matching in
+    // classifyDomain() already correctly pulls its Russia/China/Iran/NK
+    // stories into the nationstate bucket; tagging the whole feed
+    // 'nationstate' would force-misclassify its ransomware/breach/policy
+    // coverage that has nothing to do with those four countries.
+    domain: 'cybersecurity',
+  },
+  {
+    name: 'Mandiant / Google Threat Intelligence',
+    url: 'https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/',
+    // Tagged 'nationstate' — unlike The Record, this outlet's content is
+    // overwhelmingly APT-attribution research, so the sourceDomain fallback
+    // in classifyDomain() is a reasonable default even on the rare post
+    // that doesn't name a specific country/group.
+    domain: 'nationstate',
+  },
 ];
 
 const BLOCKLIST = [
