@@ -505,6 +505,7 @@ async function main() {
 
     updateBlogIndex(post, slug, today);
     updateHomepageBlogPreview(post, slug, today);
+    commitAndPushFile('index.html', 'Auto: sync homepage preview ' + today);
 
     // Update sitemap
     const sitemapPath = path.join(__dirname, '../sitemap.xml');
