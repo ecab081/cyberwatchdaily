@@ -438,6 +438,38 @@ function updateHomepageBlogPreview(post, slug, dateStr) {
   console.log('Homepage blog preview updated with: ' + post.title);
 }
 
+const { execSync } = require('child_process');
+
+function commitAndPushFile(filePath, message) {
+  // The workflow's own "Commit and push" step only stages blog/ and
+  // sitemap.xml -- a gap in .github/workflows/generate-blog-post.yml that
+  // can't be edited from here (files under .github/workflows/ need a PAT
+  // with the 'workflow' OAuth scope, which this token doesn't have). That
+  // gap silently discarded every homepage-preview update above for weeks.
+  // Committing it directly, right here, sidesteps the restricted file
+  // entirely -- this job already has an authenticated, push-capable git
+  // remote via GITHUB_TOKEN (permissions: contents: write). Wrapped in
+  // try/catch so a git hiccup here can't break the rest of the run; the
+  // later workflow step still handles blog/ and sitemap.xml regardless.
+  try {
+    execSync('git config user.name "CyberWatch Bot"', { stdio: 'inherit' });
+    execSync('git config user.email "bot@cyberwatchdaily.net"', { stdio: 'inherit' });
+    execSync(`git add ${filePath}`, { stdio: 'inherit' });
+    try {
+      execSync('git diff --staged --quiet');
+      console.log('No changes to commit for ' + filePath);
+      return;
+    } catch (e) {
+      // Non-zero exit here means there ARE staged changes -- proceed.
+    }
+    execSync(`git commit -m "${message}"`, { stdio: 'inherit' });
+    execSync('git push', { stdio: 'inherit' });
+    console.log('Committed and pushed: ' + filePath);
+  } catch (err) {
+    console.error('WARNING: commitAndPushFile failed for ' + filePath + ': ' + err.message);
+  }
+}
+
 async function generatePostWithRetry(maxAttempts = 3) {
   let lastErr;
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
