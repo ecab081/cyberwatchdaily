@@ -402,6 +402,18 @@ function updateBlogIndex(post, slug, dateStr) {
   console.log('Blog index updated');
 }
 
+function buildPreviewCard(entry) {
+  return `      <a href="${entry.url}" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);">
+        <div style="margin-bottom:8px;">
+          <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">${entry.category}</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">${entry.date}</span>
+        </div>
+        <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">${entry.title}</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">${entry.excerpt}</div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>
+      </a>`;
+}
+
 function updateHomepageBlogPreview(post, slug, dateStr) {
   const indexPath = path.join(process.cwd(), 'index.html');
   if (!fs.existsSync(indexPath)) {
@@ -434,6 +446,40 @@ function updateHomepageBlogPreview(post, slug, dateStr) {
   const newArray   = 'var posts = [\n    ' + allEntries.join(',\n    ') + '\n  ]';
 
   html = html.replace(/var\s+posts\s*=\s*\[[\s\S]*?\]\s*;/, newArray + ';');
+
+  // Also update the STATIC HTML fallback cards (id="blog-preview"), not
+  // just the JS array above. Previously only the JS array was kept fresh
+  // -- so any crawler or fetcher that doesn't execute JavaScript (Claude's
+  // own web_fetch tool included, which is how this gap was actually
+  // found) would keep seeing whatever the static cards were last
+  // hand-edited to, indefinitely. Derives both cards from the same source
+  // data as the JS array above so the two can never drift apart again.
+  // Found + fixed 2026-08-16.
+  const newCard = { url: `/blog/${slug}.html`, category: post.category, date: formattedDate, title: post.title, excerpt: post.excerpt };
+  let prevCard = null;
+  if (prevEntry) {
+    const pTitle    = (prevEntry.match(/title:\s*"([^"]*)"/) || [])[1];
+    const pCategory = (prevEntry.match(/category:\s*"([^"]*)"/) || [])[1];
+    const pUrl      = (prevEntry.match(/url:\s*"([^"]*)"/) || [])[1];
+    const pDate     = (prevEntry.match(/date:\s*"([^"]*)"/) || [])[1];
+    const pExcerpt  = (prevEntry.match(/excerpt:\s*"([^"]*)"/) || [])[1];
+    if (pTitle && pUrl) {
+      prevCard = { url: pUrl, category: pCategory || 'Security Deep Dive', date: pDate || '', title: pTitle, excerpt: pExcerpt || '' };
+    }
+  }
+  const staticRe = /<div id="blog-preview"[^>]*>[\s\S]*?<\/div>\s*<\/div>\s*<\/section>/;
+  const staticMatch = html.match(staticRe);
+  if (staticMatch) {
+    const openTag = (staticMatch[0].match(/^<div id="blog-preview"[^>]*>/) || [])[0]
+      || '<div id="blog-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">';
+    const cardsHTML = [newCard, prevCard].filter(Boolean).map(buildPreviewCard).join('\n');
+    const newStaticBlock = `${openTag}\n${cardsHTML}\n    </div>\n  </div>\n</section>`;
+    html = html.replace(staticRe, newStaticBlock);
+    console.log('Static homepage preview cards updated');
+  } else {
+    console.log('WARNING: Could not find static blog-preview block — skipping static HTML update');
+  }
+
   fs.writeFileSync(indexPath, html);
   console.log('Homepage blog preview updated with: ' + post.title);
 }
