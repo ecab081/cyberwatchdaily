@@ -313,6 +313,16 @@
     gap: 2rem;
   }
 
+  /* CSS Grid columns default to min-width:auto, which refuses to shrink
+     below the width of any unbreakable content inside them (a long URL,
+     a base64-ish token, etc.) -- that overflow then pushes the whole
+     page wider than the viewport regardless of max-width above. Found
+     2026-08-17 after a leaked un-stripped RSS blob (long, space-free
+     text) caused exactly this. min-width:0 lets the grid actually
+     shrink to fit; overflow-wrap below is the second layer so long
+     tokens wrap instead of overflowing even within their own column. */
+  .main > * { min-width: 0; }
+
   /* ── FILTERS ── */
   .filters {
     display: flex;
