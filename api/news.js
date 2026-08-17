@@ -414,7 +414,7 @@ function extractArticleData(html, fallbackTitle) {
     stripTags((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] || '') ||
     fallbackTitle;
   const summary =
-    extractMeta(html, ['description', 'og:description', 'twitter:description']) ||
+    sanitizeSummary(extractMeta(html, ['description', 'og:description', 'twitter:description'])) ||
     fallbackTitle;
   return {
     title: title.replace(/\s*[\-|–|—]\s*(The Hacker News|BleepingComputer|Krebs on Security|Hackread|Dark Reading|CoinTelegraph|The Block|Decrypt|CoinDesk|Troy Hunt|Bruce Schneier|Graham Cluley).*$/i, '').trim(),
