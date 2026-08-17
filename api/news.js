@@ -290,6 +290,30 @@ function stripTags(text = '') {
   return decodeHtml(text.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
+// Defensive safety net: reject "summary" text that still looks like raw
+// markup or a bare URL/token after stripTags(), instead of ever displaying
+// or classifying on it. Added after a Google News RSS <description> item
+// leaked an un-stripped '<a href="https://news.google.com/rss/articles/
+// CBMi...">' blob straight onto the live site — main.js's escapeHtml() was
+// correctly escaping it (not an injection risk), it was just genuinely
+// garbage content being faithfully displayed. That same blob also fed
+// classifyDomain() and coincidentally matched a short nation-state term
+// (e.g. 'gru'/'svr' hiding inside the base64-ish token), misclassifying an
+// unrelated SwiftOnSecurity article. This catches that whole failure class
+// regardless of the exact upstream RSS-format edge case that caused it.
+function sanitizeSummary(text = '') {
+  const t = (text || '').trim();
+  if (!t) return '';
+  if (/<a\b|<\/a>|href=|<font\b/i.test(t)) return '';
+  if (/https?:\/\//i.test(t)) return '';
+  // A single very long space-free token is the signature of a leaked
+  // URL/base64 blob rather than real prose -- real summaries are made of
+  // ordinary words with normal spacing.
+  const longestToken = t.split(/\s+/).reduce((max, w) => Math.max(max, w.length), 0);
+  if (longestToken > 60) return '';
+  return t;
+}
+
 function normalizeUrl(href, base) {
   try { return new URL(href, base).toString(); } catch { return null; }
 }
