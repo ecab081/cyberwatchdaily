@@ -380,7 +380,7 @@ function parseRSS(xml, sourceName, sourceDomain) {
     }
     // Extract description
     const descMatch = item.match(/<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
-    const summary = stripTags(descMatch?.[1] || '').slice(0, 240).trim();
+    const summary = sanitizeSummary(stripTags(descMatch?.[1] || '').slice(0, 240).trim());
     if (!title || !url || !isGoodTitle(title)) continue;
     if (seen.has(url)) continue;
     seen.add(url);
