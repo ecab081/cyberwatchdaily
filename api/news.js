@@ -266,6 +266,17 @@ const RSS_SOURCES = [
     // that doesn't name a specific country/group.
     domain: 'nationstate',
   },
+  {
+    name: 'CyberUpdates365',
+    url: 'https://cyberupdates365.com/feed/',
+    // Tagged 'cybersecurity', same reasoning as The Record — broad general
+    // outlet (breaches, vulnerabilities, AI & emerging tech, guides), not
+    // nation-state-specific, so term-matching handles the split correctly.
+    // Confirmed WordPress (wp-content paths, Site Kit by Google meta tag)
+    // via a live page fetch, so /feed/ is the standard default path — the
+    // live RSS XML output itself wasn't independently verified beyond that.
+    domain: 'cybersecurity',
+  },
 ];
 
 const BLOCKLIST = [
