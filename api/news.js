@@ -562,12 +562,24 @@ export default async function handler(req, res) {
   if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+  // Debug mode (?debug=1): reports raw per-source article counts before
+  // classification, so a source returning 0 (fetch failure, rate limit,
+  // blocked, empty result set) is directly visible instead of having to
+  // infer it from which domain filter looks empty on the live site.
+  // Added 2026-08-19 while chasing why Nation-State stayed empty even
+  // after the garbage-summary fix. No effect on normal requests.
+  const debug = req.query && req.query.debug === '1';
   try {
     // Fetch HTML sources and RSS sources in parallel
     const [htmlGroups, rssGroups] = await Promise.all([
       Promise.all(SOURCES.map(getSourceArticles)),
       Promise.all(RSS_SOURCES.map(getRSSArticles)),
     ]);
+
+    const debugInfo = debug ? {
+      htmlSources: SOURCES.map((s, i) => ({ name: s.name, domain: s.domain, rawCount: htmlGroups[i].length })),
+      rssSources: RSS_SOURCES.map((s, i) => ({ name: s.name, domain: s.domain, url: s.url, rawCount: rssGroups[i].length })),
+    } : null;
 
     // Don't truncate before classification — process ALL raw articles so
     // quantum/crypto/ai/nationstate RSS articles (which come later in the
@@ -592,6 +604,13 @@ export default async function handler(req, res) {
     const ai          = allFiltered.filter(a => a.domain === 'ai');
     const nationstate  = allFiltered.filter(a => a.domain === 'nationstate');
 
+    if (debugInfo) {
+      debugInfo.postClassification = {
+        cybersecurity: cybersec.length, crypto: crypto.length,
+        quantum: quantum.length, ai: ai.length, nationstate: nationstate.length,
+      };
+    }
+
     // Build balanced feed: reserve slots per specialty domain, rest cybersecurity
     const articles = uniqueByUrl([
       ...quantum.slice(0, 5),
@@ -601,11 +620,15 @@ export default async function handler(req, res) {
       ...cybersec.slice(0, 15),
     ]).slice(0, 35);
 
-    res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=3600');
-    return res.status(200).json({ articles: articles.length ? articles : fallbackArticles() });
+    res.setHeader('Cache-Control', debug ? 'no-store' : 's-maxage=1800, stale-while-revalidate=3600');
+    const body = { articles: articles.length ? articles : fallbackArticles() };
+    if (debugInfo) body._debug = debugInfo;
+    return res.status(200).json(body);
   } catch (error) {
     console.error('News API failure:', error);
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ articles: fallbackArticles() });
+    const body = { articles: fallbackArticles() };
+    if (debug) body._debug = { error: error.message };
+    return res.status(200).json(body);
   }
 }
