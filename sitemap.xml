@@ -372,4 +372,10 @@
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://cyberwatchdaily.net/blog/threat-actors-2026-ai-lolbins-supply-chain-zero-days-2026-08-24.html</loc>
+    <lastmod>2026-08-24</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
