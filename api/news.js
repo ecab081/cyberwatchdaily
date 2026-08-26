@@ -521,12 +521,55 @@ async function getSourceArticles(source) {
   }
 }
 
+// Google News RSS wraps every link behind an opaque redirect
+// (news.google.com/rss/articles/CBMi...) that requires JS execution to
+// follow through a browser -- a plain server-side fetch() just gets
+// Google's own generic interstitial page back (title/description about
+// Google News itself, not the real article). Best-effort recovery: the
+// token is base64-ish encoded protobuf that usually has the real URL
+// embedded as readable text inside it, so try to pull that out directly
+// rather than ever fetching the wrapped link's page content. Falls back
+// to the wrapped URL (still a working, clickable link) if this fails.
+function unwrapGoogleNewsUrl(wrappedUrl) {
+  try {
+    const match = wrappedUrl.match(/\/articles\/([^?]+)/);
+    if (!match) return null;
+    const decoded = Buffer.from(match[1], 'base64').toString('binary');
+    const urlMatch = decoded.match(/https?:\/\/[^\x00-\x1f"'<>]+/);
+    return urlMatch ? urlMatch[0] : null;
+  } catch {
+    return null;
+  }
+}
+
 async function enrichArticle(article) {
+  const isWrappedGoogleLink = article.url.includes('news.google.com');
+
   // RSS articles already have summaries — skip fetching the full page
   if (article.summary && article.summary.length > 60) {
     const domain = classifyDomain(article.title, article.summary, article.sourceDomain);
-    return { ...article, domain, ...classifyArticle(article.title, article.summary) };
+    const url = isWrappedGoogleLink ? (unwrapGoogleNewsUrl(article.url) || article.url) : article.url;
+    return { ...article, url, domain, ...classifyArticle(article.title, article.summary) };
   }
+
+  // Google News' wrapped redirect requires JS to follow -- fetching it
+  // server-side just returns Google's own generic page, corrupting the
+  // title/summary into boilerplate ("Google News" / "Comprehensive
+  // up-to-date news coverage..."). A short-but-real RSS title beats that
+  // every time, so never attempt the full-page fetch for these — just
+  // classify on what the RSS already gave us. Found 2026-08-25 after
+  // several AI/Nation-State cards showed this exact generic boilerplate.
+  if (isWrappedGoogleLink) {
+    const domain = classifyDomain(article.title, article.title, article.sourceDomain);
+    const url = unwrapGoogleNewsUrl(article.url) || article.url;
+    return {
+      title: article.title,
+      summary: article.summary || '',
+      url, source: article.source, domain,
+      ...classifyArticle(article.title, article.title),
+    };
+  }
+
   try {
     const html = await fetchText(article.url);
     const data = extractArticleData(html, article.title);
