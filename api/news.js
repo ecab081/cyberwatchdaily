@@ -584,14 +584,17 @@ export default async function handler(req, res) {
     // Don't truncate before classification — process ALL raw articles so
     // quantum/crypto/ai/nationstate RSS articles (which come later in the
     // array, after the HTML-scraped sources) aren't cut off by an early
-    // slice before they ever reach classifyDomain(). Cap raised from 80 to
-    // 130 when AI + nation-state sources were added, since those are all
-    // RSS-based (pre-summarized, no extra per-article page fetch needed in
-    // enrichArticle), so the higher cap adds negligible fetch time.
+    // slice before they ever reach classifyDomain(). Cap was raised 80 ->
+    // 130 when AI + nation-state sources were added, but nobody verified
+    // 130 was actually enough — real measured total is 194 raw articles
+    // (confirmed via ?debug=1 on 2026-08-25), so nation-state (positioned
+    // near the end of RSS_SOURCES) was being silently sliced to zero every
+    // single time regardless of its feeds being perfectly healthy. Raised
+    // to 250 for real headroom, including room for future source growth.
     const allRaw = uniqueByUrl([
       ...htmlGroups.flat(),
       ...rssGroups.flat(),
-    ]).slice(0, 130);
+    ]).slice(0, 250);
 
     const enriched = await Promise.all(allRaw.map(enrichArticle));
 
