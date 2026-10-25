@@ -373,6 +373,8 @@ function extractAnchors(html, baseUrl, source) {
   return results;
 }
 
+const MAX_ITEM_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
 // ── RSS Parser ────────────────────────────────────────────────────────
 function parseRSS(xml, sourceName, sourceDomain) {
   const results = [];
@@ -396,6 +398,11 @@ function parseRSS(xml, sourceName, sourceDomain) {
     const descMatch = item.match(/<description[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
     const summary = sanitizeSummary(stripTags(descMatch?.[1] || '').slice(0, 240).trim());
     if (!title || !url || !isGoodTitle(title)) continue;
+    // Skip stale items: low-volume feeds (e.g. rekt.news) otherwise surface
+    // weeks-old posts as "today's" news. Items without a date are kept.
+    const dateStr = item.match(/<(?:pubDate|dc:date|published|updated)[^>]*>([\s\S]*?)<\//i)?.[1];
+    const ts = dateStr ? Date.parse(stripTags(dateStr).trim()) : NaN;
+    if (!Number.isNaN(ts) && Date.now() - ts > MAX_ITEM_AGE_MS) continue;
     if (seen.has(url)) continue;
     seen.add(url);
     results.push({ title, url, summary, source: sourceName, sourceDomain });
