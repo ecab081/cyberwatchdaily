@@ -74,11 +74,18 @@ async function fetchNews() {
   btn.disabled = true;
   btn.textContent = '⚡ Scanning...';
 
-  document.getElementById('feed').innerHTML = `
+  // If the server-rendered snapshot is on the page, keep it visible while the
+  // live feed loads instead of blanking it to a spinner.
+  const hasSnapshot = !!document.querySelector('#feed [data-snapshot]');
+  if (hasSnapshot) {
+    document.getElementById('last-updated').textContent = '// Refreshing live feed...';
+  } else {
+    document.getElementById('feed').innerHTML = `
     <div class="loading-state">
       <div class="loading-text">// SCANNING THREAT INTELLIGENCE FEEDS...</div>
       <div class="loading-bar"></div>
     </div>`;
+  }
   document.getElementById('filters').style.display = 'none';
 
   try {
@@ -97,6 +104,12 @@ async function fetchNews() {
     document.getElementById('last-updated').textContent =
       '// Updated ' + new Date().toLocaleTimeString();
   } catch(err) {
+    if (hasSnapshot) {
+      document.getElementById('last-updated').textContent = '// Live refresh failed · showing today\'s snapshot';
+      btn.disabled = false;
+      btn.textContent = '↻ Refresh';
+      return;
+    }
     document.getElementById('feed').innerHTML = `
       <div class="empty-state">
         <div class="empty-title" style="color:var(--red);">// ERROR: ${err.message}</div>

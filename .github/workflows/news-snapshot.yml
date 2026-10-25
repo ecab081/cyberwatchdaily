@@ -1,0 +1,33 @@
+name: Homepage News Snapshot
+
+on:
+  schedule:
+    - cron: '30 10 * * *'   # 6:30am ET (EDT) — before the newsletter and blog runs
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: index-html-writers
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Write static news snapshot into index.html
+        run: node scripts/snapshot-news.js
+      - name: Commit and push
+        run: |
+          git config user.name "CyberWatch Bot"
+          git config user.email "bot@cyberwatchdaily.net"
+          git add index.html
+          if git diff --staged --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Auto: homepage news snapshot $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
+          git push

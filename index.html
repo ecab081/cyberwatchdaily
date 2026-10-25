@@ -35,8 +35,6 @@
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
 <script type="text/javascript">(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A7340460-0030-40c3-8d06-93cad768271a1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');</script>
-<!-- Ethical Ads — replace YOUR_PUBLISHER_ID after approval at ethicalads.io -->
-<script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
 <style>
   :root {
     --bg: #080c0f;
@@ -692,16 +690,21 @@
   .footer-links a { color: var(--text3); }
   .footer-links a:hover { color: var(--green); text-decoration: none; }
 
-  /* ── AD PLACEHOLDER ── */
-  .ad-placeholder {
+  /* ── STATIC NEWS SNAPSHOT (written daily by scripts/snapshot-news.js) ── */
+  .snapshot-heading {
     background: var(--bg2);
-    border: 1px dashed var(--border);
-    padding: 1rem;
-    text-align: center;
+    padding: 0.75rem 1.5rem;
     font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text3);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
+  .news-card .card-title { font-size: 16px; }
+
+  /* Blog preview hover (was an inline onmouseover handler) */
+  #blog-preview a:hover { background: var(--surface2) !important; }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
@@ -711,15 +714,6 @@
     .hero::after { display: none; }
   }
 </style>
-<!-- Google AdSense Auto Ads -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819"
-     crossorigin="anonymous"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-6298202092368819",
-    enable_page_level_ads: true
-  });
-</script>
 </head>
 <body>
 
@@ -787,7 +781,7 @@
     </div>
 
     <!-- Domain Filters -->
-    <div style="display:flex;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);">
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);">
       <span style="font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;padding-right:4px;">Domain:</span>
       <button class="filter-btn active" id="domain-all">All</button>
       <button class="filter-btn" id="domain-cybersecurity" style="border-color:rgba(0,255,136,0.3);">Cybersecurity</button>
@@ -804,22 +798,20 @@
 
 
     <div id="feed">
+    <!-- NEWS-SNAPSHOT:START -->
       <div class="empty-state">
         <div class="empty-icon">[ ]</div>
         <div class="empty-title">Loading today's threats...</div>
         <div class="empty-sub">Scanning cybersecurity feeds, please wait a moment</div>
       </div>
+    <!-- NEWS-SNAPSHOT:END -->
     </div>
   </div>
 
   <!-- RIGHT: SIDEBAR -->
   <aside class="sidebar">
 
-    <!-- Ad Placeholder -->
-    <div class="ad-placeholder">
-      <!-- Google AdSense goes here -->
-      Advertisement
-    </div>
+    <!-- Manual ad units removed until AdSense approval; Auto Ads (head script) will place ads once approved -->
 
     <!-- Newsletter -->
 
@@ -854,44 +846,36 @@
           <div class="tool-name">NordVPN</div>
           <div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div>
         </div>
-        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tool-badge">Get 70% Off</a>
+        <a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="sponsored noopener" class="tool-badge">Get 70% Off</a>
       </div>
       <div class="tool-link">
         <div>
           <div class="tool-name">NordPass</div>
           <div style="font-size:11px;color:var(--text3);">Secure password manager</div>
         </div>
-        <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tool-badge">Try Free</a>
+        <a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="sponsored noopener" class="tool-badge">Try Free</a>
       </div>
       <div class="tool-link">
         <div>
           <div class="tool-name">Bitwarden</div>
           <div style="font-size:11px;color:var(--text3);">Open-source password manager</div>
         </div>
-        <a href="https://bitwarden.com" target="_blank" class="tool-badge">Try Free</a>
+        <a href="https://bitwarden.com" target="_blank" rel="noopener" class="tool-badge">Try Free</a>
       </div>
       <div class="tool-link">
         <div>
           <div class="tool-name">DeleteMe</div>
           <div style="font-size:11px;color:var(--text3);">Remove your data from the web</div>
         </div>
-        <a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tool-badge">10% Off</a>
+        <a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" rel="sponsored noopener" class="tool-badge">10% Off</a>
       </div>
       <div class="tool-link">
         <div>
           <div class="tool-name">Aura</div>
           <div style="font-size:11px;color:var(--text3);">Identity theft protection</div>
         </div>
-        <a href="https://www.aura.com/" target="_blank" class="tool-badge">Try Free</a>
+        <a href="https://www.aura.com/" target="_blank" rel="sponsored noopener" class="tool-badge">Try Free</a>
       </div>
-    </div>
-
-
-
-<!-- Second Ad -->
-    <div class="ad-placeholder" style="min-height:250px;display:flex;align-items:center;justify-content:center;">
-      <!-- Google AdSense goes here -->
-      Advertisement
     </div>
 
   </aside>
@@ -935,7 +919,7 @@
       <div style="font-family: var(--mono); font-size: 11px; color: var(--green); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem;">// About</div>
       <h2 style="font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 1rem;">CyberWatch Daily</h2>
       <p style="font-size: 14px; color: var(--text2); line-height: 1.8; margin-bottom: 1rem;">
-        Written by <strong><a href="/about.html" style="color:inherit;">E. Cab</a></strong>, a cybersecurity analyst with hands-on experience in defensive operations, threat intelligence, and incident response. CyberWatch Daily delivers daily threat intelligence and expert analysis to help you stay ahead of the latest cyber threats. Every story is AI-curated, analyst-reviewed, and threat-rated so you can quickly understand what matters most — without having to wade through dozens of sources yourself.
+        Written by <strong><a href="/about.html" style="color:inherit;">E. Cab</a></strong>, a cybersecurity analyst with hands-on experience in defensive operations, threat intelligence, and incident response. CyberWatch Daily delivers daily threat intelligence and expert analysis to help you stay ahead of the latest cyber threats. The live news feed is AI-curated and threat-rated so you can quickly see what matters most — without having to wade through dozens of sources yourself.
       </p>
     </div>
     <div>
@@ -943,7 +927,7 @@
       <div style="display: flex; flex-direction: column; gap: 12px;">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Email</span>
-          <a href="/contact.html" style="font-family: var(--mono); font-size: 13px; color: var(--green);"><span class="__cf_email__" data-cfemail="d2b7b1b3b092bfb3bbbefcb1bdbf">[email&#160;protected]</span></a>
+          <a href="/contact.html" style="font-family: var(--mono); font-size: 13px; color: var(--green);">Contact form</a>
         </div>
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-family: var(--mono); font-size: 12px; color: var(--text3); width: 80px;">Advertise</span>
@@ -977,13 +961,12 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="/scripts/main.js" defer></script>
 
 
-<script>
-// Load latest blog posts for homepage preview
-(function() {
+<!-- Data source for scripts/generate-post.js (updateHomepageBlogPreview). Not executed:
+     the static cards in #blog-preview above are what visitors and crawlers see. -->
+<script type="text/plain" id="blog-preview-data">
   var posts = [
     {
       title: "Quantum Threat 2026: How to Protect Your Encryption Now",
@@ -1000,23 +983,6 @@
       excerpt: "Discover how threat actors are evolving in 2026 with AI-powered autonomous attacks, living-off-the-land exploitation, supply chain compromises, and ze..."
     }
   ];
-
-  var container = document.getElementById('blog-preview');
-  if (!container) return;
-
-  container.style.background = 'transparent';
-  container.innerHTML = posts.map(function(p) {
-    return '<a href="' + p.url + '" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">' +
-      '<div style="margin-bottom:8px;">' +
-        '<span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">' + p.category + '</span>' +
-        '<span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">' + p.date + '</span>' +
-      '</div>' +
-      '<div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">' + p.title + '</div>' +
-      '<div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">' + p.excerpt + '</div>' +
-      '<span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>' +
-    '</a>';
-  }).join('');
-})();
 </script>
 </body>
 </html>
