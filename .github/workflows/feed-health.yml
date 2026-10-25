@@ -1,0 +1,52 @@
+name: Feed Health Check
+
+# Records how many articles each news source returns, so dead sources are
+# visible in data/feed-health.json without needing access to Vercel logs.
+on:
+  schedule:
+    - cron: '17 11 * * 1'   # Mondays, ~7am ET
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: index-html-writers
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Query live news API in debug mode
+        run: |
+          mkdir -p data
+          curl -sS --max-time 90 "https://cyberwatchdaily.net/api/news?debug=1" -o /tmp/debug.json
+          node -e '
+            const d = require("/tmp/debug.json")._debug || {};
+            const all = [...(d.htmlSources || []).map(s => ({ ...s, type: "html" })),
+                         ...(d.rssSources || []).map(s => ({ ...s, type: "rss" }))];
+            const out = {
+              checkedAt: new Date().toISOString(),
+              error: d.error || null,
+              deadSources: all.filter(s => !s.rawCount).map(s => s.name),
+              onFallback: all.filter(s => s.usedFallback).map(s => s.name),
+              postClassification: d.postClassification || null,
+              sources: all,
+            };
+            require("fs").writeFileSync("data/feed-health.json", JSON.stringify(out, null, 2) + "\n");
+            console.log("Dead sources:", out.deadSources.join(", ") || "none");
+          '
+      - name: Commit
+        run: |
+          git config user.name "CyberWatch Bot"
+          git config user.email "bot@cyberwatchdaily.net"
+          git add data/feed-health.json
+          git diff --staged --quiet && exit 0
+          git commit -m "Auto: feed health $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
+          git push

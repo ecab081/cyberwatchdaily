@@ -19,12 +19,6 @@ const SOURCES = [
     isArticle: (url) => /^https:\/\/krebsonsecurity\.com\/\d{4}\/\d{2}\/.+\/$/.test(url),
   },
   {
-    name: 'Dark Reading',
-    url: 'https://www.darkreading.com/latest-news',
-    domain: 'cybersecurity',
-    isArticle: (url) => /^https:\/\/www\.darkreading\.com\/[a-z0-9-]+\/[a-z0-9-]+(?:\?.*)?$/i.test(url),
-  },
-  {
     name: 'Hackread',
     url: 'https://hackread.com/latest/',
     domain: 'cybersecurity',
@@ -65,12 +59,6 @@ const SOURCES = [
     isArticle: (url) => /^https:\/\/cointelegraph\.com\/news\/[a-z0-9-]+(?:\?.*)?$/.test(url),
   },
   {
-    name: 'The Block',
-    url: 'https://www.theblock.co/tag/hacks',
-    domain: 'crypto',
-    isArticle: (url) => /^https:\/\/www\.theblock\.co\/post\/\d+\/[a-z0-9-]+(?:\?.*)?$/.test(url),
-  },
-  {
     name: 'Decrypt',
     url: 'https://decrypt.co/news',
     domain: 'crypto',
@@ -81,12 +69,6 @@ const SOURCES = [
     url: 'https://www.coindesk.com/tag/security/',
     domain: 'crypto',
     isArticle: (url) => /^https:\/\/www\.coindesk\.com\/[a-z]+\/\d{4}\/\d{2}\/\d{2}\/.+(?:\?.*)?$/i.test(url),
-  },
-  {
-    name: 'Lookonchain',
-    url: 'https://lookonchain.com/',
-    domain: 'crypto',
-    isArticle: (url) => /^https:\/\/lookonchain\.com\/post\/.+(?:\?.*)?$/i.test(url),
   },
 
   // ── Quantum Computing Sources ─────────────────────────────────────
@@ -108,18 +90,39 @@ const SOURCES = [
     domain: 'quantum',
     isArticle: (url) => /^https:\/\/research\.ibm\.com\/blog\/.+(?:\?.*)?$/i.test(url),
   },
-  {
-    name: 'Quantum Computing Report',
-    url: 'https://quantumcomputingreport.com/',
-    domain: 'quantum',
-    isArticle: (url) => /^https:\/\/quantumcomputingreport\.com\/\d{4}\/\d{2}\/\d{2}\/.+\/?(?:\?.*)?$/i.test(url),
-  },
 ];
 
 // ── Google News RSS feeds for X/social influencers ─────────────────
 // These surface news articles mentioning these accounts/experts
 // without needing X API access
 const RSS_SOURCES = [
+  // Former HTML scrapers that started returning 0 (bot-blocked / JS-rendered
+  // pages). Now read via the publishers' RSS, with a Google News fallback
+  // tried only if the primary feed fails or is empty. Changed 2026-10-25.
+  {
+    name: 'Dark Reading',
+    url: 'https://www.darkreading.com/rss.xml',
+    fallbackUrls: ['https://news.google.com/rss/search?q=site:darkreading.com+when:3d&hl=en-US&gl=US&ceid=US:en'],
+    domain: 'cybersecurity',
+  },
+  {
+    name: 'The Block',
+    url: 'https://www.theblock.co/rss.xml',
+    fallbackUrls: ['https://news.google.com/rss/search?q=site:theblock.co+(hack+OR+exploit+OR+breach+OR+drained)+when:7d&hl=en-US&gl=US&ceid=US:en'],
+    domain: 'crypto',
+  },
+  {
+    name: 'Crypto Exploits & Hacks',  // replaces Lookonchain (no feed; on-chain analytics, not security)
+    url: 'https://rekt.news/rss/feed.xml',
+    fallbackUrls: ['https://news.google.com/rss/search?q=crypto+(exploit+OR+hack+OR+drained)+protocol+when:3d&hl=en-US&gl=US&ceid=US:en'],
+    domain: 'crypto',
+  },
+  {
+    name: 'Quantum Computing Report',
+    url: 'https://quantumcomputingreport.com/feed/',
+    fallbackUrls: ['https://news.google.com/rss/search?q=site:quantumcomputingreport.com+when:14d&hl=en-US&gl=US&ceid=US:en'],
+    domain: 'quantum',
+  },
   // Cybersecurity X influencers
   {
     name: 'SwiftOnSecurity',
@@ -400,14 +403,25 @@ function parseRSS(xml, sourceName, sourceDomain) {
   return results;
 }
 
+// Which URL actually produced articles for each source (shown in ?debug=1)
+const rssUsedUrl = new Map();
+
 async function getRSSArticles(source) {
-  try {
-    const xml = await fetchText(source.url);
-    return parseRSS(xml, source.name, source.domain);
-  } catch (error) {
-    console.error(`RSS fetch failed for ${source.name}:`, error.message);
-    return [];
+  const urls = [source.url, ...(source.fallbackUrls || [])];
+  for (const url of urls) {
+    try {
+      const xml = await fetchText(url);
+      const items = parseRSS(xml, source.name, source.domain);
+      if (items.length) {
+        rssUsedUrl.set(source.name, url);
+        return items;
+      }
+    } catch (error) {
+      console.error(`RSS fetch failed for ${source.name} (${url}):`, error.message);
+    }
   }
+  rssUsedUrl.set(source.name, null);
+  return [];
 }
 
 function extractMeta(html, names) {
@@ -621,7 +635,7 @@ export default async function handler(req, res) {
 
     const debugInfo = debug ? {
       htmlSources: SOURCES.map((s, i) => ({ name: s.name, domain: s.domain, rawCount: htmlGroups[i].length })),
-      rssSources: RSS_SOURCES.map((s, i) => ({ name: s.name, domain: s.domain, url: s.url, rawCount: rssGroups[i].length })),
+      rssSources: RSS_SOURCES.map((s, i) => ({ name: s.name, domain: s.domain, url: rssUsedUrl.get(s.name) ?? s.url, usedFallback: !!rssUsedUrl.get(s.name) && rssUsedUrl.get(s.name) !== s.url, rawCount: rssGroups[i].length })),
     } : null;
 
     // Don't truncate before classification — process ALL raw articles so
