@@ -123,17 +123,8 @@ const RSS_SOURCES = [
     fallbackUrls: ['https://news.google.com/rss/search?q=site:quantumcomputingreport.com+when:14d&hl=en-US&gl=US&ceid=US:en'],
     domain: 'quantum',
   },
-  // Cybersecurity X influencers
-  {
-    name: 'SwiftOnSecurity',
-    url: 'https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity+when:14d&hl=en-US&gl=US&ceid=US:en',
-    domain: 'cybersecurity',
-  },
-  {
-    name: 'Mikko Hyppönen',
-    url: 'https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat+when:14d&hl=en-US&gl=US&ceid=US:en',
-    domain: 'cybersecurity',
-  },
+  // (SwiftOnSecurity / Mikko Hyppönen name searches removed 2026-10-25:
+  //  mostly empty or off-topic results, e.g. Taylor Swift articles)
   {
     name: 'CISA Alerts',
     url: 'https://www.cisa.gov/cybersecurity-advisories/all.xml',
@@ -263,6 +254,7 @@ const RSS_SOURCES = [
   {
     name: 'Mandiant / Google Threat Intelligence',
     url: 'https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/',
+    fallbackUrls: ['https://news.google.com/rss/search?q=site:cloud.google.com/blog/topics/threat-intelligence+when:14d&hl=en-US&gl=US&ceid=US:en'],
     // Tagged 'nationstate' — unlike The Record, this outlet's content is
     // overwhelmingly APT-attribution research, so the sourceDomain fallback
     // in classifyDomain() is a reasonable default even on the rare post
