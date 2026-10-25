@@ -72,7 +72,16 @@ async function getCandidateStories() {
     .filter(a => !coveredUrls.has(a.url))
     .filter(a => !tooSimilar(a.title, titles))
     .sort((a, b) => (b.threat_level - a.threat_level) || ((domainRank[a.domain] ?? 3) - (domainRank[b.domain] ?? 3)))
-    .slice(0, MAX_CANDIDATES);
+    .slice(0, MAX_CANDIDATES)
+    .map(cleanStory);
+}
+
+// Google News RSS items carry the real publisher as a ' - Publisher' title
+// suffix, while a.source is our internal feed label. Use the publisher.
+function cleanStory(a) {
+  const m = a.title.match(/^(.*\S)\s+[-\u2013\u2014]\s+([^-\u2013\u2014]{2,40})$/);
+  if (m && /news\.google\.com/.test(a.url)) return { ...a, title: m[1], source: m[2].trim() };
+  return a;
 }
 
 // Models sometimes emit raw newlines/tabs inside JSON string values (code
@@ -134,6 +143,7 @@ Rules:
 - 1,400-2,500 words. Substance over length: no padding, no repeated points, no generic history of phishing/ransomware.
 - Clear, expert, plain-English voice. Use h2, h3, p, ul, ol, li, strong, em, blockquote, pre, code tags.
 - Mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356) or Bitwarden (https://bitwarden.com) ONLY if one directly addresses the risk in this story; otherwise mention none.
+- Write in neutral analyst voice. Do not use first person ("I found", "I checked", "in my experience"); say "public reporting does not confirm…" instead.
 - MITRE ATT&CK: only list technique IDs you are certain of, and double-check every ID matches its technique name (e.g. Enterprise T1190 = Exploit Public-Facing Application; ICS T0836 = Modify Parameter). Fewer correct IDs beat many shaky ones.
 - Do NOT include <cite> tags, citation markers, footnote numbers, or any citation/reference markup — this HTML is published as-is.
 
