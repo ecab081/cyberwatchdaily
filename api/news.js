@@ -126,12 +126,12 @@ const RSS_SOURCES = [
   // Cybersecurity X influencers
   {
     name: 'SwiftOnSecurity',
-    url: 'https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'cybersecurity',
   },
   {
     name: 'Mikko Hyppönen',
-    url: 'https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'cybersecurity',
   },
   {
@@ -142,12 +142,12 @@ const RSS_SOURCES = [
   // Crypto X influencers
   {
     name: 'Andreas Antonopoulos',
-    url: 'https://news.google.com/rss/search?q=%22Andreas+Antonopoulos%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Andreas+Antonopoulos%22+bitcoin+crypto+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'crypto',
   },
   {
     name: 'Pomp (Anthony Pompliano)',
-    url: 'https://news.google.com/rss/search?q=%22Pompliano%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Pompliano%22+bitcoin+crypto+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'crypto',
   },
   {
@@ -158,37 +158,37 @@ const RSS_SOURCES = [
   // Quantum X influencers + expanded sources
   {
     name: 'Scott Aaronson News',
-    url: 'https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'IBM Quantum News',
-    url: 'https://news.google.com/rss/search?q=%22IBM+Quantum%22+OR+%22Google+Quantum%22+computing&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22IBM+Quantum%22+OR+%22Google+Quantum%22+computing+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'Quantum Threat',
-    url: 'https://news.google.com/rss/search?q=quantum+computing+cryptography+security+threat&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=quantum+computing+cryptography+security+threat+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'NIST Post-Quantum',
-    url: 'https://news.google.com/rss/search?q=NIST+post-quantum+cryptography&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=NIST+post-quantum+cryptography+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'Post-Quantum Migration',
-    url: 'https://news.google.com/rss/search?q=%22post-quantum%22+OR+%22PQC%22+cryptography&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22post-quantum%22+OR+%22PQC%22+cryptography+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'Harvest Now Decrypt Later',
-    url: 'https://news.google.com/rss/search?q=%22harvest+now+decrypt+later%22+OR+%22quantum+threat%22+security&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22harvest+now+decrypt+later%22+OR+%22quantum+threat%22+security+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
     name: 'Quantum Computing Security 2026',
-    url: 'https://news.google.com/rss/search?q=quantum+computing+encryption+security&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=quantum+computing+encryption+security+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'quantum',
   },
   {
@@ -200,22 +200,22 @@ const RSS_SOURCES = [
   // ── AI Security sources ────────────────────────────────────────────────
   {
     name: 'AI Security News',
-    url: 'https://news.google.com/rss/search?q=%22AI+security%22+OR+%22AI+vulnerability%22+OR+%22prompt+injection%22&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22AI+security%22+OR+%22AI+vulnerability%22+OR+%22prompt+injection%22+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'ai',
   },
   {
     name: 'AI-Powered Attacks',
-    url: 'https://news.google.com/rss/search?q=%22AI-powered%22+cyberattack+OR+%22AI+malware%22+OR+deepfake+fraud&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22AI-powered%22+cyberattack+OR+%22AI+malware%22+OR+deepfake+fraud+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'ai',
   },
   {
     name: 'LLM Security',
-    url: 'https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'ai',
   },
   {
     name: 'AI Safety & Risk',
-    url: 'https://news.google.com/rss/search?q=%22AI+safety%22+cybersecurity+risk+OR+%22AI+agent%22+security&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22AI+safety%22+cybersecurity+risk+OR+%22AI+agent%22+security+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'ai',
   },
 
@@ -223,27 +223,27 @@ const RSS_SOURCES = [
   // scoped per explicit request, not a generic "any government" bucket)
   {
     name: 'China State-Sponsored Hackers',
-    url: 'https://news.google.com/rss/search?q=%22Chinese+state-sponsored%22+OR+%22China+hackers%22+OR+%22Volt+Typhoon%22+OR+%22Salt+Typhoon%22+cyber&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Chinese+state-sponsored%22+OR+%22China+hackers%22+OR+%22Volt+Typhoon%22+OR+%22Salt+Typhoon%22+cyber+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
   {
     name: 'Russia APT Threats',
-    url: 'https://news.google.com/rss/search?q=%22Russian+hackers%22+OR+%22APT28%22+OR+%22APT29%22+OR+Sandworm+cyber&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Russian+hackers%22+OR+%22APT28%22+OR+%22APT29%22+OR+Sandworm+cyber+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
   {
     name: 'North Korea Lazarus Group',
-    url: 'https://news.google.com/rss/search?q=%22Lazarus+Group%22+OR+%22North+Korean+hackers%22+OR+Kimsuky+cyber&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Lazarus+Group%22+OR+%22North+Korean+hackers%22+OR+Kimsuky+cyber+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
   {
     name: 'Iran Cyber Threats',
-    url: 'https://news.google.com/rss/search?q=%22Iranian+hackers%22+OR+IRGC+cyber+OR+APT34+OR+MuddyWater&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=%22Iranian+hackers%22+OR+IRGC+cyber+OR+APT34+OR+MuddyWater+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
   {
     name: 'Nation-State Advisories',
-    url: 'https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack&hl=en-US&gl=US&ceid=US:en',
+    url: 'https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack+when:14d&hl=en-US&gl=US&ceid=US:en',
     domain: 'nationstate',
   },
 
@@ -373,7 +373,7 @@ function extractAnchors(html, baseUrl, source) {
   return results;
 }
 
-const MAX_ITEM_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const MAX_ITEM_AGE_MS = 14 * 24 * 60 * 60 * 1000;
 
 // ── RSS Parser ────────────────────────────────────────────────────────
 function parseRSS(xml, sourceName, sourceDomain) {
@@ -381,7 +381,8 @@ function parseRSS(xml, sourceName, sourceDomain) {
   const seen = new Set();
   const itemRegex = /<item[\s\S]*?<\/item>/gi;
   const items = xml.match(itemRegex) || [];
-  for (const item of items.slice(0, 6)) {
+  for (const item of items) {
+    if (results.length >= 6) break;
     // Extract title
     const titleMatch = item.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
     const title = stripTags(titleMatch?.[1] || '').trim();
