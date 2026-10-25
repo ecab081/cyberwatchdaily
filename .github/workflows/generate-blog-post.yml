@@ -7,6 +7,10 @@ on:
     - cron: '0 14 * * 5'
   workflow_dispatch:
 
+concurrency:
+  group: index-html-writers
+  cancel-in-progress: false
+
 jobs:
   generate-post:
     runs-on: ubuntu-latest
@@ -26,6 +30,7 @@ jobs:
         run: |
           git config --global user.name "CyberWatch Bot"
           git config --global user.email "bot@cyberwatchdaily.net"
-          git add blog/ sitemap.xml
+          mkdir -p data && git add blog/ sitemap.xml data/
           git diff --staged --quiet || git commit -m "Auto: New blog post $(date +'%Y-%m-%d')"
+          git pull --rebase origin main
           git push

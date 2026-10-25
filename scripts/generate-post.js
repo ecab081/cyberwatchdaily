@@ -8,45 +8,68 @@ const AUTHOR_NAME = 'E. Cab';
 const AUTHOR_TITLE = 'Cybersecurity Analyst';
 const AUTHOR_URL = 'https://cyberwatchdaily.net/about.html';
 
-// Topics weighted heavily toward phishing, ransomware, and threat actors
-const TOPICS = [
-  // ── PHISHING (3 out of 12) ─────────────────────────────────────────────────
-  'Write a comprehensive, expert-level guide on phishing attacks in 2026 — the latest techniques attackers are using, real-world examples from this year, and a step-by-step defense playbook for individuals and organizations',
-  'Write an in-depth analysis of spear phishing and whaling attacks in 2026 — how cybercriminals target executives and high-value individuals, real named incidents, and exactly how to defend against highly targeted phishing campaigns',
-  'Write a detailed expert guide on how to recognize and defend against phishing attacks — including email phishing, SMS smishing, voice vishing, and QR code quishing, with concrete examples and actionable defense steps for 2026',
+// ── Story selection ──────────────────────────────────────────────────────
+// Each post covers ONE specific, real story from today's live feed instead of
+// rotating through a fixed topic list. The old rotation produced ~20 near-
+// identical "Phishing 2026: Complete Guide" style posts, which is why AdSense
+// kept rejecting the site for "low value content" (consolidated 2026-10-25).
+const NEWS_API_URL = process.env.NEWS_API_URL || 'https://cyberwatchdaily.net/api/news';
+const COVERED_PATH = path.join(__dirname, '..', 'data', 'covered-stories.json');
+const DRY_RUN = process.env.DRY_RUN === '1';
+const MAX_CANDIDATES = 4;
+const TITLE_SIMILARITY_LIMIT = 0.5;
+const GENERIC_TITLE_RE = /\b(complete|ultimate|definitive|essential) (guide|playbook)\b|\bplaybook\b|\beverything you need\b/i;
 
-  // ── RANSOMWARE (3 out of 12) ───────────────────────────────────────────────
-  'Write a comprehensive expert analysis of ransomware attacks in 2026 — the most active ransomware groups, their tactics techniques and procedures, real-world attack case studies, and a detailed incident response and prevention guide',
-  'Write an in-depth guide on how to protect your organization from ransomware in 2026 — covering backup strategies, network segmentation, endpoint detection, employee training, and what to do if you are hit with ransomware',
-  'Write a detailed threat intelligence report on the top ransomware groups operating in 2026 — including LockBit, ALPHV/BlackCat, Clop, and emerging groups, their attack patterns, victim industries, ransom demands, and how to defend against each',
+const STOP = new Set('a an the and or of in on for to your you is are with how what why 2026 from by at as its it this that new vs'.split(' '));
+function tokens(t) {
+  return new Set(String(t || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !STOP.has(w)));
+}
+function similarity(a, b) {
+  const A = tokens(a), B = tokens(b);
+  if (!A.size || !B.size) return 0;
+  let inter = 0; for (const w of A) if (B.has(w)) inter++;
+  return inter / Math.min(A.size, B.size);
+}
 
-  // ── THREAT ACTORS (3 out of 12) ────────────────────────────────────────────
-  'Write a comprehensive threat intelligence analysis of the most dangerous nation-state cyber threat actors in 2026 — including APT groups from Russia, China, North Korea, and Iran, their targets, techniques, and what organizations can do to defend against state-sponsored attacks',
-  'Write an expert deep-dive on cybercriminal threat actor groups in 2026 — who the most prolific groups are, how they operate, what industries they target, how they monetize attacks, and actionable threat intelligence for defenders',
-  'Write a detailed analysis of how threat actors are evolving their tactics in 2026 — including AI-powered attacks, living-off-the-land techniques, supply chain compromises, and zero-day exploitation, with real named threat actors and defense recommendations',
+function existingTitles() {
+  const dir = path.join(__dirname, '..', 'blog');
+  return fs.readdirSync(dir).filter(f => f.endsWith('.html') && f !== 'index.html').map(f => {
+    const m = fs.readFileSync(path.join(dir, f), 'utf8').match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+    return m ? m[1].replace(/<[^>]+>/g, '').trim() : '';
+  }).filter(Boolean);
+}
 
-  // ── QUANTUM COMPUTING (1 out of 12) ────────────────────────────────────────
-  'Write a comprehensive guide on quantum computing and its impact on cybersecurity in 2026 — what the quantum threat means for encryption, which algorithms are at risk, the latest post-quantum cryptography standards from NIST, and how organizations should prepare now',
+function loadCovered() {
+  try { return JSON.parse(fs.readFileSync(COVERED_PATH, 'utf8')); } catch (e) { return []; }
+}
 
-  // ── CRYPTO & WEB3 SECURITY (1 out of 12) ───────────────────────────────────
-  'Write an in-depth analysis of cryptocurrency and Web3 security threats in 2026 — including the latest wallet hacks, smart contract vulnerabilities, DeFi exploits, exchange breaches, and how crypto users can protect their digital assets',
+function saveCovered(entry) {
+  const list = loadCovered();
+  list.push(entry);
+  fs.mkdirSync(path.dirname(COVERED_PATH), { recursive: true });
+  fs.writeFileSync(COVERED_PATH, JSON.stringify(list.slice(-500), null, 2) + '\n');
+}
 
-  // ── AI-POWERED ATTACKS (1 out of 12) ───────────────────────────────────────
-  'Write a detailed expert guide on AI-powered cyber attacks in 2026 — how threat actors are using artificial intelligence to launch more sophisticated phishing, deepfake fraud, and automated attacks, and what defenders can do to stay ahead',
-];
+function tooSimilar(title, titles) {
+  return titles.find(t => similarity(title, t) >= TITLE_SIMILARITY_LIMIT) || null;
+}
 
-function getTopic() {
-  const blogDir = path.join(__dirname, '..', 'blog');
-  let postCount = 0;
-  try {
-    const files = fs.readdirSync(blogDir);
-    postCount = files.filter(f => f.endsWith('.html') && f !== 'index.html').length;
-  } catch (e) {
-    postCount = new Date().getDay();
-  }
-  const topicIndex = postCount % TOPICS.length;
-  console.log('Post count:', postCount, '| Topic index:', topicIndex, '| Topic:', TOPICS[topicIndex].substring(0, 80) + '...');
-  return TOPICS[topicIndex];
+async function getCandidateStories() {
+  const res = await fetch(NEWS_API_URL, { headers: { 'User-Agent': 'CyberWatchBlogGen/2.0' } });
+  if (!res.ok) throw new Error('News API HTTP ' + res.status);
+  const data = await res.json();
+  const covered = loadCovered();
+  const coveredUrls = new Set(covered.map(c => c.storyUrl));
+  const titles = existingTitles().concat(covered.map(c => c.storyTitle));
+  const domainRank = { nationstate: 0, cybersecurity: 0, ai: 1, crypto: 2, quantum: 2 };
+  return (data.articles || [])
+    .filter(a => a && a.title && /^https?:\/\//.test(a.url || ''))
+    .filter(a => !/cyberwatchdaily\.net/.test(a.url))
+    .filter(a => (a.threat_level || 0) >= 3)
+    .filter(a => !coveredUrls.has(a.url))
+    .filter(a => !tooSimilar(a.title, titles))
+    .sort((a, b) => (b.threat_level - a.threat_level) || ((domainRank[a.domain] ?? 3) - (domainRank[b.domain] ?? 3)))
+    .slice(0, MAX_CANDIDATES);
 }
 
 function slugify(title) {
@@ -62,38 +85,43 @@ function getReadTime(content) {
   return Math.max(5, Math.ceil(content.split(' ').length / 200));
 }
 
-async function generatePost() {
-  console.log('Generating blog post...');
+async function generatePost(story) {
+  console.log('Generating post for story: ' + story.title + ' (' + story.source + ')');
 
-  const topic = getTopic();
+  const prompt = `You are writing for CyberWatch Daily, a site run by a working SOC / defensive-operations analyst. Write an article about ONE specific news story:
 
-  const prompt = `${topic}
+STORY: ${story.title}
+SOURCE: ${story.source}
+URL: ${story.url}
+SUMMARY: ${story.summary || '(none)'}
 
-Search the web for the latest relevant information, recent examples from 2026, current statistics, named threat actors, and up-to-date advice.
+First, search the web for additional reporting on THIS incident (vendor advisories, CISA/CERT alerts, CVE entries, researcher write-ups) so the facts are accurate and current. Do not invent details: if something (victim count, attribution, CVE, IOCs) is not publicly confirmed, say so plainly.
 
-Write a comprehensive, authoritative article that would be useful to both beginners and intermediate users. The article must:
-- Be 2500-3500 words of substantive content (not counting HTML tags)
-- Include at least 8 distinct sections with h2 headings
-- Include h3 subheadings within sections for better structure
-- Include real-world examples, named incidents, specific statistics, and concrete actionable steps
-- Be written in a clear, expert but accessible voice
-- Include a "Key Takeaways" summary section
-- Include a practical step-by-step section where relevant
-- Include a Frequently Asked Questions (FAQ) section with 4-5 questions and detailed answers
-- Include a strong conclusion
-- Naturally mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356), or Bitwarden (https://bitwarden.com) where genuinely relevant
-- Be deeply useful — something a cybersecurity professional would be proud to share
-- Include the year 2026 naturally in headings and content where relevant for SEO
-- Do NOT repeat any paragraphs or sentences verbatim — every section must contain unique content
-- Do NOT include <cite> tags, citation markers, footnote numbers, or any citation/reference markup of any kind in the content field — this HTML is published directly to a live webpage as-is, so write finished, plain narrative prose with no leftover citation syntax from source lookups
+The article must be specific to this story, not a generic topic guide. Structure:
+- h2 "What happened" — the facts, timeline, who reported it
+- h2 "Who is affected" — products/versions, sectors, regions, scale
+- h2 "How the attack works" — technical detail; map to MITRE ATT&CK technique IDs where they genuinely apply; list any publicly released IOCs or CVEs
+- h2 "Detection guidance for defenders" — what to look for in logs/EDR/email telemetry; include at least one concrete example hunting query in a <pre><code> block (KQL or generic pseudo-query) with a one-line note on what it finds
+- h2 "Mitigation and response" — prioritized, concrete steps (patch versions, config changes, containment)
+- h2 "What individuals should do" — only if relevant to end users; skip otherwise
+- h2 "FAQ" — 3 short questions with answers
+- h2 "Bottom line" — 2-3 sentences of analyst judgment on how much this matters
+
+Rules:
+- 1,400-2,500 words. Substance over length: no padding, no repeated points, no generic history of phishing/ransomware.
+- Clear, expert, plain-English voice. Use h2, h3, p, ul, ol, li, strong, em, blockquote, pre, code tags.
+- Mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356) or Bitwarden (https://bitwarden.com) ONLY if one directly addresses the risk in this story; otherwise mention none.
+- Do NOT include <cite> tags, citation markers, footnote numbers, or any citation/reference markup — this HTML is published as-is.
+
+Title rules: under 70 characters, names the specific actor, vendor, product, CVE or victim involved (e.g. "Citrix Bleed 3 (CVE-2026-XXXX): What Defenders Need to Do"). Never use the words "Complete", "Ultimate", "Definitive", "Essential Guide" or "Playbook". Do not tack "2026" onto the title unless it is part of a name or CVE.
 
 Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
 {
-  "title": "SEO-optimized title under 65 characters that includes 2026 or a power word",
-  "category": "How-To Guide|Threat Analysis|Tool Review|Beginner Guide|News Explainer|Security Deep Dive",
-  "excerpt": "3-4 sentence compelling summary that explains exactly what the reader will learn and why it matters",
-  "content": "Full HTML article using h2, h3, p, ul, ol, li, strong, em, blockquote tags. Minimum 1500 words. Rich with specific details, statistics, named examples, and actionable advice. No repeated paragraphs.",
-  "seo_description": "Meta description 150-160 characters with primary keyword and value proposition",
+  "title": "...",
+  "category": "Threat Analysis|News Explainer|Security Deep Dive|How-To Guide",
+  "excerpt": "2-3 sentences: what happened and why the reader should care",
+  "content": "Full HTML article as specified",
+  "seo_description": "150-160 character meta description naming the specific incident",
   "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
 }`;
 
@@ -156,8 +184,17 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
   if (wordCount < 1000) {
     throw new Error('Content too short: ' + wordCount + ' words. Minimum 1000 required.');
   }
+  if (GENERIC_TITLE_RE.test(post.title)) {
+    throw new Error('Generic title rejected: ' + post.title);
+  }
+  post.sourceName = story.source;
+  post.sourceUrl = story.url;
 
   return post;
+}
+
+function escAttr(v) {
+  return String(v || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function buildPostHTML(post, slug, dateStr) {
@@ -197,18 +234,18 @@ function buildPostHTML(post, slug, dateStr) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${post.title} - CyberWatch Daily</title>
-<meta name="description" content="${post.seo_description}">
+<title>${escAttr(post.title)} - CyberWatch Daily</title>
+<meta name="description" content="${escAttr(post.seo_description)}">
 <link rel="canonical" href="https://cyberwatchdaily.net/blog/${slug}.html">
-<meta property="og:title" content="${post.title}">
-<meta property="og:description" content="${post.excerpt}">
+<meta property="og:title" content="${escAttr(post.title)}">
+<meta property="og:description" content="${escAttr(post.excerpt)}">
 <meta property="og:url" content="https://cyberwatchdaily.net/blog/${slug}.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CyberWatch Daily">
 <meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${post.title}">
-<meta name="twitter:description" content="${post.excerpt}">
+<meta name="twitter:title" content="${escAttr(post.title)}">
+<meta name="twitter:description" content="${escAttr(post.excerpt)}">
 <meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -253,6 +290,8 @@ h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-h
 .content strong{color:var(--text);font-weight:500;}
 .content em{color:var(--text2);font-style:italic;}
 .content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
 .content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
 .author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
 .author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
@@ -313,6 +352,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
 </div>
 <div class="content">
 ${post.content}
+${post.sourceUrl ? `<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="${escAttr(post.sourceUrl)}" target="_blank" rel="nofollow noopener">${escAttr(post.sourceName || post.sourceUrl)}</a></p>` : ''}
 </div>
 
 <div class="author-bio-box">
@@ -334,9 +374,6 @@ The tools below are independently selected based on security audits, transparenc
 </article>
 
 <aside class="sidebar">
-<div class="sc" style="padding:0;overflow:hidden;">
-<div data-ea-publisher="cyberwatchdaily" data-ea-type="image" style="width:100%;"></div>
-</div>
 <div class="sc"><div class="st">Daily Newsletter</div>
 <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
 <button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
@@ -517,38 +554,56 @@ function commitAndPushFile(filePath, message) {
   }
 }
 
-async function generatePostWithRetry(maxAttempts = 3) {
-  let lastErr;
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    try {
-      return await generatePost();
-    } catch (err) {
-      lastErr = err;
-      console.error(`Attempt ${attempt}/${maxAttempts} failed: ${err.message}`);
-      if (attempt < maxAttempts) {
-        const waitMs = attempt * 20000;
-        console.log(`Retrying in ${waitMs / 1000}s...`);
-        await new Promise(r => setTimeout(r, waitMs));
+async function generateFromCandidates() {
+  const candidates = await getCandidateStories();
+  if (!candidates.length) return null;
+  const titles = existingTitles();
+  for (const story of candidates) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const post = await generatePost(story);
+        const clash = tooSimilar(post.title, titles);
+        if (clash) throw new Error('Title too similar to existing post "' + clash + '"');
+        return { post, story };
+      } catch (err) {
+        console.error(`Story "${story.title.slice(0, 60)}" attempt ${attempt}/2 failed: ${err.message}`);
+        if (/too similar|Generic title/.test(err.message)) break;
+        if (attempt < 2) await new Promise(r => setTimeout(r, 20000));
       }
     }
   }
-  throw lastErr;
+  return null;
 }
 
 async function main() {
   try {
     console.log('CyberWatch Blog Post Generator Starting...');
 
-    const post = await generatePostWithRetry();
+    const result = await generateFromCandidates();
+    if (!result) {
+      // Better to skip a day than publish a generic filler post.
+      console.log('No suitable new story today (feed empty, all covered, or all too similar) — skipping.');
+      return;
+    }
+    const { post, story } = result;
     console.log('Generated: ' + post.title);
 
     const today = new Date().toISOString().split('T')[0];
     const slug = slugify(post.title) + '-' + today;
 
     const postHTML = buildPostHTML(post, slug, today);
+    if (DRY_RUN) {
+      const outDir = path.join(process.cwd(), 'dry-run');
+      fs.mkdirSync(outDir, { recursive: true });
+      fs.writeFileSync(path.join(outDir, slug + '.html'), postHTML);
+      fs.writeFileSync(path.join(outDir, 'story.json'), JSON.stringify({ story, title: post.title, words: post.content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length }, null, 2));
+      console.log('DRY RUN — wrote dry-run/' + slug + '.html; nothing published.');
+      return;
+    }
     const postPath = path.join(__dirname, '../blog', slug + '.html');
     fs.writeFileSync(postPath, postHTML);
     console.log('Post saved: blog/' + slug + '.html');
+    saveCovered({ date: today, slug, title: post.title, storyTitle: story.title, storyUrl: story.url });
 
     updateBlogIndex(post, slug, today);
     updateHomepageBlogPreview(post, slug, today);
