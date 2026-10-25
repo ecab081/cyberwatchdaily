@@ -18,6 +18,8 @@ const COVERED_PATH = path.join(__dirname, '..', 'data', 'covered-stories.json');
 const DRY_RUN = process.env.DRY_RUN === '1';
 const MAX_CANDIDATES = 4;
 const TITLE_SIMILARITY_LIMIT = 0.5;
+const ROUNDUP_RE = /weekly recap|week in review|this week in|roundup|round-up|newsletter|podcast|webinar|sponsored|daily briefing|links? of the (day|week)/i;
+const MODEL = process.env.BLOG_MODEL || 'claude-sonnet-5-5';
 const GENERIC_TITLE_RE = /\b(complete|ultimate|definitive|essential) (guide|playbook)\b|\bplaybook\b|\beverything you need\b/i;
 
 const STOP = new Set('a an the and or of in on for to your you is are with how what why 2026 from by at as its it this that new vs'.split(' '));
@@ -66,10 +68,31 @@ async function getCandidateStories() {
     .filter(a => a && a.title && /^https?:\/\//.test(a.url || ''))
     .filter(a => !/cyberwatchdaily\.net/.test(a.url))
     .filter(a => (a.threat_level || 0) >= 3)
+    .filter(a => !ROUNDUP_RE.test(a.title))
     .filter(a => !coveredUrls.has(a.url))
     .filter(a => !tooSimilar(a.title, titles))
     .sort((a, b) => (b.threat_level - a.threat_level) || ((domainRank[a.domain] ?? 3) - (domainRank[b.domain] ?? 3)))
     .slice(0, MAX_CANDIDATES);
+}
+
+// Models sometimes emit raw newlines/tabs inside JSON string values (code
+// blocks especially), which JSON.parse rejects. Escape them only inside strings.
+function escapeControlCharsInStrings(str) {
+  let out = '', inStr = false, esc = false;
+  for (const ch of str) {
+    if (inStr) {
+      if (esc) { out += ch; esc = false; continue; }
+      if (ch === '\\') { out += ch; esc = true; continue; }
+      if (ch === '"') { inStr = false; out += ch; continue; }
+      const code = ch.charCodeAt(0);
+      if (code < 0x20) { out += ch === '\n' ? '\\n' : ch === '\t' ? '\\t' : ch === '\r' ? '\\r' : ''; continue; }
+      out += ch;
+    } else {
+      if (ch === '"') inStr = true;
+      out += ch;
+    }
+  }
+  return out;
 }
 
 function slugify(title) {
@@ -111,6 +134,7 @@ Rules:
 - 1,400-2,500 words. Substance over length: no padding, no repeated points, no generic history of phishing/ransomware.
 - Clear, expert, plain-English voice. Use h2, h3, p, ul, ol, li, strong, em, blockquote, pre, code tags.
 - Mention NordVPN (https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902), NordPass (https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356) or Bitwarden (https://bitwarden.com) ONLY if one directly addresses the risk in this story; otherwise mention none.
+- MITRE ATT&CK: only list technique IDs you are certain of, and double-check every ID matches its technique name (e.g. Enterprise T1190 = Exploit Public-Facing Application; ICS T0836 = Modify Parameter). Fewer correct IDs beat many shaky ones.
 - Do NOT include <cite> tags, citation markers, footnote numbers, or any citation/reference markup — this HTML is published as-is.
 
 Title rules: under 70 characters, names the specific actor, vendor, product, CVE or victim involved (e.g. "Citrix Bleed 3 (CVE-2026-XXXX): What Defenders Need to Do"). Never use the words "Complete", "Ultimate", "Definitive", "Essential Guide" or "Playbook". Do not tack "2026" onto the title unless it is part of a name or CVE.
@@ -134,7 +158,7 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
       'anthropic-beta': 'web-search-2025-03-05'
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: MODEL,
       max_tokens: 16000,
       tools: [{ type: 'web_search_20250305', name: 'web_search' }],
       messages: [{ role: 'user', content: prompt }]
@@ -165,7 +189,7 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
 
   let post;
   try {
-    post = JSON.parse(jsonStr);
+    post = JSON.parse(escapeControlCharsInStrings(jsonStr));
   } catch(e) {
     console.log('JSON parse failed:', jsonStr.substring(0, 300));
     throw new Error('Could not parse JSON response: ' + e.message);
