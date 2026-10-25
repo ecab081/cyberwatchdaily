@@ -147,6 +147,8 @@ Return ONLY a valid JSON object with no markdown, no code fences, no extra text:
   // despite the prompt instruction, keeping the enclosed text intact.
   if (post.content) {
     post.content = post.content.replace(/<cite[^>]*>([\s\S]*?)<\/cite>/g, '$1');
+    // Also catch the malformed '(cite index="...">' form that leaked into 23 older posts
+    post.content = post.content.replace(/[(<]cite\b[^>]*>/g, '').replace(/<\/cite>/g, '');
   }
 
   const wordCount = post.content.replace(/<[^>]*>/g, '').split(/\s+/).length;
@@ -203,11 +205,11 @@ function buildPostHTML(post, slug, dateStr) {
 <meta property="og:url" content="https://cyberwatchdaily.net/blog/${slug}.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="CyberWatch Daily">
-<meta property="og:image" content="https://cyberwatchdaily.net/social-card.svg">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${post.title}">
 <meta name="twitter:description" content="${post.excerpt}">
-<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.svg">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
 <meta name="robots" content="index, follow">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <script type="application/ld+json">${schemaMarkup}</script>
