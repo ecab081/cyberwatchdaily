@@ -1,0 +1,341 @@
+{
+  "checkedAt": "2026-10-25T17:39:15.093Z",
+  "error": null,
+  "deadSources": [],
+  "onFallback": [
+    "Dark Reading"
+  ],
+  "postClassification": {
+    "cybersecurity": 66,
+    "crypto": 43,
+    "quantum": 57,
+    "ai": 25,
+    "nationstate": 32
+  },
+  "sources": [
+    {
+      "name": "The Hacker News",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "BleepingComputer",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Krebs on Security",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Hackread",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Troy Hunt",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Bruce Schneier",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Graham Cluley",
+      "domain": "cybersecurity",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Daniel Miessler",
+      "domain": "cybersecurity",
+      "rawCount": 2,
+      "type": "html"
+    },
+    {
+      "name": "CoinTelegraph",
+      "domain": "crypto",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Decrypt",
+      "domain": "crypto",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "CoinDesk",
+      "domain": "crypto",
+      "rawCount": 2,
+      "type": "html"
+    },
+    {
+      "name": "The Quantum Insider",
+      "domain": "quantum",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Scott Aaronson (Shtetl-Optimized)",
+      "domain": "quantum",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "IBM Research Blog",
+      "domain": "quantum",
+      "rawCount": 5,
+      "type": "html"
+    },
+    {
+      "name": "Dark Reading",
+      "domain": "cybersecurity",
+      "url": "https://news.google.com/rss/search?q=site:darkreading.com+when:3d&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": true,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "The Block",
+      "domain": "crypto",
+      "url": "https://www.theblock.co/rss.xml",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "Crypto Exploits & Hacks",
+      "domain": "crypto",
+      "url": "https://rekt.news/rss/feed.xml",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Quantum Computing Report",
+      "domain": "quantum",
+      "url": "https://quantumcomputingreport.com/feed/",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "SwiftOnSecurity",
+      "domain": "cybersecurity",
+      "url": "https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Mikko Hyppönen",
+      "domain": "cybersecurity",
+      "url": "https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "CISA Alerts",
+      "domain": "cybersecurity",
+      "url": "https://www.cisa.gov/cybersecurity-advisories/all.xml",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Andreas Antonopoulos",
+      "domain": "crypto",
+      "url": "https://news.google.com/rss/search?q=%22Andreas+Antonopoulos%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Pomp (Anthony Pompliano)",
+      "domain": "crypto",
+      "url": "https://news.google.com/rss/search?q=%22Pompliano%22+bitcoin+crypto&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "CoinDesk RSS",
+      "domain": "crypto",
+      "url": "https://www.coindesk.com/arc/outboundfeeds/rss/",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Scott Aaronson News",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "IBM Quantum News",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=%22IBM+Quantum%22+OR+%22Google+Quantum%22+computing&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 4,
+      "type": "rss"
+    },
+    {
+      "name": "Quantum Threat",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=quantum+computing+cryptography+security+threat&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "NIST Post-Quantum",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=NIST+post-quantum+cryptography&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "Post-Quantum Migration",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=%22post-quantum%22+OR+%22PQC%22+cryptography&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "Harvest Now Decrypt Later",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=%22harvest+now+decrypt+later%22+OR+%22quantum+threat%22+security&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Quantum Computing Security 2026",
+      "domain": "quantum",
+      "url": "https://news.google.com/rss/search?q=quantum+computing+encryption+security&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "The Quantum Insider RSS",
+      "domain": "quantum",
+      "url": "https://thequantuminsider.com/feed/",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "AI Security News",
+      "domain": "ai",
+      "url": "https://news.google.com/rss/search?q=%22AI+security%22+OR+%22AI+vulnerability%22+OR+%22prompt+injection%22&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "AI-Powered Attacks",
+      "domain": "ai",
+      "url": "https://news.google.com/rss/search?q=%22AI-powered%22+cyberattack+OR+%22AI+malware%22+OR+deepfake+fraud&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "LLM Security",
+      "domain": "ai",
+      "url": "https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "AI Safety & Risk",
+      "domain": "ai",
+      "url": "https://news.google.com/rss/search?q=%22AI+safety%22+cybersecurity+risk+OR+%22AI+agent%22+security&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "China State-Sponsored Hackers",
+      "domain": "nationstate",
+      "url": "https://news.google.com/rss/search?q=%22Chinese+state-sponsored%22+OR+%22China+hackers%22+OR+%22Volt+Typhoon%22+OR+%22Salt+Typhoon%22+cyber&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Russia APT Threats",
+      "domain": "nationstate",
+      "url": "https://news.google.com/rss/search?q=%22Russian+hackers%22+OR+%22APT28%22+OR+%22APT29%22+OR+Sandworm+cyber&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "North Korea Lazarus Group",
+      "domain": "nationstate",
+      "url": "https://news.google.com/rss/search?q=%22Lazarus+Group%22+OR+%22North+Korean+hackers%22+OR+Kimsuky+cyber&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 5,
+      "type": "rss"
+    },
+    {
+      "name": "Iran Cyber Threats",
+      "domain": "nationstate",
+      "url": "https://news.google.com/rss/search?q=%22Iranian+hackers%22+OR+IRGC+cyber+OR+APT34+OR+MuddyWater&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "Nation-State Advisories",
+      "domain": "nationstate",
+      "url": "https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "The Record (Recorded Future)",
+      "domain": "cybersecurity",
+      "url": "https://therecord.media/feed/",
+      "usedFallback": false,
+      "rawCount": 4,
+      "type": "rss"
+    },
+    {
+      "name": "Mandiant / Google Threat Intelligence",
+      "domain": "nationstate",
+      "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    },
+    {
+      "name": "CyberUpdates365",
+      "domain": "cybersecurity",
+      "url": "https://cyberupdates365.com/feed/",
+      "usedFallback": false,
+      "rawCount": 6,
+      "type": "rss"
+    }
+  ]
+}
