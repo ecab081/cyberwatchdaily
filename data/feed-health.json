@@ -1,21 +1,18 @@
 {
-  "checkedAt": "2026-10-25T17:41:07.031Z",
+  "checkedAt": "2026-10-25T17:41:56.902Z",
   "error": null,
-  "deadSources": [
-    "SwiftOnSecurity",
-    "Mikko Hyppönen",
-    "Mandiant / Google Threat Intelligence"
-  ],
+  "deadSources": [],
   "onFallback": [
     "Dark Reading",
-    "Crypto Exploits & Hacks"
+    "Crypto Exploits & Hacks",
+    "Mandiant / Google Threat Intelligence"
   ],
   "postClassification": {
     "cybersecurity": 54,
     "crypto": 40,
-    "quantum": 60,
+    "quantum": 59,
     "ai": 22,
-    "nationstate": 23
+    "nationstate": 26
   },
   "sources": [
     {
@@ -132,22 +129,6 @@
       "url": "https://quantumcomputingreport.com/feed/",
       "usedFallback": false,
       "rawCount": 6,
-      "type": "rss"
-    },
-    {
-      "name": "SwiftOnSecurity",
-      "domain": "cybersecurity",
-      "url": "https://news.google.com/rss/search?q=%22SwiftOnSecurity%22+cybersecurity+when:14d&hl=en-US&gl=US&ceid=US:en",
-      "usedFallback": false,
-      "rawCount": 0,
-      "type": "rss"
-    },
-    {
-      "name": "Mikko Hyppönen",
-      "domain": "cybersecurity",
-      "url": "https://news.google.com/rss/search?q=%22Mikko+Hypponen%22+OR+%22mikko%22+cybersecurity+threat+when:14d&hl=en-US&gl=US&ceid=US:en",
-      "usedFallback": false,
-      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -329,9 +310,9 @@
     {
       "name": "Mandiant / Google Threat Intelligence",
       "domain": "nationstate",
-      "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/",
-      "usedFallback": false,
-      "rawCount": 0,
+      "url": "https://news.google.com/rss/search?q=site:cloud.google.com/blog/topics/threat-intelligence+when:14d&hl=en-US&gl=US&ceid=US:en",
+      "usedFallback": true,
+      "rawCount": 3,
       "type": "rss"
     },
     {
