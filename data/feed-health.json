@@ -1,18 +1,17 @@
 {
-  "checkedAt": "2026-10-25T17:41:56.902Z",
+  "checkedAt": "2026-10-26T17:25:53.585Z",
   "error": null,
   "deadSources": [],
   "onFallback": [
     "Dark Reading",
-    "Crypto Exploits & Hacks",
-    "Mandiant / Google Threat Intelligence"
+    "Crypto Exploits & Hacks"
   ],
   "postClassification": {
-    "cybersecurity": 54,
+    "cybersecurity": 53,
     "crypto": 40,
-    "quantum": 59,
-    "ai": 22,
-    "nationstate": 26
+    "quantum": 62,
+    "ai": 26,
+    "nationstate": 24
   },
   "sources": [
     {
@@ -84,7 +83,7 @@
     {
       "name": "The Quantum Insider",
       "domain": "quantum",
-      "rawCount": 5,
+      "rawCount": 3,
       "type": "html"
     },
     {
@@ -248,7 +247,7 @@
       "domain": "ai",
       "url": "https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 2,
+      "rawCount": 3,
       "type": "rss"
     },
     {
@@ -304,15 +303,15 @@
       "domain": "cybersecurity",
       "url": "https://therecord.media/feed/",
       "usedFallback": false,
-      "rawCount": 4,
+      "rawCount": 5,
       "type": "rss"
     },
     {
       "name": "Mandiant / Google Threat Intelligence",
       "domain": "nationstate",
-      "url": "https://news.google.com/rss/search?q=site:cloud.google.com/blog/topics/threat-intelligence+when:14d&hl=en-US&gl=US&ceid=US:en",
-      "usedFallback": true,
-      "rawCount": 3,
+      "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/",
+      "usedFallback": false,
+      "rawCount": 2,
       "type": "rss"
     },
     {
