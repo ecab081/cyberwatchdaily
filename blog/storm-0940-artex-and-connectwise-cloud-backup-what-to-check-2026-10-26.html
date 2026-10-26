@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storm-0940, ARTEX and ConnectWise Cloud Backup: What to Check - CyberWatch Daily</title>
+<meta name="description" content="Microsoft ties the ConnectWise Cloud Backup supply chain attack to Storm-0940 and its ARTEX AI framework. IOCs, KQL hunts and Entra steps for defenders.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/storm-0940-artex-and-connectwise-cloud-backup-what-to-check-2026-10-26.html">
+<meta property="og:title" content="Storm-0940, ARTEX and ConnectWise Cloud Backup: What to Check">
+<meta property="og:description" content="Microsoft attributes the ConnectWise Cloud Backup (formerly SkyKick) supply chain compromise to Storm-0940, a China-state-aligned actor using the ARTEX agentic AI pentest framework. The actor used stolen application credentials to try sign-ins at more than 2,250 Microsoft 365 tenants, and some attacks reached privileged access in under three hours. Any tenant that has ever consented to a ConnectWise or SkyKick app should check its logs.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/storm-0940-artex-and-connectwise-cloud-backup-what-to-check-2026-10-26.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Storm-0940, ARTEX and ConnectWise Cloud Backup: What to Check">
+<meta name="twitter:description" content="Microsoft attributes the ConnectWise Cloud Backup (formerly SkyKick) supply chain compromise to Storm-0940, a China-state-aligned actor using the ARTEX agentic AI pentest framework. The actor used stolen application credentials to try sign-ins at more than 2,250 Microsoft 365 tenants, and some attacks reached privileged access in under three hours. Any tenant that has ever consented to a ConnectWise or SkyKick app should check its logs.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Storm-0940, ARTEX and ConnectWise Cloud Backup: What to Check","description":"Microsoft attributes the ConnectWise Cloud Backup (formerly SkyKick) supply chain compromise to Storm-0940, a China-state-aligned actor using the ARTEX agentic AI pentest framework. The actor used stolen application credentials to try sign-ins at more than 2,250 Microsoft 365 tenants, and some attacks reached privileged access in under three hours. Any tenant that has ever consented to a ConnectWise or SkyKick app should check its logs.","datePublished":"2026-10-26","dateModified":"2026-10-26","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/storm-0940-artex-and-connectwise-cloud-backup-what-to-check-2026-10-26.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">Threat Analysis</span><span class="date">October 26, 2026</span><span class="rt">10 min read</span></div>
+<h1>Storm-0940, ARTEX and ConnectWise Cloud Backup: What to Check</h1>
+<div class="excerpt">Microsoft attributes the ConnectWise Cloud Backup (formerly SkyKick) supply chain compromise to Storm-0940, a China-state-aligned actor using the ARTEX agentic AI pentest framework. The actor used stolen application credentials to try sign-ins at more than 2,250 Microsoft 365 tenants, and some attacks reached privileged access in under three hours. Any tenant that has ever consented to a ConnectWise or SkyKick app should check its logs.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Storm-0940</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">ARTEX</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">ConnectWise</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Microsoft 365</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Supply Chain Attack</span></div>
+</div>
+<div class="content">
+<p>The headline version of this story is that Chinese hackers used AI to attack supply chains. The operational version is narrower. A trusted backup app's credentials were stolen, and an autonomous tool then tried those credentials against thousands of Microsoft 365 tenants at machine speed. The AI element mostly changes how fast the attack runs. The entry point is an old problem: a vendor-held application identity with broad access to customer tenants.</p>
+
+<h2>What happened</h2>
+<p>ConnectWise has said it identified unauthorized access to application identities in its Cloud Backup environment, the product formerly sold as SkyKick. Public reporting puts the identification date at October 15, 2026, and ConnectWise published its advisory on October 16. Security firm Huntress raised the alarm after seeing the app sign in to customer tenants from a commercial hosting address. ConnectWise then disabled seven application identities on October 17 at 07:00 UTC, revoked the certificates used for the affected connections, and suspended Cloud Backup. SaaS Security and Cloud Management were also taken offline because they integrate with Cloud Backup.</p>
+<p>On October 21, Microsoft Threat Intelligence published a blog post attributing the compromise to <strong>Storm-0940</strong>. Microsoft describes Storm-0940 as a China-state-aligned actor active since 2021, with no known industry aliases. Its name follows the convention for a developing actor. Microsoft says the group used <strong>ARTEX</strong>, an open-source agentic AI penetration-testing framework, from at least September 2026. Microsoft describes ARTEX as a system of LLM-driven agents that run an autonomous penetration test. In this campaign it sped up scanning, reconnaissance, password spraying and OAuth application abuse.</p>
+<p>Key figures from Microsoft's reporting, as relayed by the press:</p>
+<ul>
+<li>Storm-0940 attempted sign-ins at <strong>more than 2,250 Microsoft 365 tenants</strong> using stolen ConnectWise app credentials. These authenticated as the applications, with no interactive user sign-in.</li>
+<li>Four application credentials produced more than 200 sign-ins in under four minutes, all from the same IP range.</li>
+<li>Some attacks reached privileged access less than three hours after initial targeting. In one tenant, an app assigned itself a top administrator role on October 15.</li>
+<li>A separate password-spray run between October 10 and 14 hit 327 accounts across eight organizations. It produced more than 151,000 failed logons, peaking near 2,900 failures per minute on October 11, and had no successes.</li>
+</ul>
+<p>Microsoft says its own products were not compromised or vulnerable. The Chinese Embassy in Washington rejected the allegations.</p>
+
+<h2>Who is affected</h2>
+<p>The exposure is any Microsoft 365 / Entra tenant where a ConnectWise Cloud Backup or SkyKick-related enterprise application is, or ever was, consented. Most of these are small and mid-sized businesses served by MSPs. One report notes that older tenants may list Cloud Management apps as &ldquo;SkyKick Cloud Manager,&rdquo; so searching by display name is unreliable. Search by Application ID instead.</p>
+<p><strong>Scale needs careful reading.</strong> The 2,250 figure counts tenants Storm-0940 <em>attempted</em> to sign in to, not tenants breached. Confirmed numbers are lower:</p>
+<ul>
+<li>Huntress confirmed unauthorized sign-ins in 162 tenants, later reported by other outlets as 173, and found almost 1,000 tenants with sign-in activity from the attacker's address.</li>
+<li>Microsoft says it identified Storm-0940 authentication and follow-on activity in multiple customer environments. It also says most targeting attempts failed, and that an affected app or successful sign-in does not prove data was accessed or exfiltrated.</li>
+<li>ConnectWise says it has no indicators that stored Cloud Backup data was compromised. It also says it has no view into customer tenants, so it cannot say whether any individual tenant was accessed.</li>
+<li>One MSP community report described exfiltration of email, Teams and SharePoint data from client tenants. That comes from a vendor blog summarizing community posts and is not confirmed in Microsoft's reporting.</li>
+</ul>
+<p>Reported target sectors include aerospace and defense, semiconductors, government, military, energy, financial services, automotive manufacturing, technology and think tanks. Microsoft lists 14 industries in total, and coverage is global. Public reporting does not give a tenant count by country or a confirmed list of named victims.</p>
+
+<h2>How the attack works</h2>
+<p>No CVE has been published for this incident. It is a credential and trust-relationship compromise, not a software flaw. How the ConnectWise credentials were originally stolen is <strong>unconfirmed</strong>. ConnectWise has declined to say, and its status updates say it is still working with outside specialists. One secondary blog claims the credentials came from the October 10-14 spray against ConnectWise's own authentication systems. Microsoft's reporting, as relayed by the press, describes that spray as targeting eight organizations. Treat the secondary claim as unverified.</p>
+<h3>Observed attack chain</h3>
+<ol>
+<li><strong>Credential theft from the vendor.</strong> The actor obtained credentials for multi-tenant app identities, including the Cloud Backup app (AppId <code>506e08f9-6e9a-4da4-942b-a099a03644ae</code>). The method is unknown.</li>
+<li><strong>App-only authentication into customer tenants.</strong> The credential works in every tenant that consented to the app, and the actor signed in as the application itself. A service principal authenticates with its own secret or certificate, so no user password or MFA prompt is involved. The &ldquo;MFA bypass&rdquo; headlines are imprecise: MFA was never evaluated, because no user was signing in.</li>
+<li><strong>Graph reconnaissance.</strong> Microsoft observed Microsoft Graph API reconnaissance after sign-in.</li>
+<li><strong>Persistence.</strong> The actor tried to add extra credentials to the service principal in target tenants, creating a backdoor that survives disabling the original ConnectWise connection. In at least one tenant an app granted itself a privileged directory role.</li>
+<li><strong>Parallel spraying.</strong> ARTEX-driven password spraying against user accounts ran alongside, at high volume and with no confirmed success.</li>
+</ol>
+<p>A Wiz write-up, as summarized by secondary sources, describes ARTEX's structure as a planner agent directing worker agents that run standard tools such as nmap, curl and Impacket. Microsoft's point is that the agents work around the clock and try multiple breach paths at once.</p>
+<h3>ATT&amp;CK mapping</h3>
+<ul>
+<li><strong>T1199</strong> Trusted Relationship: abuse of the vendor's app trust in customer tenants.</li>
+<li><strong>T1078.004</strong> Valid Accounts: Cloud Accounts: authenticating with legitimate app credentials.</li>
+<li><strong>T1110.003</strong> Brute Force: Password Spraying: the October 10-14 spray.</li>
+<li><strong>T1087.004</strong> Account Discovery: Cloud Account: Graph directory reconnaissance.</li>
+<li><strong>T1098.001</strong> Account Manipulation: Additional Cloud Credentials: credentials added to service principals.</li>
+<li><strong>T1098.003</strong> Account Manipulation: Additional Cloud Roles: the app self-assigning an administrator role.</li>
+</ul>
+<h3>Published indicators</h3>
+<ul>
+<li>Application ID: <code>506e08f9-6e9a-4da4-942b-a099a03644ae</code> (ConnectWise Cloud Backup / SkyKick). ConnectWise has disabled seven application identities in total, and Microsoft's sample queries use a subset. Use the vendor's full list from its advisory.</li>
+<li>IPs published by Microsoft: <code>144.172.64[.]60</code>, <code>144.172.64[.]99</code>, <code>144.172.64[.]128</code>.</li>
+<li>ConnectWise says the app normally connects from Azure private IPv6 addresses. A public IPv4 address from a hosting provider is therefore anomalous.</li>
+</ul>
+<p>Treat the IPs as leads, not proof. ARTEX activity is not confined to three addresses, and the absence of a hit does not clear a tenant.</p>
+
+<h2>Detection guidance for defenders</h2>
+<p>Start in <strong>Service principal sign-ins</strong>. ConnectWise warns that the default user sign-in view will not show this activity. Review from October 15 at minimum, and from October 1 where retention allows. Microsoft's Defender XDR detections and hunting queries cover suspicious Graph activity and known infrastructure.</p>
+<h3>What to look for</h3>
+<ul>
+<li>Successful service principal sign-ins for the Cloud Backup AppId from public IPv4 or hosting-provider addresses.</li>
+<li>New secrets or certificates on any application or service principal since October 13, including ones with unusually long expiry.</li>
+<li>Directory role assignments initiated by a ConnectWise or SkyKick app, and new apps, owners or consent grants.</li>
+<li>Bursts of Graph reads from one service principal.</li>
+<li>High-volume failed user sign-ins from a small set of IPs, which is the spray signature.</li>
+</ul>
+<h3>Example hunting queries (KQL)</h3>
+<pre><code>// 1. Successful app-only sign-ins from the affected app that are not from the expected IPv6 space
+AADServicePrincipalSignInLogs
+| where TimeGenerated > datetime(2026-10-01)
+| where AppId == '506e08f9-6e9a-4da4-942b-a099a03644ae'
+| where ResultType == 0
+| where IPAddress !contains ':' or IPAddress startswith '144.172.64.'
+| summarize Signins=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by IPAddress, ServicePrincipalName, ServicePrincipalId, ResourceDisplayName
+| order by FirstSeen asc</code></pre>
+<p><em>Finds successful sign-ins by the Cloud Backup app from public IPv4 space or the published Storm-0940 range. The IPv4 filter is a heuristic based on ConnectWise's note about normal IPv6 traffic, so tune it for your environment.</em></p>
+<pre><code>// 2. Credential or role changes on apps/service principals since Oct 13
+AuditLogs
+| where TimeGenerated > datetime(2026-10-13)
+| where OperationName has_any ('credentials', 'Certificates and secrets', 'Add app role assignment', 'Add member to role')
+| extend ActorApp = tostring(InitiatedBy.app.displayName), ActorUser = tostring(InitiatedBy.user.userPrincipalName), ActorIP = tostring(InitiatedBy.app.ipAddress)
+| project TimeGenerated, OperationName, ActorApp, ActorUser, ActorIP, TargetResources, Result
+| order by TimeGenerated asc</code></pre>
+<p><em>Surfaces persistence and privilege escalation, such as secrets added to service principals or roles granted, so you can see whether an app or an unfamiliar actor made the change.</em></p>
+<p>Microsoft Graph activity logs must be enabled to see the follow-on reconnaissance. Check whether they were on before October 15. If they were not, the reconnaissance may be invisible, and you have to rely on sign-in and audit logs alone.</p>
+
+<h2>Mitigation and response</h2>
+<p>There is no patch, and Microsoft says there is no flaw in its products to patch. The fixes are configuration and credential hygiene, in this order:</p>
+<ol>
+<li><strong>Keep the ConnectWise connections disabled.</strong> Microsoft's advice is to leave affected app connections disabled until ConnectWise issues formal restoration instructions. Huntress advises disabling the service principal rather than blocking the ID or deleting the enterprise app. In Entra, set &ldquo;Enabled for users to sign-in&rdquo; to No on the app's properties.</li>
+<li><strong>Preserve evidence first.</strong> Export service principal, user and non-interactive sign-in logs, Entra audit logs, Purview Audit records and any SIEM data. Record the tenant-local service principal Object ID, because logs reference it and not the global AppId.</li>
+<li><strong>Hunt for persistence, not just entry.</strong> Disabling the vendor app does not remove a secret the actor planted on another application. Review every app and service principal for credentials added since October 13, along with new apps, owners, consents, app role assignments and privileged role changes.</li>
+<li><strong>Remove and rotate.</strong> Delete unauthorized credentials, rotate secrets for any identity the actor touched, and revoke sessions and refresh tokens where user accounts were involved. Remove any role the app assigned itself.</li>
+<li><strong>Scope data exposure.</strong> If successful sign-ins appear, review Graph and Purview audit data for mailbox, SharePoint and Teams access. Neither Microsoft nor ConnectWise can answer this for you.</li>
+<li><strong>Harden workload identities.</strong> Use Entra application management policies to restrict client secrets and cap their lifetimes. Limit who holds Application Administrator and Cloud Application Administrator. Where licensed, apply Conditional Access for workload identities to restrict sign-ins to known IPs, and enable ID Protection's risky service principal detection.</li>
+<li><strong>If you are an MSP,</strong> repeat the above in every managed tenant, track which clients need restored backups, and notify them. Customers cannot restore from Cloud Backup while the service is offline.</li>
+</ol>
+
+<h2>FAQ</h2>
+<h3>Is there a CVE or a patch?</h3>
+<p>No. Public reporting does not identify a CVE. Microsoft says the attacks did not result from a compromise of, or vulnerability in, its own systems. The remediation is to disable the apps, review logs and rotate credentials.</p>
+<h3>Did the attackers bypass MFA?</h3>
+<p>Not in the usual sense. The actor signed in as the application using its own credential, so no user MFA challenge occurred. Conditional Access policies written for users would not have applied to these sign-ins. Policies for workload identities are a separate control.</p>
+<h3>Does a hit on the app in my tenant mean I was breached?</h3>
+<p>No. Microsoft states that an affected app, or even a successful sign-in, does not by itself prove data was accessed or taken. It does mean you should investigate fully, because the actor attempted to add backdoor credentials and, in some tenants, reached privileged roles.</p>
+
+<h2>Bottom line</h2>
+<p>The AI angle is real but secondary. Microsoft's own account says most targeting failed, and the damage came from a vendor-held credential that worked across every consenting tenant. The more durable lesson is that multi-tenant app identities with broad Graph permissions are high-value targets, and that machine-speed tooling shrinks the window to catch them. Tenants with any ConnectWise or SkyKick consent should treat this as an active investigation until the log review is done and persistence has been ruled out.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://news.google.com/rss/articles/CBMilgFBVV95cUxPLXVibE8wLXJfWFJ6QWJfX1V3ckU0ZmVhZTRQNzFGbEdVdS03d25PX1U4RGROcXFaUTR6aEZQY1VUXzNBVk9MQXRRbGl5dGkyRF9ITURBVnVuaFRwS0lUdjdiNUFLMmJQMWExek9GQlA5V0k0MFVNQUpQX2FWa1FHdExsS2R5ZGc5amtQMXdEREFxZG5OX3c?oc=5" target="_blank" rel="nofollow noopener">Yahoo</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>
