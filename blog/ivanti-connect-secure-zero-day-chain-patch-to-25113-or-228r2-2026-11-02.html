@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6 - CyberWatch Daily</title>
+<meta name="description" content="Ivanti patched CVE-2026-111357 and CVE-2026-118527, chained with CVE-2026-104935 by UTA0576 for root on Connect Secure. Fixes, IOCs and hunting steps.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/ivanti-connect-secure-zero-day-chain-patch-to-25113-or-228r2-2026-11-02.html">
+<meta property="og:title" content="Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6">
+<meta property="og:description" content="Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-104935 to get unauthenticated root on a fully patched appliance. Anyone who patched only in mid-October is still exposed, and a clean Integrity Checker result proves little.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/ivanti-connect-secure-zero-day-chain-patch-to-25113-or-228r2-2026-11-02.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6">
+<meta name="twitter:description" content="Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-104935 to get unauthenticated root on a fully patched appliance. Anyone who patched only in mid-October is still exposed, and a clean Integrity Checker result proves little.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6","description":"Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-104935 to get unauthenticated root on a fully patched appliance. Anyone who patched only in mid-October is still exposed, and a clean Integrity Checker result proves little.","datePublished":"2026-11-02","dateModified":"2026-11-02","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/ivanti-connect-secure-zero-day-chain-patch-to-25113-or-228r2-2026-11-02.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">Threat Analysis</span><span class="date">November 2, 2026</span><span class="rt">10 min read</span></div>
+<h1>Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6</h1>
+<div class="excerpt">Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-104935 to get unauthenticated root on a fully patched appliance. Anyone who patched only in mid-October is still exposed, and a clean Integrity Checker result proves little.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Ivanti</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Connect Secure</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">CVE-2026-104935</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">UTA0576</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Zero-Day</span></div>
+</div>
+<div class="content">
+<p>Ivanti has now fixed every flaw in the Connect Secure (ICS) exploit chain that Volexity documented on October 13. The follow-up patches cover two of the three bugs, CVE-2026-111357 and CVE-2026-118527. Both were chained with the authentication bypass CVE-2026-104935 in zero-day attacks. The practical consequence is that the first round of fixes was not enough. Teams that upgraded in mid-October and stopped there still need to move again, and they should also check whether the appliance was compromised before they patched.</p><h2>What happened</h2><p>Volexity found the activity in the first week of October 2026, while investigating an incident on a customer's ICS VPN appliance. <strong>The device was fully patched at the time, running 22.8R2.4.</strong> Volexity attributed the activity to a previously unknown actor it tracks as <strong>UTA0576</strong>. It reported exploitation going back to at least October 3. Threat intelligence firm Defused separately said it saw the first signs of CVE-2026-104935 exploitation on October 1, which is why some outlets say the attacks started "since at least October 1."</p><p>The timeline from public reporting:</p><ul><li><strong>July 2026:</strong> Ivanti says part of the CVE-2026-104935 problem was found through its own product security program and fixed in 25.1.3.0.</li><li><strong>October 13:</strong> Ivanti publishes its advisory for CVE-2026-104935 and acknowledges limited exploitation in the wild. Volexity publishes its research. CISA adds the CVE to its Known Exploited Vulnerabilities (KEV) catalog the same day. At that point the privilege escalation step of the chain had no fix.</li><li><strong>October 29:</strong> Ivanti updates the advisory and releases <strong>25.1.1.3</strong> and <strong>22.8R2.6</strong>. These address the two remaining chained flaws, CVE-2026-111357 and CVE-2026-118527. Ivanti's statement was that the latest release addresses all vulnerabilities chained and exploited in the wild.</li><li><strong>October 30:</strong> CISA adds CVE-2026-111357 and CVE-2026-118527 to KEV, according to SecurityWeek's report of a Friday addition.</li></ul><p>Ivanti has said that when it discovered the attacks, its CVE-2026-104935 fix was already in quality assurance. It chose to ship that fix rather than hold it until the privilege escalation bug was also ready. That decision closed the main entry path quickly, but it left the escalation step open for about two weeks.</p><h3>What is and is not confirmed</h3><ul><li><strong>Victim count:</strong> Ivanti says only that a "limited number" of customers were hit. Volexity's write-up describes one customer's appliance. No public source gives a firm total.</li><li><strong>Attribution:</strong> UTA0576 is not linked to any known named group. Volexity assessed with low confidence, based on a single case, that the motive is criminal rather than espionage. Volexity also said with medium confidence that the actor likely used large language models to help build its exploits and tools. Treat both as preliminary.</li><li><strong>Ransomware use:</strong> Public reporting does not confirm any follow-on ransomware deployment tied to this chain.</li></ul><h2>Who is affected</h2><p>Per the updated Ivanti advisory as relayed by multiple outlets, the chain affects <strong>Ivanti Connect Secure 25.1.1.2 and earlier, and 22.8R2.5 and earlier</strong>. The fixed builds are <strong>25.1.1.3</strong> and <strong>22.8R2.6</strong>. Version numbering across the 25.1.x and 22.8 lines is confusing in the secondary coverage. Some write-ups list 25.1.3.x builds as resolved for the original CVE. Read the exact fixed-version table for your branch in Ivanti's advisory rather than relying on summaries.</p><p>The initial advisory also said versions 22.7.x and below are unaffected by CVE-2026-104935. Check the advisory for the current status of your branch.</p><p>Exposure comes down to whether an attacker can reach the appliance's web interface. The entry point requires no credentials and no user interaction. Shadowserver tracks more than 5,000 internet-exposed ICS instances. No public data says how many have been patched against this chain. Regions and sectors of the confirmed victims have not been published.</p><p>Because the exploit is unauthenticated, this is not limited to organizations that were targeted. Any internet-facing ICS on a vulnerable build in October is a candidate for review.</p><h2>How the attack works</h2><p>The chain, as reconstructed by Volexity from memory images and core dumps, has three stages. The split of CVEs across stages matters for reading the advisories:</p><ol><li><strong>Authentication bypass and remote code execution (CVE-2026-104935, CVSS 8.6).</strong> An authentication-bypass-by-spoofing flaw (CWE-290). Reporting describes the bypass as abusing inconsistent request handling between the public login endpoint and backend CGI routing. Together with a second bug, it gives code execution as the low-privileged <code>cgi-server</code> user.</li><li><strong>Predictable filename file upload (CVE-2026-118527, CVSS 4.3).</strong> An authenticated attacker can upload files because of predictable filenames. Volexity's write-up shows why a low CVSS score can still belong in an emergency patch: it is a link in a root-level chain.</li><li><strong>Privilege escalation (CVE-2026-111357, CVSS 8.8).</strong> A lack of authentication for a critical function (CWE-829 is cited in one aggregator's listing). It lifts the attacker from the web server user to root.</li></ol><p>The mapping of the three CVEs to Volexity's three exploit stages is partly inferred from vendor and secondary reporting. Volexity's post and Ivanti's advisory are the authoritative sources for the exact sequence.</p><h3>Stealth features that matter for defenders</h3><ul><li><strong>In-memory only.</strong> The exploit patches Ivanti library code (reported as <code>/home/lib/libdsplibs.so</code>) in memory, modifies the <code>DSCache</code>, runs a root command, then restores the configuration data. That is why Ivanti's Integrity Checker Tool (ICT) reports a clean device.</li><li><strong>No implant.</strong> Volexity found no web shell or persistent malware. The actor re-ran the entire exploit chain for every command and returned output in HTTP responses.</li><li><strong>Log tampering.</strong> Selected entries were removed from the Ivanti debug log (<code>/home/runtime/dlogs/debuglog</code>) and the Linux audit log (<code>/var/log/audit/audit.log</code>). Temporary files were deleted and output was sent to <code>/dev/null</code>.</li><li><strong>Credential and network focus.</strong> The actor harvested configuration and authentication information, captured network traffic (Volexity saw raw packet capture data exfiltrated), and then went after the internal network. One write-up says the actor searched for LAPS passwords and BitLocker recovery keys that the appliance's Active Directory bind account could read. That detail comes from a secondary source, so confirm it against Volexity's report.</li></ul><h3>MITRE ATT&amp;CK mapping</h3><ul><li><strong>T1190 – Exploit Public-Facing Application:</strong> initial access via the ICS web interface.</li><li><strong>T1068 – Exploitation for Privilege Escalation:</strong> the local escalation from <code>cgi-server</code> to root.</li><li><strong>T1059 – Command and Scripting Interpreter:</strong> staged Perl, Bash and Python scripts, per Volexity-based reporting.</li><li><strong>T1070 – Indicator Removal:</strong> selective deletion from debug and audit logs, and cleanup of temporary files.</li><li><strong>T1040 – Network Sniffing:</strong> a process named <code>dsstatmond</code> captured network traffic.</li></ul><h3>Public indicators</h3><p>Ivanti said at disclosure that it had no reliable IOCs. Volexity published indicators on its threat-intel GitHub repository, under the 2026-10-13 Ivanti folder. Artifacts cited in public reporting:</p><ul><li>Unexpected Python scripts and compressed output files in <code>/tmp</code></li><li>A hidden directory, <code>/data/.icscap</code></li><li>Files matching <code>/home/runtime/tmp/ics-root-*</code></li><li>A process named <code>dsstatmond</code> capturing network traffic</li><li>Time gaps in <code>debuglog</code> or <code>audit.log</code></li></ul><p>Absence of these artifacts is <em>not</em> proof of a clean device, given the cleanup and the in-memory design. Volexity expects attackers to find other paths, so look for anomalies as well as known strings.</p><h2>Detection guidance for defenders</h2><p>Hunting on the appliance alone is weak here. Concentrate on what the appliance can reach and on telemetry that sits outside it. Start the search window at <strong>October 1, 2026</strong>.</p><ul><li><strong>Network telemetry:</strong> Review web access to ICS from external IPs around the exploitation window. Look for unusual request patterns to login and CGI endpoints, and for large or unusual outbound transfers from the appliance's management or internal interface.</li><li><strong>Identity telemetry:</strong> The appliance's AD bind or service account is the likely pivot. Look for that account, or the appliance's internal IP, doing directory searches or logons that do not fit normal VPN behavior.</li><li><strong>LAPS and BitLocker:</strong> Check directory audit logs for reads of LAPS password attributes and BitLocker recovery objects by the appliance's account.</li><li><strong>Log integrity:</strong> Compare forwarded syslog volume from the appliance against the on-box logs. Gaps in the on-box logs that are absent from your SIEM copy are a strong signal.</li><li><strong>Internal scanning:</strong> Look for the appliance's internal address making connections to many hosts or ports it does not normally talk to.</li></ul><p>Example 1: find logons from the ICS internal address or its bind account since the start of the exploitation window. Replace the placeholders with your own values.</p><pre><code>let ics_ips = dynamic(["10.0.0.5"]);          // ICS internal IPs
+let ics_acct = dynamic(["svc-ics-bind"]);       // AD bind account(s)
+SecurityEvent
+| where TimeGenerated >= datetime(2026-10-01)
+| where EventID in (4624, 4625, 4768, 4769, 4776)
+| where IpAddress in (ics_ips) or TargetUserName in (ics_acct)
+| summarize Events=count(), Hosts=dcount(Computer), First=min(TimeGenerated), Last=max(TimeGenerated)
+    by TargetUserName, IpAddress, EventID
+| order by Events desc</code></pre><p>This surfaces authentication activity tied to the appliance. Look for that account touching hosts or at hours that do not match its normal baseline.</p><p>Example 2: a generic pseudo-query to catch log gaps that suggest tampering.</p><pre><code>FOR each ICS appliance:
+  bucket forwarded syslog by 15-minute window, 2026-10-01 to now
+  FLAG windows where count == 0 while neighboring windows have normal volume
+  CROSS-CHECK flagged windows against on-box debuglog / audit.log gaps</code></pre><p>It finds periods where the appliance went quiet, which may reflect selective log deletion.</p><p>If you hold the appliance's memory or core dumps, Volexity's write-up describes memory analysis as the way it confirmed the chain. ICT results should not close an investigation.</p><h2>Mitigation and response</h2><ol><li><strong>Upgrade now to 25.1.1.3 or 22.8R2.6</strong> (or the fixed build for your branch as listed in Ivanti's advisory). Do this even if you patched to 25.1.1.2 or 22.8R2.5 in October, because those builds only resolved the initial CVE-2026-104935 advisory. CISA has KEV-listed all three CVEs, so federal civilian agencies are under remediation deadlines. Other organizations should treat them as the same priority.</li><li><strong>Before upgrading or rebooting a suspect appliance, capture evidence.</strong> Volexity advises a full forensic investigation that includes memory capture. Rebooting or upgrading can destroy the in-memory evidence you need to confirm or rule out compromise.</li><li><strong>Reduce exposure while you work.</strong> Restrict management and admin interfaces to trusted networks. If you can geofence or allowlist VPN source ranges for a subset of users, do so temporarily.</li><li><strong>Assume credential exposure if the appliance was reachable from the internet in October.</strong> Rotate the AD bind account password, and review what that account can read. Per secondary reporting of Volexity's findings, rotate LAPS passwords and review BitLocker recovery key exposure. Also reset credentials for VPN users who authenticated through the appliance.</li><li><strong>Follow Ivanti's recovery instructions</strong> if you confirm or strongly suspect compromise. For many Ivanti incidents that means rebuilding from a known-good image and not trusting the existing configuration.</li><li><strong>Hunt internally</strong> for lateral movement from the appliance's address using the guidance above.</li><li><strong>Plan for the next time.</strong> Ivanti Connect Secure has been repeatedly exploited as a zero-day. CISA has flagged 38 Ivanti vulnerabilities as exploited since November 2021, including 12 used in ransomware attacks, per one recap of CISA's data. Consider segmenting the appliance's network position and limiting the privileges of its service accounts.</li></ol><h2>What individuals should do</h2><p>This story is mainly an enterprise and administrator issue. End users have no patch to apply to the appliance. If your employer uses Ivanti Connect Secure, expect a possible password reset request from IT and complete it promptly through the official internal process. Do not follow password reset links sent by email or text that you did not expect.</p><h2>FAQ</h2><h3>If I already patched in October, am I safe?</h3><p>Not necessarily. The October fixes closed the entry path, CVE-2026-104935, but the chain's privilege escalation and file upload flaws were fixed later, in 25.1.1.3 and 22.8R2.6. You may also have been compromised before patching. Because the exploit runs in memory, a clean ICT scan does not rule that out.</p><h3>Who is behind the attacks?</h3><p>Public reporting does not confirm attribution to any known group. Volexity tracks the actor as UTA0576 and assessed with low confidence that it is criminally motivated, based on one case.</p><h3>Is there a public list of IOCs?</h3><p>Yes. Volexity published indicators on GitHub, and secondary reporting summarizes file paths and a process name to check. Ivanti said at disclosure that it had no reliable IOCs. Treat any absence of hits with caution because of the log cleanup.</p><h2>Bottom line</h2><p>This is a serious chain. It gave unauthenticated root on a fully patched VPN gateway, left almost nothing on disk, and defeated the vendor's own integrity tool. The reported victim count is small, but the attacker had at least a few days of unpatched access and went after directory credentials, and the 5,000-plus exposed instances give it a large target set. Patch to the latest builds, preserve memory before touching a suspect device, and rotate the credentials the appliance could reach.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://www.bleepingcomputer.com/news/security/ivanti-patches-two-more-connect-secure-zero-days-chained-in-attacks/" target="_blank" rel="nofollow noopener">BleepingComputer</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>
