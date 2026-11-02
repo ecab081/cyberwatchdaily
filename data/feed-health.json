@@ -1,17 +1,20 @@
 {
-  "checkedAt": "2026-10-26T17:25:53.585Z",
+  "checkedAt": "2026-11-02T20:49:28.940Z",
   "error": null,
-  "deadSources": [],
+  "deadSources": [
+    "CoinDesk",
+    "Nation-State Advisories"
+  ],
   "onFallback": [
     "Dark Reading",
     "Crypto Exploits & Hacks"
   ],
   "postClassification": {
-    "cybersecurity": 53,
-    "crypto": 40,
-    "quantum": 62,
-    "ai": 26,
-    "nationstate": 24
+    "cybersecurity": 54,
+    "crypto": 37,
+    "quantum": 58,
+    "ai": 25,
+    "nationstate": 27
   },
   "sources": [
     {
@@ -65,7 +68,7 @@
     {
       "name": "CoinTelegraph",
       "domain": "crypto",
-      "rawCount": 5,
+      "rawCount": 4,
       "type": "html"
     },
     {
@@ -77,13 +80,13 @@
     {
       "name": "CoinDesk",
       "domain": "crypto",
-      "rawCount": 2,
+      "rawCount": 0,
       "type": "html"
     },
     {
       "name": "The Quantum Insider",
       "domain": "quantum",
-      "rawCount": 3,
+      "rawCount": 5,
       "type": "html"
     },
     {
@@ -167,7 +170,7 @@
       "domain": "quantum",
       "url": "https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 5,
       "type": "rss"
     },
     {
@@ -247,7 +250,7 @@
       "domain": "ai",
       "url": "https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 3,
+      "rawCount": 4,
       "type": "rss"
     },
     {
@@ -295,7 +298,7 @@
       "domain": "nationstate",
       "url": "https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 1,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -311,7 +314,7 @@
       "domain": "nationstate",
       "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/",
       "usedFallback": false,
-      "rawCount": 2,
+      "rawCount": 3,
       "type": "rss"
     },
     {
