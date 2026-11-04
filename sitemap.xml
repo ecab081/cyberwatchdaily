@@ -162,4 +162,10 @@
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://cyberwatchdaily.net/blog/wordpress-cve-2026-119977-upgrade-window-rce-now-in-cisa-kev-2026-11-04.html</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
