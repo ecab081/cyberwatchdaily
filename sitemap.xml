@@ -168,4 +168,10 @@
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://cyberwatchdaily.net/blog/zyxel-gs1900-zero-day-cve-2026-107441-patch-to-3-firmware-2026-11-06.html</loc>
+    <lastmod>2026-11-06</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

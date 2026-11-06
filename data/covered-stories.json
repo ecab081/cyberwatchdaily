@@ -33,5 +33,12 @@
     "title": "WordPress CVE-2026-119977: Upgrade-Window RCE Now in CISA KEV",
     "storyTitle": "CISA flags WordPress RCE flaw as actively exploited in attacks",
     "storyUrl": "https://www.bleepingcomputer.com/news/security/cisa-flags-wordpress-rce-flaw-as-actively-exploited-in-attacks/"
+  },
+  {
+    "date": "2026-11-06",
+    "slug": "zyxel-gs1900-zero-day-cve-2026-107441-patch-to-3-firmware-2026-11-06",
+    "title": "Zyxel GS1900 Zero-Day CVE-2026-107441: Patch to .3 Firmware",
+    "storyTitle": "Zyxel fixes zero-day exploited to hack nearly 1,000 network switches",
+    "storyUrl": "https://www.bleepingcomputer.com/news/security/zyxel-fixes-zero-day-exploited-to-hack-nearly-1-000-network-switches/"
   }
 ]
