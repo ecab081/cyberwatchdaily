@@ -1099,22 +1099,22 @@
       <a href="/blog/" style="font-family:var(--mono);font-size:12px;color:var(--green);">View all articles →</a>
     </div>
     <div id="blog-preview" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;">
+      <a href="/blog/zyxel-gs1900-zero-day-cve-2026-107441-patch-to-3-firmware-2026-11-06.html" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);">
+        <div style="margin-bottom:8px;">
+          <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">News Explainer</span>
+          <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">November 6, 2026</span>
+        </div>
+        <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">Zyxel GS1900 Zero-Day CVE-2026-107441: Patch to .3 Firmware</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">Zyxel has patched CVE-2026-107441, an unauthenticated command-execution flaw in ten GS1900 switch models. Attackers used it to compromise 996 switches in 48 countries, and it works even on firmware that carries the June 2026 fix. Defenders who patched in June and moved on are still exposed until they reach the .3 builds.</div>
+        <span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>
+      </a>
       <a href="/blog/wordpress-cve-2026-119977-upgrade-window-rce-now-in-cisa-kev-2026-11-04.html" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);">
         <div style="margin-bottom:8px;">
           <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">Threat Analysis</span>
           <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">November 4, 2026</span>
         </div>
         <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">WordPress CVE-2026-119977: Upgrade-Window RCE Now in CISA KEV</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">CISA added WordPress Core flaw CVE-2026-119977 to its Known Exploited Vulnerabilities catalog on November 3. The bug is a race condition that exposes the WordPress installer to unauthenticated attackers while a core update is running. Every branch back to 4.7 has a fix, and federal agencies were given until November 6 to apply it.</div>
-        <span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>
-      </a>
-      <a href="/blog/ivanti-connect-secure-zero-day-chain-patch-to-25113-or-228r2-2026-11-02.html" style="background:var(--surface);padding:1.5rem;display:block;text-decoration:none;border:1px solid var(--border);">
-        <div style="margin-bottom:8px;">
-          <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;">Threat Analysis</span>
-          <span style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-left:8px;">November 2, 2026</span>
-        </div>
-        <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:8px;line-height:1.4;">Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6</div>
-        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-10...</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">CISA added WordPress Core flaw CVE-2026-119977 to its Known Exploited Vulnerabilities catalog on November 3. The bug is a race condition that exposes ...</div>
         <span style="font-family:var(--mono);font-size:11px;color:var(--green);">Read article →</span>
       </a>
     </div>
@@ -1176,18 +1176,18 @@
 <script type="text/plain" id="blog-preview-data">
   var posts = [
     {
+      title: "Zyxel GS1900 Zero-Day CVE-2026-107441: Patch to .3 Firmware",
+      category: "News Explainer",
+      url: "/blog/zyxel-gs1900-zero-day-cve-2026-107441-patch-to-3-firmware-2026-11-06.html",
+      date: "November 6, 2026",
+      excerpt: "Zyxel has patched CVE-2026-107441, an unauthenticated command-execution flaw in ten GS1900 switch models. Attackers used it to compromise 996 switches..."
+    },
+    {
       title: "WordPress CVE-2026-119977: Upgrade-Window RCE Now in CISA KEV",
       category: "Threat Analysis",
       url: "/blog/wordpress-cve-2026-119977-upgrade-window-rce-now-in-cisa-kev-2026-11-04.html",
       date: "November 4, 2026",
       excerpt: "CISA added WordPress Core flaw CVE-2026-119977 to its Known Exploited Vulnerabilities catalog on November 3. The bug is a race condition that exposes ..."
-    },
-    {
-      title: "Ivanti Connect Secure Zero-Day Chain: Patch to 25.1.1.3 or 22.8R2.6",
-      category: "Threat Analysis",
-      url: "/blog/ivanti-connect-secure-zero-day-chain-patch-to-25113-or-228r2-2026-11-02.html",
-      date: "November 2, 2026",
-      excerpt: "Ivanti has patched two more Connect Secure flaws, CVE-2026-111357 and CVE-2026-118527. Attackers chained them with the earlier auth bypass CVE-2026-10..."
     }
   ];
 </script>
