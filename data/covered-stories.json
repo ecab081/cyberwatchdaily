@@ -40,5 +40,12 @@
     "title": "Zyxel GS1900 Zero-Day CVE-2026-107441: Patch to .3 Firmware",
     "storyTitle": "Zyxel fixes zero-day exploited to hack nearly 1,000 network switches",
     "storyUrl": "https://www.bleepingcomputer.com/news/security/zyxel-fixes-zero-day-exploited-to-hack-nearly-1-000-network-switches/"
+  },
+  {
+    "date": "2026-11-09",
+    "slug": "n-able-n-central-offline-after-33-able2shell-zero-days-leak-2026-11-09",
+    "title": "N-able N-central Offline After 33 Able2Shell Zero-Days Leak",
+    "storyTitle": "N-able takes cloud platform offline after 30+ \"zero-days\" published",
+    "storyUrl": "https://www.bleepingcomputer.com/news/security/n-able-takes-cloud-platform-offline-after-30-plus-zero-days-published/"
   }
 ]
