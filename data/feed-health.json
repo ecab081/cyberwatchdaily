@@ -1,20 +1,20 @@
 {
-  "checkedAt": "2026-11-02T20:49:28.940Z",
+  "checkedAt": "2026-11-09T21:28:20.282Z",
   "error": null,
   "deadSources": [
     "CoinDesk",
-    "Nation-State Advisories"
+    "LLM Security"
   ],
   "onFallback": [
     "Dark Reading",
     "Crypto Exploits & Hacks"
   ],
   "postClassification": {
-    "cybersecurity": 54,
-    "crypto": 37,
+    "cybersecurity": 50,
+    "crypto": 34,
     "quantum": 58,
-    "ai": 25,
-    "nationstate": 27
+    "ai": 24,
+    "nationstate": 32
   },
   "sources": [
     {
@@ -68,7 +68,7 @@
     {
       "name": "CoinTelegraph",
       "domain": "crypto",
-      "rawCount": 4,
+      "rawCount": 5,
       "type": "html"
     },
     {
@@ -146,7 +146,7 @@
       "domain": "crypto",
       "url": "https://news.google.com/rss/search?q=%22Andreas+Antonopoulos%22+bitcoin+crypto+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 2,
+      "rawCount": 1,
       "type": "rss"
     },
     {
@@ -170,7 +170,7 @@
       "domain": "quantum",
       "url": "https://news.google.com/rss/search?q=%22Scott+Aaronson%22+quantum+computing+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 5,
+      "rawCount": 6,
       "type": "rss"
     },
     {
@@ -250,7 +250,7 @@
       "domain": "ai",
       "url": "https://news.google.com/rss/search?q=%22LLM+security%22+OR+%22AI+model%22+jailbreak+vulnerability+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 4,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -298,7 +298,7 @@
       "domain": "nationstate",
       "url": "https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 0,
+      "rawCount": 2,
       "type": "rss"
     },
     {
@@ -322,7 +322,7 @@
       "domain": "cybersecurity",
       "url": "https://cyberupdates365.com/feed/",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 5,
       "type": "rss"
     }
   ]
