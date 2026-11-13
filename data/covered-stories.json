@@ -54,5 +54,12 @@
     "title": "France Blames Shahid Kaveh for Danfoss Fridge Attacks",
     "storyTitle": "France blames Iranian hackers for supermarket attacks that sparked fires",
     "storyUrl": "https://www.bleepingcomputer.com/news/security/france-blames-iranian-hackers-for-supermarket-attacks-that-sparked-fires/"
+  },
+  {
+    "date": "2026-11-13",
+    "slug": "signdrop-windows-zero-day-system-escalation-via-clfs-and-def-2026-11-13",
+    "title": "SignDrop Windows Zero-Day: SYSTEM Escalation via CLFS and Defender",
+    "storyTitle": "New Windows SignDrop zero-day gives hackers SYSTEM privileges",
+    "storyUrl": "https://www.bleepingcomputer.com/news/security/new-windows-signdrop-zero-day-gives-hackers-system-privileges/"
   }
 ]
