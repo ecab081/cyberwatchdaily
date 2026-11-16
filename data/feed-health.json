@@ -1,20 +1,25 @@
 {
-  "checkedAt": "2026-11-09T21:28:20.282Z",
+  "checkedAt": "2026-11-16T21:05:18.374Z",
   "error": null,
   "deadSources": [
     "CoinDesk",
-    "LLM Security"
+    "Dark Reading",
+    "NIST Post-Quantum",
+    "Quantum Computing Security 2026",
+    "LLM Security",
+    "AI Safety & Risk",
+    "China State-Sponsored Hackers",
+    "Nation-State Advisories"
   ],
   "onFallback": [
-    "Dark Reading",
     "Crypto Exploits & Hacks"
   ],
   "postClassification": {
-    "cybersecurity": 50,
+    "cybersecurity": 44,
     "crypto": 34,
-    "quantum": 58,
-    "ai": 24,
-    "nationstate": 32
+    "quantum": 52,
+    "ai": 17,
+    "nationstate": 20
   },
   "sources": [
     {
@@ -68,7 +73,7 @@
     {
       "name": "CoinTelegraph",
       "domain": "crypto",
-      "rawCount": 5,
+      "rawCount": 3,
       "type": "html"
     },
     {
@@ -86,7 +91,7 @@
     {
       "name": "The Quantum Insider",
       "domain": "quantum",
-      "rawCount": 5,
+      "rawCount": 4,
       "type": "html"
     },
     {
@@ -104,9 +109,9 @@
     {
       "name": "Dark Reading",
       "domain": "cybersecurity",
-      "url": "https://news.google.com/rss/search?q=site:darkreading.com+when:3d&hl=en-US&gl=US&ceid=US:en",
-      "usedFallback": true,
-      "rawCount": 6,
+      "url": "https://www.darkreading.com/rss.xml",
+      "usedFallback": false,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -194,7 +199,7 @@
       "domain": "quantum",
       "url": "https://news.google.com/rss/search?q=NIST+post-quantum+cryptography+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -218,7 +223,7 @@
       "domain": "quantum",
       "url": "https://news.google.com/rss/search?q=quantum+computing+encryption+security+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -258,7 +263,7 @@
       "domain": "ai",
       "url": "https://news.google.com/rss/search?q=%22AI+safety%22+cybersecurity+risk+OR+%22AI+agent%22+security+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -266,7 +271,7 @@
       "domain": "nationstate",
       "url": "https://news.google.com/rss/search?q=%22Chinese+state-sponsored%22+OR+%22China+hackers%22+OR+%22Volt+Typhoon%22+OR+%22Salt+Typhoon%22+cyber+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 6,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -298,7 +303,7 @@
       "domain": "nationstate",
       "url": "https://news.google.com/rss/search?q=CISA+advisory+%22nation-state%22+OR+%22state-sponsored%22+cyberattack+when:14d&hl=en-US&gl=US&ceid=US:en",
       "usedFallback": false,
-      "rawCount": 2,
+      "rawCount": 0,
       "type": "rss"
     },
     {
@@ -314,7 +319,7 @@
       "domain": "nationstate",
       "url": "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/",
       "usedFallback": false,
-      "rawCount": 3,
+      "rawCount": 1,
       "type": "rss"
     },
     {
@@ -322,7 +327,7 @@
       "domain": "cybersecurity",
       "url": "https://cyberupdates365.com/feed/",
       "usedFallback": false,
-      "rawCount": 5,
+      "rawCount": 3,
       "type": "rss"
     }
   ]
