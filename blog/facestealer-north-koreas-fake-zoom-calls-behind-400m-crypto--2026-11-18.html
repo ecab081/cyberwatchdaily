@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft - CyberWatch Daily</title>
+<meta name="description" content="FBI FLASH AC-111226-MS: North Korea's FaceStealer used fake Zoom/Teams calls and 900+ stolen webcam clips to steal $400M+ in crypto. Detection and response steps.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/facestealer-north-koreas-fake-zoom-calls-behind-400m-crypto--2026-11-18.html">
+<meta property="og:title" content="FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft">
+<meta property="og:description" content="On November 12, 2026, the FBI and DOJ disclosed FaceStealer, a North Korean scheme that uses fake Zoom, Teams and Meet calls to steal crypto. The FBI says it has stolen more than $400 million in 18 months and seized more than 900 secretly recorded victim webcam clips. No CVE is involved, so patching does not help. Defenders need behavioral detections and a policy on how staff join meetings.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/facestealer-north-koreas-fake-zoom-calls-behind-400m-crypto--2026-11-18.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft">
+<meta name="twitter:description" content="On November 12, 2026, the FBI and DOJ disclosed FaceStealer, a North Korean scheme that uses fake Zoom, Teams and Meet calls to steal crypto. The FBI says it has stolen more than $400 million in 18 months and seized more than 900 secretly recorded victim webcam clips. No CVE is involved, so patching does not help. Defenders need behavioral detections and a policy on how staff join meetings.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft","description":"On November 12, 2026, the FBI and DOJ disclosed FaceStealer, a North Korean scheme that uses fake Zoom, Teams and Meet calls to steal crypto. The FBI says it has stolen more than $400 million in 18 months and seized more than 900 secretly recorded victim webcam clips. No CVE is involved, so patching does not help. Defenders need behavioral detections and a policy on how staff join meetings.","datePublished":"2026-11-18","dateModified":"2026-11-18","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/facestealer-north-koreas-fake-zoom-calls-behind-400m-crypto--2026-11-18.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">Threat Analysis</span><span class="date">November 18, 2026</span><span class="rt">11 min read</span></div>
+<h1>FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft</h1>
+<div class="excerpt">On November 12, 2026, the FBI and DOJ disclosed FaceStealer, a North Korean scheme that uses fake Zoom, Teams and Meet calls to steal crypto. The FBI says it has stolen more than $400 million in 18 months and seized more than 900 secretly recorded victim webcam clips. No CVE is involved, so patching does not help. Defenders need behavioral detections and a policy on how staff join meetings.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">FaceStealer</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">North Korea</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">BlueNoroff</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">ClickFix</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Deepfake</span></div>
+</div>
+<div class="content">
+<p>The FBI says a North Korean social engineering scheme it calls <strong>FaceStealer</strong> has stolen more than $400 million in cryptocurrency over roughly 18 months. The scheme combines hijacked chat accounts, look-alike Zoom and Teams pages, replayed webcam footage of real people, and a fake audio "fix" that installs malware. No software vulnerability is involved. Every step relies on a human doing something. That makes it a detection and policy problem, not a patching problem.</p>
+
+<h2>What happened</h2>
+<p>On <strong>November 12, 2026</strong>, the FBI published a TLP:CLEAR FLASH alert on IC3 (number AC-111226-MS). The alert is titled around a secretly recorded webcam library of 900+ tech workers. The same day, the Justice Department announced that it had seized cloud infrastructure used in the campaign. Public reporting from The Hacker News, Help Net Security and others adds the following:</p>
+<ul>
+<li>FBI Cyber Branch Operations Director Brett Leatherman said North Korean actors used FaceStealer to target people in the crypto and Web3 sectors, with theft of more than $400 million in the last 18 months.</li>
+<li>Under a federal warrant, the FBI seized <strong>more than 900 webcam recordings</strong> of past victims. The attackers had stored them to impersonate those victims in later calls.</li>
+<li>The FBI attributes the activity to North Korean state-sponsored actors tracked in the private sector as <strong>Sapphire Sleet, UNC1069, BlueNoroff, APT38 and Stardust Chollima</strong>. Some outlets also list CryptoCore.</li>
+<li>The FBI says it is aware of other North Korean attempts to target software developers, maintainers and widely downloaded libraries. A Cloud Security Alliance research note summarizing the FLASH describes a near-miss. A maintainer of a JavaScript library with tens of millions of weekly downloads was compromised, and malicious dependencies were staged before responders intervened. The library is not named in the sources reviewed.</li>
+<li>The FBI has set up a resource page at fbi.gov/facestealer.</li>
+</ul>
+<p>The campaign is not new. The Hacker News notes that Arctic Wolf reported in April 2026 on a targeted social engineering campaign with over 400 victims across more than 20 countries. Most were in the U.S., Singapore, the U.K., Hong Kong, South Korea and the U.A.E. Arctic Wolf described it as a victim acquisition platform that uses compromised trusted contacts to drive a self-propagating chain via Telegram. Public reporting also notes that the FBI warned crypto firms in 2024 about requests to run a script to "enable" call features.</p>
+<p><em>Scope note:</em> the FBI separates FaceStealer from the large Binance theft it attributes to the North Korean military unit it calls TraderTraitor. Reports on that incident give figures of roughly $6 billion or more. Do not add the two numbers together.</p>
+
+<h2>Who is affected</h2>
+<ul>
+<li><strong>Primary targets:</strong> individuals in cryptocurrency and Web3. The FBI says attackers go after machines that hold a wallet, a seed phrase, or access to an employer's network or code repository.</li>
+<li><strong>Growing target set:</strong> open-source maintainers and developers, particularly those who control packages with high download volume. This turns a personal-theft scheme into a possible supply chain risk for downstream users.</li>
+<li><strong>Platforms impersonated:</strong> Zoom, Microsoft Teams and Google Meet. The real products are not compromised. The attackers host their own look-alike pages.</li>
+<li><strong>Operating systems:</strong> Public summaries describe both macOS and Windows tradecraft. Microsoft and Cloud Security Alliance material describes a fake "Zoom SDK Update" run through macOS Script Editor, and Windows loaders that add Microsoft Defender exclusions. The sources reviewed do not give a platform breakdown.</li>
+<li><strong>Geography:</strong> not stated in the FBI material reviewed. The April Arctic Wolf figures above are the only regional data in public reporting.</li>
+<li><strong>Victim count:</strong> not confirmed. The FBI has said it holds 900+ recordings, but that is a count of videos. It is not a confirmed count of victims or of thefts. One outlet described the 900 figure as people targeted. The FLASH wording refers to recordings.</li>
+</ul>
+<p>If your organization is not in crypto, do not assume it is out of scope. Any firm whose engineers, finance staff or executives take investor, partner or recruiter calls can receive the same lure. A compromised developer workstation is valuable regardless of whether it holds a wallet.</p>
+
+<h2>How the attack works</h2>
+<p>The FBI describes a self-feeding cycle. Each victim becomes the familiar face used against the next one.</p>
+<ol>
+<li><strong>Account takeover.</strong> The attackers control an account that the target already trusts. Reporting names Telegram, LinkedIn, Slack and Discord as channels. The account is usually a hijacked one belonging to a previous victim.</li>
+<li><strong>Invitation.</strong> The attacker messages the victim's real contacts and pitches a call, often about an investment or business opportunity. The link looks like a genuine Zoom or Teams meeting but points to a typosquatted domain the attackers control. The FLASH includes examples of these look-alike pages.</li>
+<li><strong>Staged meeting.</strong> The target lands in what looks like a lobby. After admission, the attacker plays a prerecorded webcam clip of the contact who invited them. In the FBI's words, you see the person who invited you, but they are not there. Some calls show several familiar faces at once to add pressure.</li>
+<li><strong>Secret recording.</strong> While the target waits and during the call, their own webcam is recorded. That footage joins the library and is reused against their contacts.</li>
+<li><strong>Fake fault, real malware.</strong> The call shows an audio or connection problem. A message tells the target to click a link, update a component or run a command to fix it. This is a ClickFix-style lure. The "fix" installs the malware.</li>
+<li><strong>Theft and pivot.</strong> With the endpoint compromised, the actors can take accessible cryptocurrency or abuse the user's access to other systems, including employer networks and code repositories.</li>
+<li><strong>Deepfakes as an add-on.</strong> The group has begun building deepfakes of well-known crypto figures from public photos and video. The FBI says the quality only needs to be good enough to pass as webcam video. Stolen footage of real victims still accounts for most of the scheme.</li>
+</ol>
+
+<h3>MITRE ATT&amp;CK mapping</h3>
+<p>These mappings follow the behaviors in public reporting. The FBI FLASH may use different or additional mappings.</p>
+<ul>
+<li><strong>T1566.003</strong> Phishing: Spearphishing via Service (invitations over chat platforms)</li>
+<li><strong>T1078</strong> Valid Accounts (use of hijacked accounts)</li>
+<li><strong>T1583.001</strong> Acquire Infrastructure: Domains (typosquatted meeting domains)</li>
+<li><strong>T1204.004</strong> User Execution: Malicious Copy and Paste (the ClickFix-style "fix")</li>
+<li><strong>T1059.001</strong> Command and Scripting Interpreter: PowerShell (Windows cradles)</li>
+<li><strong>T1059.002</strong> Command and Scripting Interpreter: AppleScript (macOS Script Editor and osascript chains)</li>
+<li><strong>T1562.001</strong> Impair Defenses: Disable or Modify Tools (Defender exclusions)</li>
+<li><strong>T1125</strong> Video Capture (secret webcam recording)</li>
+<li><strong>T1657</strong> Financial Theft</li>
+<li><strong>T1195.001</strong> Supply Chain Compromise: Compromise Software Dependencies and Development Tools (the maintainer-targeting angle, where the FBI reports staged malicious dependencies)</li>
+</ul>
+
+<h3>CVEs and IOCs</h3>
+<p><strong>No CVE is associated with FaceStealer</strong> in the public reporting reviewed. The FLASH lists typosquatted meeting domains and infrastructure indicators. This article does not reproduce them because they should be pulled from the primary source. Retrieve the current list directly from the FBI FLASH (AC-111226-MS) on ic3.gov and from fbi.gov/facestealer. Public reporting does not confirm the specific malware family or families delivered, so avoid hunting on a single name.</p>
+
+<h2>Detection guidance for defenders</h2>
+<p>There is no exploit to detect. The signals are the "fix" execution, the defense tampering that follows, and the lookalike meeting traffic that precedes both.</p>
+<h3>What to look for</h3>
+<ul>
+<li><strong>Browser-to-shell chains.</strong> A browser or meeting client followed within minutes by PowerShell, cmd, Terminal, curl or osascript. Cloud Security Alliance's summary highlights curl-to-osascript and Script Editor child-process chains on macOS.</li>
+<li><strong>Defender exclusion changes.</strong> Windows loaders in this activity reportedly added Microsoft Defender exclusions.</li>
+<li><strong>Lookalike domains.</strong> DNS and proxy hits to domains that imitate zoom.us, teams.microsoft.com or meet.google.com but are not on those registrable domains. Match against the FLASH domain list as well.</li>
+<li><strong>Unexpected meeting-style traffic</strong> to hosting providers not associated with the real vendors.</li>
+<li><strong>Persistence on macOS:</strong> new user LaunchAgents and processes executing from /tmp. These are general macOS stealer indicators reported by other researchers and are not confirmed as FaceStealer-specific.</li>
+<li><strong>Chat telemetry.</strong> Where you have visibility into Slack or similar tools, look for a known contact suddenly sending meeting links to many people, or to people they rarely talk to.</li>
+</ul>
+
+<h3>Example hunting queries</h3>
+<p>Microsoft Defender for Endpoint (KQL). This finds PowerShell commands that add Defender exclusions, a behavior reported for the Windows loaders:</p>
+<pre><code>DeviceProcessEvents
+| where Timestamp &gt; ago(30d)
+| where FileName in~ ("powershell.exe","pwsh.exe")
+| where ProcessCommandLine has_any ("Add-MpPreference","Set-MpPreference")
+| where ProcessCommandLine has_any ("ExclusionPath","ExclusionProcess","ExclusionExtension")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, InitiatingProcessCommandLine, ProcessCommandLine
+| order by Timestamp desc</code></pre>
+<p>macOS (KQL, assuming Defender for Endpoint on Mac). This finds osascript or shell downloads spawned by browsers, meeting apps or Script Editor, the ClickFix execution pattern:</p>
+<pre><code>DeviceProcessEvents
+| where Timestamp &gt; ago(30d)
+| where InitiatingProcessFileName has_any ("Safari","Google Chrome","zoom.us","Microsoft Teams","Script Editor","Terminal")
+| where FileName in~ ("osascript","curl","bash","zsh","sh")
+| where ProcessCommandLine has_any ("osascript","curl ","base64","| sh","| bash")
+| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, FileName, ProcessCommandLine</code></pre>
+<p>Expect noise from developers and tune by excluding known admin tooling. For domain hunting, extract the registrable domain from proxy or DNS logs and flag any hostname containing "zoom", "teams" or "meet" whose registrable domain is not zoom.us, zoom.com, microsoft.com or google.com. Then compare the results to the FLASH indicators.</p>
+
+<h2>Mitigation and response</h2>
+<ol>
+<li><strong>Load the FBI indicators.</strong> Pull the domains and infrastructure from FLASH AC-111226-MS into DNS, proxy and email blocking. Retro-hunt back at least 18 months if your logging allows, since that is the campaign's stated duration.</li>
+<li><strong>Set a meeting-join policy.</strong> The FBI advises joining through the official Zoom or Teams app using invite codes rather than web links, especially with new contacts. Publish this as a rule for high-risk staff.</li>
+<li><strong>Camera off until verified.</strong> The FBI advises leaving the webcam off until you can see, hear and talk with the person who invited you. This limits the recording that feeds the next attack.</li>
+<li><strong>Treat "run this to fix your call" as an incident.</strong> No legitimate meeting service asks users to paste commands or install a component mid-call. Train on this specifically, and give staff a one-click way to report it.</li>
+<li><strong>Restrict script execution.</strong> Constrain PowerShell with Constrained Language Mode, WDAC or AppLocker where feasible. Alert on Defender exclusion changes and enable tamper protection. Apple's macOS 26.4 and later reportedly include a mitigation aimed at the ClickFix paste mechanism, according to Microsoft, so keep Macs current.</li>
+<li><strong>Isolate developer and treasury endpoints.</strong> Keep wallets, signing keys and production credentials off general-purpose workstations. Use hardware-backed keys and separate profiles or machines for investor and recruiter calls.</li>
+<li><strong>Protect the software supply chain.</strong> Maintainers should enforce phishing-resistant MFA on package registries and source control, review recent publishes and token activity, and require independent approval for releases where possible.</li>
+</ol>
+<h3>If you suspect a hit</h3>
+<ul>
+<li>Isolate the host and preserve memory and disk before wiping.</li>
+<li>Assume the webcam was recorded and notify the person's contacts, so no one trusts calls or messages from that account.</li>
+<li>Rotate every credential, session token and SSH or API key that was reachable. Move any funds to a clean wallet created on a clean device.</li>
+<li>Check package registries, repositories and CI/CD for unauthorized commits, tokens or releases.</li>
+<li>Report to the FBI through IC3 and use the FBI's FaceStealer page.</li>
+</ul>
+
+<h2>What individuals should do</h2>
+<ul>
+<li><strong>Verify out of band.</strong> If a contact suddenly proposes a call, confirm through a different channel, such as a phone call or an email address you already know, before clicking.</li>
+<li><strong>Join through the app.</strong> Type the meeting ID into the Zoom or Teams app instead of clicking a link, especially for people you have not met.</li>
+<li><strong>Never run a "fix."</strong> If the call shows an audio error and a link, command or installer, leave the call.</li>
+<li><strong>Keep your camera off</strong> until you have confirmed the other party is real.</li>
+<li><strong>Keep seed phrases off the daily-driver computer</strong> and use a hardware wallet for significant holdings.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>Is there a patch or CVE for FaceStealer?</h3>
+<p>No. Public reporting describes social engineering and user-run commands. No vulnerability in Zoom, Teams or Google Meet is reported. The fake pages are attacker-hosted copies.</p>
+<h3>Are the videos in these calls deepfakes?</h3>
+<p>Mostly not. According to the FBI, most of the footage is real, covertly recorded webcam video of earlier victims. AI-generated deepfakes of well-known crypto figures are a newer addition and still the smaller share.</p>
+<h3>Does the seizure mean the threat is over?</h3>
+<p>Not on the evidence available. The DOJ seized cloud infrastructure and the video library, which is a real disruption. Public reporting does not say the actors lost access to compromised accounts or the ability to rebuild. The attack relies on commodity components such as typosquatted domains and chat accounts, so it can be rebuilt quickly.</p>
+
+<h2>Bottom line</h2>
+<p>FaceStealer matters because it defeats the usual signal of trust. A familiar face on a live call is not proof of identity, and each victim creates the next lure. The seizure is a meaningful disruption, but the technique is cheap to rebuild and works on any OS. SOC teams should prioritize detections for the ClickFix execution step and Defender tampering, and set a firm policy on how high-risk staff join meetings with new or unverified contacts.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://thehackernews.com/2026/11/fbi-says-north-korean-hackers-stole.html" target="_blank" rel="nofollow noopener">The Hacker News</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>

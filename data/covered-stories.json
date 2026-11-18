@@ -61,5 +61,12 @@
     "title": "SignDrop Windows Zero-Day: SYSTEM Escalation via CLFS and Defender",
     "storyTitle": "New Windows SignDrop zero-day gives hackers SYSTEM privileges",
     "storyUrl": "https://www.bleepingcomputer.com/news/security/new-windows-signdrop-zero-day-gives-hackers-system-privileges/"
+  },
+  {
+    "date": "2026-11-18",
+    "slug": "facestealer-north-koreas-fake-zoom-calls-behind-400m-crypto--2026-11-18",
+    "title": "FaceStealer: North Korea's Fake Zoom Calls Behind $400M Crypto Theft",
+    "storyTitle": "FBI Says North Korean Hackers Stole Over $400 Million in Crypto Using Deepfake Video Calls",
+    "storyUrl": "https://thehackernews.com/2026/11/fbi-says-north-korean-hackers-stole.html"
   }
 ]
