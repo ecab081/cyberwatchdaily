@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastUnlock Windows 11 Zero-Day: Narrator Lock Screen Bypass - CyberWatch Daily</title>
+<meta name="description" content="FastUnlock is an unpatched Windows 11 zero-day that abuses Narrator to run code on a locked PC. Affected setups, detection ideas and mitigations explained.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/fastunlock-windows-11-zero-day-narrator-lock-screen-bypass-2026-11-24.html">
+<meta property="og:title" content="FastUnlock Windows 11 Zero-Day: Narrator Lock Screen Bypass">
+<meta property="og:description" content="A researcher published FastUnlock, an unpatched Windows 11 technique. It uses Narrator and the lock screen's Microsoft-account recovery flow to run programs from a USB stick on a locked PC. It needs physical access and yields only a low-privilege account, but it works on BitLocker laptops that use TPM-only protection. Defenders should review startup PIN policy, USB handling and lost-device response.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/fastunlock-windows-11-zero-day-narrator-lock-screen-bypass-2026-11-24.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FastUnlock Windows 11 Zero-Day: Narrator Lock Screen Bypass">
+<meta name="twitter:description" content="A researcher published FastUnlock, an unpatched Windows 11 technique. It uses Narrator and the lock screen's Microsoft-account recovery flow to run programs from a USB stick on a locked PC. It needs physical access and yields only a low-privilege account, but it works on BitLocker laptops that use TPM-only protection. Defenders should review startup PIN policy, USB handling and lost-device response.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"FastUnlock Windows 11 Zero-Day: Narrator Lock Screen Bypass","description":"A researcher published FastUnlock, an unpatched Windows 11 technique. It uses Narrator and the lock screen's Microsoft-account recovery flow to run programs from a USB stick on a locked PC. It needs physical access and yields only a low-privilege account, but it works on BitLocker laptops that use TPM-only protection. Defenders should review startup PIN policy, USB handling and lost-device response.","datePublished":"2026-11-24","dateModified":"2026-11-24","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/fastunlock-windows-11-zero-day-narrator-lock-screen-bypass-2026-11-24.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">News Explainer</span><span class="date">November 24, 2026</span><span class="rt">9 min read</span></div>
+<h1>FastUnlock Windows 11 Zero-Day: Narrator Lock Screen Bypass</h1>
+<div class="excerpt">A researcher published FastUnlock, an unpatched Windows 11 technique. It uses Narrator and the lock screen's Microsoft-account recovery flow to run programs from a USB stick on a locked PC. It needs physical access and yields only a low-privilege account, but it works on BitLocker laptops that use TPM-only protection. Defenders should review startup PIN policy, USB handling and lost-device response.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">FastUnlock</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Windows 11</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">zero-day</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">BitLocker</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Narrator</span></div>
+</div>
+<div class="content">
+<p><strong>FastUnlock</strong> is a newly published, unpatched Windows 11 lock-screen bypass. It lets someone holding a powered-on, locked PC run programs without signing in. It is not remote, not a privilege-escalation-to-admin chain, and not a BitLocker decryption break. It does erode a common assumption: that a locked, encrypted laptop is safe to leave unattended or to lose in a booted state.</p><h2>What happened</h2><p>On <strong>November 19, 2026</strong>, a researcher who uses the handles <em>Nightmare Eclipse</em>, <em>Chaotic Eclipse</em> and <em>MSNightmare</em> posted FastUnlock to GitHub. The post included step-by-step instructions, a proof of concept and a demo video. Several outlets, citing Tom's Hardware and Security Affairs, identify the researcher as Abdelhamid Naceri. Reporting says the release was made without prior coordination with Microsoft.</p><p>Endpoint-security firm <strong>ThreatLocker</strong> tested the technique the same day and reported that it works. The researcher claims a breach of a BitLocker-encrypted Windows 11 26H2 machine with the November 2026 Patch Tuesday updates in about five minutes. That timing is the researcher's own claim.</p><p>Status as of November 24, 2026, based on public reporting:</p><ul><li><strong>No CVE</strong> has been assigned, and Microsoft has not published an advisory or fix, or given a timeline.</li><li><strong>No in-the-wild exploitation</strong> has been publicly reported.</li><li>The publicly available coverage does not include any CISA or CERT alert. That could change quickly.</li></ul><p>The release continues a pattern. The same researcher has published a run of unannounced Windows zero-days since April 2026. Those include <em>YellowKey</em>, a BitLocker bypass in the Windows Recovery Environment, which was tracked as CVE-2026-45585. Microsoft said at the time that TPM plus PIN made YellowKey unexploitable. It has not made an equivalent statement about FastUnlock.</p><h2>Who is affected</h2><p>There is no official affected-versions list. What is known:</p><ul><li><strong>Confirmed:</strong> Windows 11 version 26H2 with the November 2026 security updates. This is the researcher's test target, and ThreatLocker reproduced it.</li><li><strong>Unknown:</strong> Windows 10 and other Windows 11 builds. The researcher has not tested them. Treat any machine that meets the preconditions below as potentially affected until Microsoft says otherwise.</li><li><strong>Preconditions reported:</strong> physical access, a device that has already booted normally and is sitting at the lock screen, and at least one account on the PC linked to an online Microsoft account. Machines where nobody signs in with a Microsoft account do not meet the stated requirements.</li></ul><p>The practical exposure is highest for:</p><ul><li>Laptops configured with <strong>BitLocker TPM-only</strong> auto-unlock, with no startup PIN. The drive is already decrypted by the time the lock screen appears, so encryption does not get in the way.</li><li>Devices left <em>sleeping</em> rather than shut down or hibernated.</li><li>Shared kiosks, hot-desk machines, reception or lab PCs and travel laptops. Some vendor write-ups call out government shared terminals specifically. Those claims are inference rather than reported incidents.</li></ul><p>Public reporting gives no victim counts, sectors or regions, because no real-world use has been reported. A laptop that is fully powered off, or hibernated and protected by TPM plus a startup PIN, is reported not to reach the vulnerable state.</p><h2>How the attack works</h2><p>The chain, as described in the researcher's materials and secondary coverage, is short and keyboard-driven:</p><ol><li>At the Windows 11 lock or sign-in screen, the attacker chooses the <em>I forgot my PIN</em> recovery path. This is why a Microsoft-linked account matters.</li><li>The attacker presses <strong>Win+U</strong> to launch <strong>Narrator</strong>, the built-in screen reader. The researcher says Narrator's redesigned interface skips a lock-screen check that the older code retained.</li><li>Using Narrator navigation, the attacker reaches Settings, then <em>Bluetooth &amp; devices</em>, then <em>AutoPlay</em>.</li><li>A USB drive plugged into the machine opens in File Explorer. Anything launched from there executes as <strong>WsiAccount</strong>, the low-privilege, non-administrator account Windows uses to host lock-screen processes.</li></ol><h3>What the attacker gets, and what they do not</h3><ul><li>Code execution as WsiAccount, not SYSTEM or an administrator.</li><li>No BitLocker key recovery and no drive-encryption break. FastUnlock works only after normal boot and automatic TPM unlock. The earlier YellowKey flaw attacked BitLocker before Windows fully loaded, and FastUnlock does not.</li><li>No automatic access to every file of the locked user, but a foothold from which to probe the system, stage tools or look for local privilege-escalation paths. Public reporting does not demonstrate such a follow-on chain.</li></ul><h3>MITRE ATT&amp;CK mapping</h3><p>No technique fits this cleanly, because it is a physical-access lock-screen bypass rather than a typical intrusion chain. The mappings that apply are loose:</p><ul><li><strong>T1200 – Hardware Additions:</strong> the USB device used to deliver the payload. This is a loose fit, since the technique is usually described around adversary-introduced hardware.</li><li><strong>T1546.008 – Event Triggered Execution: Accessibility Features:</strong> thematically related, because it is an accessibility feature abused for execution. It is normally a persistence technique, and public reporting does not describe persistence here. Treat it as a thematic neighbor, not a confirmed mapping.</li></ul><h3>CVEs and IOCs</h3><ul><li><strong>CVE:</strong> none assigned.</li><li><strong>Hashes, domains and IPs:</strong> none publicly confirmed. The payload is whatever the attacker puts on the USB stick, so network IOCs are not meaningful.</li><li><strong>Behavioral artifacts:</strong> the WsiAccount account running non-standard processes, Narrator launched at the lock screen, and removable-storage activity while no user is interactively signed in. One vendor write-up points to Windows event IDs 4688 (process creation), 6416 (external device recognized), 4720 (user account created) and 4732 (member added to a local group). These are generic auditing sources, not FastUnlock-specific signatures.</li></ul><h2>Detection guidance for defenders</h2><p>Detection here is hard. Exploitation happens at the lock screen, often on an endpoint that is offline or unmanaged, and the attacker controls the payload. The goal is to catch anomalies from WsiAccount and unexpected device events on lock-screen sessions. Telemetry will be thin where the attacker avoids the network.</p><h3>What to look for</h3><ul><li><strong>Process creation under WsiAccount</strong> that is not part of the normal Windows logon UI stack. Baseline what legitimately runs there first, since the account is used by system components.</li><li><strong>Narrator.exe (and related child processes)</strong> started while the console session is locked or no user is signed in.</li><li><strong>USB mass-storage insertions</strong> (event 6416 or EDR device-control events) followed by execution from a removable drive letter.</li><li><strong>Follow-on activity:</strong> new local accounts (4720), local-group changes (4732), credential-access tooling, or outbound connections originating from a WsiAccount process.</li><li><strong>Fleet checks:</strong> inventory laptops that lack a startup PIN (TPM-only BitLocker) and that have Microsoft-account sign-ins. This is where the exposure sits.</li></ul><h3>Example hunting query (Microsoft Defender for Endpoint, KQL)</h3><pre><code>DeviceProcessEvents
+| where Timestamp &gt; ago(14d)
+| where AccountName =~ "wsiaccount"
+    or InitiatingProcessAccountName =~ "wsiaccount"
+| where FileName !in~ ("LogonUI.exe","consent.exe","fontdrvhost.exe","dwm.exe")
+| project Timestamp, DeviceName, AccountName, FileName, FolderPath,
+          ProcessCommandLine, InitiatingProcessFileName
+| order by Timestamp desc</code></pre><p><em>What it finds:</em> processes run by the lock-screen WsiAccount identity outside a small allow-list, including anything launched from a removable-drive path. Account naming and allow-lists vary by environment and build, so validate in a lab and tune before alerting. For Narrator at the lock screen, add a second pass on <code>FileName =~ "narrator.exe"</code> and correlate it with <code>DeviceEvents</code> where <code>ActionType == "PnpDeviceConnected"</code> in the same window.</p><p>If you rely on native Windows logging instead, enable <em>Audit Process Creation</em> with command-line logging and <em>Audit PNP Activity</em> so events 4688 and 6416 are generated. Alert on 4688 where <code>SubjectUserName</code> is WsiAccount and the new process image sits on a non-system drive.</p><h2>Mitigation and response</h2><p>No patch exists. Until Microsoft ships one, work through these in priority order:</p><ol><li><strong>Require a BitLocker startup PIN (TPM+PIN)</strong> on laptops and any device that leaves controlled space. A device that is shut down or hibernated with a PIN-protected drive does not reach the vulnerable lock-screen state. Microsoft said TPM+PIN neutralized the same researcher's earlier BitLocker bypass, but it has not said so for FastUnlock. Set the behavior through Group Policy or Intune and plan the helpdesk impact.</li><li><strong>Change user behavior and policy for unattended devices:</strong> shut down or hibernate rather than sleep when a laptop leaves your sight, and restrict sleep-at-lid-close on high-risk fleets.</li><li><strong>Restrict removable media.</strong> Use Defender for Endpoint device control, Intune device-installation restrictions, or Group Policy to block unapproved USB storage. The public chain depends on a USB drive. Also disable AutoPlay via <em>Computer Configuration &gt; Administrative Templates &gt; Windows Components &gt; AutoPlay Policies</em>. Test first, since the reported path passes through the AutoPlay settings page and it is unconfirmed whether the policy removes that route.</li><li><strong>Consider blocking Narrator</strong> with AppLocker or a restrictive ACL on its executable. This is the researcher's suggested stopgap. It breaks an accessibility feature that some users depend on, so scope it to devices without such users, use exceptions, and check your accessibility and legal obligations before deploying.</li><li><strong>Review Microsoft-account usage</strong> on managed corporate devices. The reported precondition is a Microsoft account reachable from the lock screen's recovery options. Prefer Entra ID/work-account sign-in on corporate hardware. Whether this fully removes the attack path has not been verified publicly.</li><li><strong>Add lost-or-stolen handling:</strong> if a booted, locked device is lost, assume possible low-privilege code execution on it. Revoke sessions and tokens, rotate credentials cached on the device, and remotely wipe or lock it. Rotate stored secrets, since WsiAccount access is not proven to be harmless.</li><li><strong>Monitor for Microsoft's response:</strong> an out-of-band fix, a CVE, or an advisory with an affected-versions list. Update this guidance when one appears.</li></ol><h2>What individuals should do</h2><p>The risk is mostly to people whose laptops could be lost, stolen or briefly handled by someone else.</p><ul><li>Shut down or hibernate your laptop when you leave it in a hotel, an office or a vehicle. Sleep is the risky state.</li><li>If your edition supports it, enable a BitLocker startup PIN. Home editions may offer Device Encryption only, so check your settings.</li><li>Do not plug unknown USB drives into your PC, and avoid leaving the machine unattended near strangers.</li><li>Enable Find My Device and know how to sign out of your Microsoft account remotely.</li></ul><p>A password manager does not address this specific risk, so no product recommendation applies.</p><h2>FAQ</h2><h3>Is FastUnlock a remote attack?</h3><p>No. It requires physical access to a powered-on, locked PC, plus a USB drive in the reported chain. Nothing in public reporting suggests it can be triggered over a network.</p><h3>Does it defeat BitLocker?</h3><p>Not in the sense of breaking encryption or recovering keys. When BitLocker is TPM-only, Windows decrypts the drive during boot, before the lock screen. FastUnlock acts after that point. A startup PIN prevents the machine from reaching that state without the user.</p><h3>Is it being exploited and is there a CVE?</h3><p>Public reporting does not confirm any in-the-wild exploitation. No CVE or Microsoft advisory had been published at the time of writing. A public proof of concept exists on GitHub, so opportunistic use is plausible.</p><h2>Bottom line</h2><p>FastUnlock is a narrow, physical-access bug with limited privileges. It is not a drop-everything event for most SOCs, but it undercuts the TPM-only BitLocker posture many organizations treat as sufficient for laptop loss. The public PoC and Microsoft's silence make it worth pushing startup PIN enforcement and USB restrictions now, especially for traveling executives, field staff and shared terminals.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://thehackernews.com/2026/11/new-unpatched-windows-0-day-fastunlock.html" target="_blank" rel="nofollow noopener">The Hacker News</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>
