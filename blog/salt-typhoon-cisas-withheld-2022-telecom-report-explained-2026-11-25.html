@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salt Typhoon: CISA's Withheld 2022 Telecom Report Explained - CyberWatch Daily</title>
+<meta name="description" content="A CISA-commissioned 2022 report warned of &quot;perilous&quot; US telecom flaws two years before Salt Typhoon. What it says, the SS7 link, and what defenders should do.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/salt-typhoon-cisas-withheld-2022-telecom-report-explained-2026-11-25.html">
+<meta property="og:title" content="Salt Typhoon: CISA's Withheld 2022 Telecom Report Explained">
+<meta property="og:description" content="A June 2022 report commissioned by CISA warned that US telecom networks had &quot;major structural vulnerabilities&quot; two years before Salt Typhoon was disclosed. The report was released through litigation and reviewed by Bloomberg and Reuters. It describes design-level weaknesses such as SS7 trust, not a patchable CVE, and that changes what defenders should do.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/salt-typhoon-cisas-withheld-2022-telecom-report-explained-2026-11-25.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Salt Typhoon: CISA's Withheld 2022 Telecom Report Explained">
+<meta name="twitter:description" content="A June 2022 report commissioned by CISA warned that US telecom networks had &quot;major structural vulnerabilities&quot; two years before Salt Typhoon was disclosed. The report was released through litigation and reviewed by Bloomberg and Reuters. It describes design-level weaknesses such as SS7 trust, not a patchable CVE, and that changes what defenders should do.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Salt Typhoon: CISA's Withheld 2022 Telecom Report Explained","description":"A June 2022 report commissioned by CISA warned that US telecom networks had \"major structural vulnerabilities\" two years before Salt Typhoon was disclosed. The report was released through litigation and reviewed by Bloomberg and Reuters. It describes design-level weaknesses such as SS7 trust, not a patchable CVE, and that changes what defenders should do.","datePublished":"2026-11-25","dateModified":"2026-11-25","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/salt-typhoon-cisas-withheld-2022-telecom-report-explained-2026-11-25.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">News Explainer</span><span class="date">November 25, 2026</span><span class="rt">10 min read</span></div>
+<h1>Salt Typhoon: CISA's Withheld 2022 Telecom Report Explained</h1>
+<div class="excerpt">A June 2022 report commissioned by CISA warned that US telecom networks had "major structural vulnerabilities" two years before Salt Typhoon was disclosed. The report was released through litigation and reviewed by Bloomberg and Reuters. It describes design-level weaknesses such as SS7 trust, not a patchable CVE, and that changes what defenders should do.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Salt Typhoon</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">CISA</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">SS7</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Telecom Security</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Cisco IOS XE</span></div>
+</div>
+<div class="content">
+<h2>What happened</h2>
+<p>Around 19 November 2026, Bloomberg News reported on a 111-page document titled "US telecommunications insecurity 2022." Reuters followed the same day after reviewing the report, and Politico carried the story under the headline that frames this article. The report was commissioned by the Cybersecurity and Infrastructure Security Agency (CISA) and dated June 2022. It was disclosed through a lawsuit rather than a voluntary release.</p>
+<p>The report concluded that US telecommunications networks have "major structural vulnerabilities" and can be compromised from anywhere in the world. It called the situation "perilous and untenable," citing outdated regulation and the complexity of the US telecom ecosystem. Reuters also quotes it saying that international interconnects can give attackers "trusted" access.</p>
+<p>Per Bloomberg's reporting as relayed by Reuters, CISA withheld the report for four years and resisted congressional pressure to publish it. Sen. Ron Wyden (D-OR) pushed for its release last year. His statement said Congress would have had time to mandate cybersecurity standards for phone companies in time to prevent the Salt Typhoon hacks, had the report been public when it was written.</p>
+<h3>Timeline</h3>
+<ul>
+<li><strong>June 2022:</strong> The report is written for CISA.</li>
+<li><strong>2024:</strong> The Salt Typhoon campaign is disclosed. US officials have alleged that nine telecom companies were targeted, including Verizon, AT&amp;T, T-Mobile and Lumen. They say the actors stole telephone audio intercepts and a large tranche of call-record data.</li>
+<li><strong>August 2025:</strong> CISA, NSA, FBI and partners from 13 countries publish joint advisory AA25-239A on the activity.</li>
+<li><strong>November 2026:</strong> The 2022 report becomes public through the lawsuit and is covered by Bloomberg, Reuters and others.</li>
+</ul>
+<h3>What is and is not confirmed</h3>
+<p>A former US official told Bloomberg that Salt Typhoon used SS7 (Signaling System 7) for some early reconnaissance. SS7 was one of the weaknesses the report identified. That claim comes from a single anonymous source. Public reporting does not confirm which carriers were touched through SS7, how many subjects were queried, or what was learned. This is a disclosure story, not a new intrusion. Public reporting reviewed here does not identify any new CVE, new victim count or new IOCs.</p>
+
+<h2>Who is affected</h2>
+<p>The report speaks to US telecommunications infrastructure as a whole, not to one vendor or product version. Nothing in public coverage ties it to a specific software release. The exposure is protocol- and architecture-level: interconnects between carriers, signaling networks and the regulatory model around them.</p>
+<ul>
+<li><strong>Carriers and interconnect partners:</strong> Salt Typhoon-linked intrusions are alleged against nine US telecoms. Reuters named Verizon, AT&amp;T, T-Mobile and Lumen. T-Mobile has said it detected the actors in 2024 and physically cut a compromised system's connection.</li>
+<li><strong>Small and regional operators:</strong> The report reportedly describes a small carrier, Choice Wireless. Its network was apparently used to connect to other US networks while exploiting SS7 to surveil people. The report says it is unclear whether Choice Wireless knew its network may have been commandeered. This is what the report says. It is not a confirmed finding about the company's conduct.</li>
+<li><strong>Subscribers:</strong> The report says several people in the US were apparently surveilled in espionage operations. Subscriber-level exposure from Salt Typhoon itself is described in government statements as call records and, for a limited set of targets, communications content.</li>
+<li><strong>Enterprises relying on carrier trust:</strong> Any organization that uses SMS or voice for authentication, or whose staff discuss sensitive matters on carrier-routed calls, inherits this risk.</li>
+</ul>
+<p>Salt Typhoon's reach extends past the US. The 2025 joint advisory covers telecom, government, transportation, lodging and military networks globally. SS7 is a global protocol, so the structural issue is not unique to the US, but the 2022 report is about US networks.</p>
+
+<h2>How the attack works</h2>
+<p>Two separate threads are tangled in the headlines. Defenders should keep them apart.</p>
+<h3>Thread 1: protocol-level trust (SS7)</h3>
+<p>SS7 was built for a closed club of trusted carriers. It has no strong sender authentication. Anyone with a connection to the signaling network, whether a leased global title, a compromised carrier or a small operator, can send legitimate-looking queries. Standard SS7 MAP messages can be misused to look up subscriber location or routing data, or to redirect SMS and calls. No CVE exists for this, because it is a design limitation rather than a software bug. The reporting does not describe the specific SS7 messages Salt Typhoon used. MITRE ATT&CK Enterprise has no clean technique for signaling-plane abuse, so none is listed for it here.</p>
+<h3>Thread 2: edge-device exploitation (the Salt Typhoon intrusions)</h3>
+<p>The joint advisory AA25-239A describes the group's core-network tradecraft. It states that publicly disclosed CVEs are the main initial access vector and that no zero-day exploitation was observed. The CVEs it names are:</p>
+<ul>
+<li><strong>CVE-2024-21887:</strong> Ivanti Connect Secure and Policy Secure</li>
+<li><strong>CVE-2024-3400:</strong> Palo Alto Networks PAN-OS GlobalProtect</li>
+<li><strong>CVE-2023-20198 and CVE-2023-20273:</strong> Cisco IOS XE</li>
+<li><strong>CVE-2018-0171:</strong> Cisco Smart Install</li>
+</ul>
+<p>Secondary reporting says the group targets the Web Services Management Agent (WSMA) endpoints for CVE-2023-20198. It often uses double encoding to obfuscate requests. Related activity includes weak or default device credentials, SNMP community strings and TACACS+ shared secrets. Once inside, the actors use living-off-the-land techniques to avoid detection. The advisory itself notes that initial access remains a significant information gap for some cases, so not every intrusion has a confirmed entry path.</p>
+<h3>ATT&amp;CK mapping (only where the fit is clear)</h3>
+<ul>
+<li><strong>T1190, Exploit Public-Facing Application:</strong> the CVEs above on edge devices.</li>
+<li><strong>T1078, Valid Accounts</strong> (T1078.001, Default Accounts, for default credentials): compromised or default device credentials.</li>
+<li><strong>T1059.008, Command and Scripting Interpreter: Network Device CLI:</strong> on-device command execution.</li>
+<li><strong>T1602.002, Data from Configuration Repository: Network Device Configuration Dump:</strong> pulling router and switch configs, which fits the reconnaissance described.</li>
+<li><strong>T1040, Network Sniffing:</strong> packet capture on network devices, consistent with the reported audio intercept theft.</li>
+</ul>
+<p>The mapping is the defender's inference from the advisory's themes. The Politico, Bloomberg and Reuters coverage does not itself list ATT&amp;CK techniques.</p>
+<h3>IOCs</h3>
+<p>The 2022 report's disclosure comes with no IOCs. AA25-239A includes a machine-readable IOC list. Ingest that list directly rather than relying on third-party blog copies, which are often stale.</p>
+
+<h2>Detection guidance for defenders</h2>
+<p>Most readers of this site do not run an SS7 stack. Enterprise SOCs still own the edge gear this campaign exploited and the authentication flows that carrier trust can undermine. Telecom SOCs should add signaling-plane monitoring on top.</p>
+<h3>Network and edge devices</h3>
+<ul>
+<li>Look for web UI or WSMA requests to Cisco IOS XE devices with unusual or double-encoded URL paths, especially from the internet.</li>
+<li>Alert on new local accounts, privilege-level changes and configuration changes outside change windows.</li>
+<li>Watch for Guest Shell enablement, unexpected listeners such as TCP/57722, and new GRE or other tunnels.</li>
+<li>Flag packet-capture or SPAN/ERSPAN configuration added to a device.</li>
+<li>Review SNMP and TACACS+ for default or shared secrets and for logins from unfamiliar sources.</li>
+<li>Look for Smart Install (TCP/4786) reachable from outside management networks.</li>
+</ul>
+<h3>Example hunt: suspicious config changes on network devices</h3>
+<p>This KQL assumes Cisco syslog is ingested into a Sentinel-style <code>Syslog</code> table. Adjust field names to your parser.</p>
+<pre><code>Syslog
+| where TimeGenerated &gt; ago(30d)
+| where SyslogMessage has_any ("%SYS-5-CONFIG_I", "username ", "guestshell", "monitor session", "ip http server", "ip http secure-server")
+| extend SrcIP = extract(@"from (?:vty\d+ \()?(\d{1,3}(?:\.\d{1,3}){3})", 1, SyslogMessage)
+| where isnotempty(SrcIP) and not(ipv4_is_private(SrcIP))
+| project TimeGenerated, HostName, SrcIP, SyslogMessage
+| order by TimeGenerated desc</code></pre>
+<p>This finds config-change events on network devices that originate from non-private source addresses and touch accounts, Guest Shell, SPAN sessions or the HTTP server. These are the places where this campaign's tradecraft usually shows up. Expect false positives from remote administration, so baseline your admin source ranges first.</p>
+<h3>Signaling plane (carriers and MVNOs)</h3>
+<ul>
+<li>Monitor inbound SS7/Diameter for location-lookup and routing queries from foreign global titles, and for subscriber-routing queries with no matching roaming context.</li>
+<li>Correlate unusual query bursts against a short list of high-value subscribers.</li>
+<li>Review who your interconnect partners are. The reporting on Choice Wireless suggests a small partner network can be the way in.</li>
+</ul>
+<h3>Identity telemetry</h3>
+<p>Review SMS-based MFA enrolment and recovery events for executives and administrators. If an SS7 attacker redirects an SMS, the only trace on your side may be a successful login from an unfamiliar device or location after an SMS challenge.</p>
+
+<h2>Mitigation and response</h2>
+<p>There is no patch for the structural issue the report describes. Mitigation therefore has two tracks: close the known edge-device holes, and reduce your dependence on carrier trust.</p>
+<ol>
+<li><strong>Patch and verify the five named CVEs.</strong> Check Ivanti Connect Secure/Policy Secure (CVE-2024-21887), PAN-OS GlobalProtect (CVE-2024-3400), Cisco IOS XE (CVE-2023-20198, CVE-2023-20273) and Cisco Smart Install (CVE-2018-0171). Use the vendors' fixed-version tables. Several of these are in CISA's Known Exploited Vulnerabilities catalog. Patching alone does not prove a device was not already compromised, so review the config and logs of any device that was exposed while vulnerable.</li>
+<li><strong>Remove management exposure.</strong> Disable the IOS XE HTTP/HTTPS server where it is not needed. Turn off Smart Install if unused. Restrict management planes to a dedicated out-of-band network with ACLs. Disable Guest Shell if you do not use it.</li>
+<li><strong>Retire default and shared credentials.</strong> Replace default local accounts, rotate SNMP community strings and TACACS+ secrets, and move to SNMPv3 where possible.</li>
+<li><strong>Isolate what cannot be patched.</strong> End-of-life edge gear should be removed from internet reach or replaced.</li>
+<li><strong>Move authentication off SMS and voice.</strong> Use phishing-resistant MFA, such as FIDO2 security keys or passkeys, for administrators and executives. Remove SMS as a recovery path for high-value accounts.</li>
+<li><strong>Use end-to-end encrypted channels for sensitive communication.</strong> Carrier-level interception, whether through lawful-intercept systems or SS7, does not expose content that is end-to-end encrypted.</li>
+<li><strong>If compromise is suspected,</strong> preserve device configs and logs before reboot, rotate all credentials that touched the device, and treat the device's config as disclosed. Escalate to CISA and the FBI.</li>
+</ol>
+<p>Carriers should apply the CISA/NSA/FBI communications-infrastructure hardening guidance published in December 2024. They should also apply SS7 and Diameter filtering that is recommended in industry signaling-security guidance, and ask regulators for clarity on expected baseline controls.</p>
+
+<h2>What individuals should do</h2>
+<p>Individuals cannot fix carrier infrastructure, but they can limit the damage.</p>
+<ul>
+<li>Use an end-to-end encrypted messaging and calling app for sensitive conversations instead of ordinary calls and SMS.</li>
+<li>Stop using SMS codes for important accounts where an authenticator app or security key is available.</li>
+<li>Add a carrier account PIN or port-out lock to reduce SIM-swap and account-takeover risk.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>Is there a CVE for the vulnerabilities in the 2022 report?</h3>
+<p>Public reporting does not point to one. The report centres on structural weaknesses, including SS7's trust model, which are design issues rather than a single software flaw. The CVEs associated with Salt Typhoon come from the separate 2025 joint advisory.</p>
+<h3>Did the 2022 report predict Salt Typhoon?</h3>
+<p>Not by name. It warned that US networks could be compromised from anywhere in the world and described a trusted-interconnect problem. A former official says Salt Typhoon used SS7 for early reconnaissance. The main Salt Typhoon intrusions, however, ran through exploited edge devices, which the report is not reported to have focused on.</p>
+<h3>Would publishing the report have stopped the 2024 intrusions?</h3>
+<p>That is the argument from Sen. Wyden, who says Congress could have mandated standards in time. It is a political judgment, not a demonstrated fact. The advisory says the actors relied on already-public CVEs and weak configuration, which carriers could have fixed without new legislation.</p>
+
+<h2>Bottom line</h2>
+<p>For most SOCs the report changes no detection rules. The actionable work is the same as before: patch and harden edge devices, retire default credentials, and stop trusting the phone network for authentication. The story matters mainly as a policy signal. The government held a detailed warning for four years, and the weaknesses it describes are structural and slow to fix. Plan on the assumption that carrier-routed voice and SMS remain interceptable.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://news.google.com/rss/articles/CBMif0FVX3lxTFBELVhnU0ZTT0JwcnhlNjh3WnZFSHliNFc1RThlbDVJR3ZTbnc4S0g5ZHRCVElmeTVGRV9xU09YWWlPTDVDWVhCcUU2cEZRLWRtR3Z5Z1BXRUpTZXM5Y3lXYzFOSXlxOWxsZHNuTGdscGt6c1J4anllOEw2ZktZb1U?oc=5" target="_blank" rel="nofollow noopener">Politico</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>
