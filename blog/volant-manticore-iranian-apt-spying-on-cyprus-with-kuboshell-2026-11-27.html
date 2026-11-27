@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Volant Manticore: Iranian APT Spying on Cyprus With KuboShell - CyberWatch Daily</title>
+<meta name="description" content="Check Point exposed Volant Manticore, an Iran-aligned APT spying on Cyprus with the IPFS-based KuboShell backdoor. IOCs, ATT&amp;CK mapping, KQL hunts and mitigations.">
+<link rel="canonical" href="https://cyberwatchdaily.net/blog/volant-manticore-iranian-apt-spying-on-cyprus-with-kuboshell-2026-11-27.html">
+<meta property="og:title" content="Volant Manticore: Iranian APT Spying on Cyprus With KuboShell">
+<meta property="og:description" content="Check Point has documented Volant Manticore, a previously unknown Iran-aligned group that has made Cyprus a sustained espionage target since 2025. It hits telecoms, aviation and critical infrastructure with fake-CV lures and an IPFS-based backdoor called KuboShell. The C2 traffic runs over Pinata and IPFS, and the group also drops legitimate RMM tools, so both are worth hunting for.">
+<meta property="og:url" content="https://cyberwatchdaily.net/blog/volant-manticore-iranian-apt-spying-on-cyprus-with-kuboshell-2026-11-27.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="CyberWatch Daily">
+<meta property="og:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Volant Manticore: Iranian APT Spying on Cyprus With KuboShell">
+<meta name="twitter:description" content="Check Point has documented Volant Manticore, a previously unknown Iran-aligned group that has made Cyprus a sustained espionage target since 2025. It hits telecoms, aviation and critical infrastructure with fake-CV lures and an IPFS-based backdoor called KuboShell. The C2 traffic runs over Pinata and IPFS, and the group also drops legitimate RMM tools, so both are worth hunting for.">
+<meta name="twitter:image" content="https://cyberwatchdaily.net/social-card.png">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Volant Manticore: Iranian APT Spying on Cyprus With KuboShell","description":"Check Point has documented Volant Manticore, a previously unknown Iran-aligned group that has made Cyprus a sustained espionage target since 2025. It hits telecoms, aviation and critical infrastructure with fake-CV lures and an IPFS-based backdoor called KuboShell. The C2 traffic runs over Pinata and IPFS, and the group also drops legitimate RMM tools, so both are worth hunting for.","datePublished":"2026-11-27","dateModified":"2026-11-27","author":{"@type":"Person","name":"E. Cab","jobTitle":"Cybersecurity Analyst","url":"https://cyberwatchdaily.net/about.html"},"publisher":{"@type":"Organization","name":"CyberWatch Daily","url":"https://cyberwatchdaily.net"},"mainEntityOfPage":"https://cyberwatchdaily.net/blog/volant-manticore-iranian-apt-spying-on-cyprus-with-kuboshell-2026-11-27.html"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6298202092368819" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#080c0f;--bg2:#0d1317;--bg3:#121920;--surface:#161e26;--surface2:#1c2730;--border:rgba(0,255,136,0.12);--border2:rgba(0,255,136,0.25);--green:#00ff88;--green-dark:#003d1f;--text:#e0edd6;--text2:#7a9e8a;--text3:#3d5a47;--mono:"IBM Plex Mono",monospace;--sans:"IBM Plex Sans",sans-serif;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.7;}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+header{border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;background:rgba(8,12,15,0.97);backdrop-filter:blur(12px);z-index:100;}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:8px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+nav{display:flex;gap:1.5rem;font-family:var(--mono);font-size:12px;}nav a{color:var(--text2);}nav a:hover{color:var(--green);text-decoration:none;}
+.layout{max-width:1100px;margin:0 auto;padding:2rem;display:grid;grid-template-columns:1fr 280px;gap:2.5rem;}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:1.5rem;}
+.back:hover{color:var(--green);text-decoration:none;}
+.article-header{margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid var(--border);}
+.meta{display:flex;gap:10px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.cat{font-family:var(--mono);font-size:10px;padding:3px 10px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);text-transform:uppercase;}
+.date{font-family:var(--mono);font-size:11px;color:var(--text3);}
+.rt{font-family:var(--mono);font-size:11px;color:var(--text3);}
+h1{font-family:var(--mono);font-size:clamp(20px,3vw,30px);font-weight:600;line-height:1.3;margin-bottom:1rem;}
+.excerpt{font-size:16px;color:var(--text2);line-height:1.8;padding:1.25rem 1.5rem;background:var(--bg2);border-left:3px solid var(--green);margin-bottom:1.5rem;}
+.author-byline{display:flex;align-items:center;gap:12px;padding:1rem 1.25rem;background:var(--surface);border:1px solid var(--border);margin-bottom:1.5rem;}
+.author-avatar-sm{width:40px;height:40px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-byline-info{font-size:13px;}
+.author-byline-name{color:var(--text);font-weight:500;}
+.author-byline-name a{color:var(--text);}.author-byline-name a:hover{color:var(--green);text-decoration:none;}
+.author-byline-title{color:var(--text3);font-family:var(--mono);font-size:11px;margin-top:2px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1rem;}
+.content h2{font-family:var(--mono);font-size:19px;font-weight:500;margin:2.5rem 0 1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);color:var(--text);}
+.content h3{font-family:var(--mono);font-size:15px;font-weight:500;margin:1.75rem 0 0.75rem;color:var(--green);}
+.content p{color:var(--text2);margin-bottom:1.4rem;line-height:1.85;font-size:15px;}
+.content ul,.content ol{color:var(--text2);padding-left:1.5rem;margin-bottom:1.4rem;font-size:15px;}
+.content li{margin-bottom:0.6rem;line-height:1.75;}
+.content strong{color:var(--text);font-weight:500;}
+.content em{color:var(--text2);font-style:italic;}
+.content a{color:var(--green);}
+.content pre{background:var(--bg2);border:1px solid var(--border);padding:1rem;overflow-x:auto;margin:0 0 1.4rem;}
+.content code{font-family:var(--mono);font-size:13px;color:var(--text);}
+.content blockquote{border-left:3px solid var(--green);padding:1rem 1.25rem;background:var(--bg2);margin:1.5rem 0;color:var(--text2);font-style:italic;}
+.author-bio-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:2.5rem 0;display:flex;gap:1.25rem;align-items:flex-start;}
+.author-bio-box .avatar{width:56px;height:56px;background:var(--green-dark);border:1px solid var(--border2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:18px;font-weight:600;color:var(--green);flex-shrink:0;}
+.author-bio-box h4{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.author-bio-box .role{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+.author-bio-box p{color:var(--text2);font-size:13px;line-height:1.7;margin:0;}
+.cta{background:var(--bg2);border:1px solid var(--border2);padding:1.5rem;margin:2.5rem 0;}
+.cta p{color:var(--text2);font-size:14px;margin-bottom:1rem;line-height:1.7;}
+.cta-btn{display:inline-block;font-family:var(--mono);font-size:12px;font-weight:600;padding:9px 20px;background:var(--green);color:#000;margin-right:8px;margin-bottom:6px;}
+.cta-btn:hover{background:#fff;text-decoration:none;}
+.sidebar{display:flex;flex-direction:column;gap:1.5rem;}
+.sc{background:var(--surface);border:1px solid var(--border);padding:1.25rem;}
+.st{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--text3);margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);}
+.tl{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.tl:last-child{border-bottom:none;padding-bottom:0;}
+.tb{font-family:var(--mono);font-size:10px;padding:2px 6px;background:var(--green-dark);color:var(--green);border:1px solid var(--border2);}
+.nb{width:100%;background:var(--green);color:#000;font-family:var(--mono);font-size:12px;font-weight:600;padding:10px;border:none;cursor:pointer;}
+.nb:hover{background:#fff;}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;margin-top:2rem;}
+.fi{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:var(--mono);font-size:14px;color:var(--green);}
+.fli{display:flex;gap:1rem;font-family:var(--mono);font-size:11px;}
+.fli a{color:var(--text3);}.fli a:hover{color:var(--green);text-decoration:none;}
+.fc{font-family:var(--mono);font-size:11px;color:var(--text3);}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}nav{display:none;}}
+</style>
+</head>
+<body>
+
+<header><div class="header-inner">
+<a href="/" class="logo"><div class="live-dot"></div>[CyberWatch Daily]</a>
+<nav>
+  <a href="/">News</a>
+  <a href="/blog/">Blog</a>
+  <a href="/tools.html">Tools</a>
+  <a href="/best-vpn-2026.html">VPN Guide</a>
+  <a href="/#newsletter">Newsletter</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+</nav>
+</div></header>
+
+<div class="layout">
+<article>
+<a href="/blog/" class="back">← Back to Blog</a>
+<div class="article-header">
+<div class="meta"><span class="cat">Threat Analysis</span><span class="date">November 27, 2026</span><span class="rt">9 min read</span></div>
+<h1>Volant Manticore: Iranian APT Spying on Cyprus With KuboShell</h1>
+<div class="excerpt">Check Point has documented Volant Manticore, a previously unknown Iran-aligned group that has made Cyprus a sustained espionage target since 2025. It hits telecoms, aviation and critical infrastructure with fake-CV lures and an IPFS-based backdoor called KuboShell. The C2 traffic runs over Pinata and IPFS, and the group also drops legitimate RMM tools, so both are worth hunting for.</div>
+<div class="author-byline">
+  <div class="author-avatar-sm">EC</div>
+  <div class="author-byline-info">
+    <div class="author-byline-name"><a href="/about.html">E. Cab</a></div>
+    <div class="author-byline-title">Cybersecurity Analyst · CyberWatch Daily</div>
+  </div>
+</div>
+<div class="tags"><span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Volant Manticore</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">KuboShell</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Iranian APT</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">Cyprus</span> <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);">MuddyWater</span></div>
+</div>
+<div class="content">
+<h2>What happened</h2>
+<p>On November 24, 2026, Check Point Research published its findings on <strong>Volant Manticore</strong>, a previously undocumented Iran-nexus espionage group. Dark Reading covered the research on November 26 under the headline "Cyprus Becomes Espionage Target for Iranian Hackers," and The Hacker News and several other outlets ran their own write-ups. Check Point is the primary source. The secondary coverage adds little beyond that report.</p>
+<p>The main points from the public reporting:</p>
+<ul>
+<li>Check Point calls Volant Manticore the first Iranian group it has observed making Cyprus a <em>primary and sustained</em> intelligence target.</li>
+<li>Activity dates to roughly late August or September 2025. Sources differ slightly on the start month.</li>
+<li>Known Cyprus targets include a Cyprus-based airline that flies mainly between Cyprus and Israel, telecommunications providers, critical infrastructure organizations, and a suspected government entity with military connections.</li>
+<li>Check Point tied a January 2026 phishing attempt to a likely Cypriot government target.</li>
+<li>In July 2026 the group used a fake résumé for an AI-generated travel and tourism professional. Researchers believe it was aimed at the Cyprus–Israel airline.</li>
+<li>The group later widened its scope to Saudi Arabia, mainly healthcare, using healthcare-themed lures.</li>
+</ul>
+<p><strong>Attribution.</strong> Check Point assesses with high confidence that the group is Iran-linked. It has only medium confidence in a historical tie to Iran's Ministry of Intelligence and Security (MOIS). The group's tooling reuses an older MuddyWater framework, so Check Point describes it as a possible MuddyWater offshoot. However, Cyprus is outside MuddyWater's usual targeting, and the infrastructure is separate. That suggests the group pursues its own objectives.</p>
+<p><strong>What is not public:</strong> the number of victims, how many intrusions succeeded, and what data was taken. No CVE is associated with the campaign. Initial access relies on social engineering and user execution, not a software vulnerability.</p>
+
+<h2>Who is affected</h2>
+<p>There are no affected product versions, because this is not a vendor-vulnerability story. The exposure is organizational and sector-based:</p>
+<ul>
+<li><strong>Cyprus:</strong> telecoms, aviation (especially Cyprus–Israel routes), critical infrastructure, and defense-adjacent government bodies.</li>
+<li><strong>Saudi Arabia:</strong> healthcare organizations, according to Check Point's researcher quoted by Dark Reading.</li>
+<li><strong>Platform:</strong> Windows endpoints. KuboShell is a 64-bit Windows backdoor, and the follow-on Homa framework runs through PowerShell and JavaScript.</li>
+</ul>
+<p>Check Point links the Cyprus focus to the island's defense and energy ties with Israel and Greece and its role in Western military operations in the region. It also points to a separate report on Iran-linked actors probing internet-connected cameras in the region, including Cyprus, after February 28. The research reportedly offers no direct evidence that the conflict caused the shift in targeting. Treat the geopolitical link as context, not a proven driver.</p>
+<p>Organizations outside these sectors are unlikely to be primary targets. Telecom, aviation and healthcare suppliers, contractors, and partners with Cypriot or Israeli ties should still treat this as relevant. Espionage groups often reach the real target through a connected third party.</p>
+
+<h2>How the attack works</h2>
+<h3>Stage 1: Lure and delivery</h3>
+<p>Public reporting describes two delivery themes:</p>
+<ul>
+<li><strong>Fake CV.</strong> A bogus résumé for an AI-generated persona presented a link to "download the full résumé" from a recruitment site. The payload was a KuboShell executable, for example <code>Athena Marinou-CV.exe</code>.</li>
+<li><strong>Healthcare seminar lure.</strong> A ZIP archive named <code>AI_Healthcare_Seminar.zip</code> contained a KuboShell executable (<code>AI_Healthcare_Seminar.exe</code>), aimed at Saudi healthcare.</li>
+</ul>
+<p>A separate macro-enabled Word document, <code>MilitaryHeritageProposal.doc</code>, is believed to have targeted a Cypriot defense-related government entity. It delivered the Homa framework through a VBA backdoor that runs follow-up payloads through <code>cmd.exe</code>.</p>
+<p>The group has also run credential-harvesting campaigns. Check Point describes this as a departure from the MuddyWater playbook. The reporting reviewed does not name the credential-theft targets or lure pages.</p>
+
+<h3>Stage 2: KuboShell and IPFS command and control</h3>
+<p>KuboShell is the notable piece. Per Check Point's description as relayed by secondary coverage:</p>
+<ol>
+<li>On startup it checks for administrator rights. If it lacks them, it relaunches itself elevated, which triggers a UAC prompt.</li>
+<li>It takes the MAC address of the first network adapter and uses it as the victim ID.</li>
+<li>It registers the host by uploading a small file, saved as <code>C:\Users\Public\&lt;MAC&gt;.log</code>, to Pinata using a hard-coded access token.</li>
+<li>It polls Pinata every 60 seconds for a command file named <code>&lt;MAC&gt;.txt</code>. If one exists, it resolves the IPFS identifier and downloads the content through Pinata's public gateway.</li>
+<li>It runs the content through PowerShell in a hidden window and writes the output to a file in <code>C:\Users\Public</code>, which it then uploads back.</li>
+</ol>
+<p>KuboShell is mainly used for basic reconnaissance and to size up the environment. It then pulls down a more capable backdoor from the <strong>Homa framework</strong>, a three-stage chain. Check Point assesses that Homa's client is a JavaScript reimplementation of the older MuddyC2Go client. That would let the group keep MuddyWater's server-side component with few changes.</p>
+
+<h3>Stage 3: Legitimate remote management tools</h3>
+<p>The group has also distributed <strong>NetLock RMM</strong> and <strong>MeshCentral</strong>, which are legitimate remote administration tools. These give the operators a second access path that looks like normal IT activity.</p>
+
+<h3>ATT&amp;CK mapping</h3>
+<p>These mappings follow the behaviors described in public reporting. They are analyst mapping, not an official Check Point technique list.</p>
+<ul>
+<li><strong>T1566</strong> Phishing (the fake-CV and healthcare lures)</li>
+<li><strong>T1204.002</strong> User Execution: Malicious File</li>
+<li><strong>T1059.001</strong> Command and Scripting Interpreter: PowerShell</li>
+<li><strong>T1059.005</strong> Command and Scripting Interpreter: Visual Basic (the VBA backdoor in the Word document)</li>
+<li><strong>T1059.007</strong> Command and Scripting Interpreter: JavaScript (the Homa client)</li>
+<li><strong>T1102</strong> Web Service (Pinata and IPFS as the C2 channel)</li>
+<li><strong>T1219</strong> Remote Access Software (NetLock RMM and MeshCentral)</li>
+</ul>
+
+<h3>Published IOCs</h3>
+<p>Check Point's report includes indicators. Secondary coverage reproduces these SHA-256 hashes for KuboShell samples:</p>
+<ul>
+<li><code>684f748deceabf0fbb789ce11cc748ec62ea7e218f44289557e733509ec9b250</code> (Athena Marinou-CV.exe)</li>
+<li><code>27f36e562015365017c1458a5944b4f03cb13049f3b268bb919fcff7f83c459f</code> (hnrhw9.zip)</li>
+<li><code>8657c350a2cf338721ade0bba8bd976cdd0c6e21fb7d5052eec24f8a034d7f7f</code> (AI_Healthcare_Seminar.exe)</li>
+<li><code>3239b5916a3462e17ed3110083f3310c58bf1c74aca75e20ddb8bfa7b7b519fb</code> (AI_Healthcare_Seminar.zip)</li>
+</ul>
+<p>Pull the full IOC list, including C2 and Pinata-related indicators, from Check Point's original publication. Do not rely on the partial lists in news write-ups. File hashes and filenames are easy for the actor to change, so the behavioral detections below will last longer.</p>
+
+<h2>Detection guidance for defenders</h2>
+<p>Start with the behaviors. KuboShell's C2 sits on a commercial IPFS pinning service reached over HTTPS, so blocking by reputation alone will probably fail.</p>
+<h3>What to look for</h3>
+<ul>
+<li><strong>Pinata/IPFS traffic from endpoints with no business reason for it.</strong> A host polling every ~60 seconds is the strongest network signal.</li>
+<li><strong>Executables running from archives or download folders, then spawning PowerShell with a hidden window</strong> (<code>-WindowStyle Hidden</code> or equivalent).</li>
+<li><strong>MAC-address-named files</strong> (<code>.log</code> and <code>.txt</code>) in <code>C:\Users\Public</code>.</li>
+<li><strong>Unsanctioned RMM installs.</strong> NetLock RMM or MeshCentral agents on hosts where IT did not deploy them.</li>
+<li><strong>Office apps spawning <code>cmd.exe</code>.</strong> This covers the macro-enabled document delivery path.</li>
+<li><strong>Email telemetry.</strong> Look for CV or seminar-themed messages with links to recruitment-style sites or ZIP attachments, especially to HR, travel, and executive-assistant mailboxes.</li>
+</ul>
+
+<h3>Example hunting queries (KQL, Microsoft Defender)</h3>
+<p>Query 1 finds endpoints talking to Pinata or IPFS gateways and shows which processes and how often. Review periodic beaconing by process.</p>
+<pre><code>DeviceNetworkEvents
+| where Timestamp &gt; ago(30d)
+| where RemoteUrl has_any ("pinata", "ipfs")
+| summarize Connections = count(), FirstSeen = min(Timestamp), LastSeen = max(Timestamp)
+    by DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, RemoteUrl
+| order by Connections desc</code></pre>
+<p>Query 2 finds MAC-style filenames dropped in the Public profile folder, a KuboShell host-registration artifact. The regex is an assumption, because public reporting does not specify the MAC formatting. Adjust it if you see separators.</p>
+<pre><code>DeviceFileEvents
+| where Timestamp &gt; ago(30d)
+| where FolderPath startswith @"C:\Users\Public"
+| where FileName matches regex @"^[0-9A-Fa-f]{2}([-:]?[0-9A-Fa-f]{2}){5}(re)?\.(log|txt)$"
+| project Timestamp, DeviceName, FileName, FolderPath, InitiatingProcessFileName, InitiatingProcessCommandLine</code></pre>
+<p>Also hunt for known-bad hashes in <code>DeviceFileEvents</code> and <code>DeviceProcessEvents</code> using the SHA-256 values above. For RMM, query process and service installs for names containing <code>meshagent</code> or <code>netlock</code> and compare them against your approved software list.</p>
+
+<h2>Mitigation and response</h2>
+<p>In priority order:</p>
+<ol>
+<li><strong>Hunt first, then block.</strong> Run the queries above across 90 days if retention allows. Blocking IOCs before you know whether you are already hit can hide evidence.</li>
+<li><strong>Restrict Pinata and IPFS gateway access.</strong> If no business unit uses them, block or alert at the proxy or DNS layer. If a team legitimately uses them, allow-list by user group or host. This breaks KuboShell's C2 path directly.</li>
+<li><strong>Control RMM tooling.</strong> Use application control (WDAC or AppLocker) so only your approved RMM agent runs. Alert on installation of any other remote management product.</li>
+<li><strong>Disable macros from the internet.</strong> Block Office macros in files carrying Mark-of-the-Web. This addresses the macro-enabled Word document path.</li>
+<li><strong>Handle archives and executables at the mail gateway.</strong> Quarantine or detonate ZIPs containing executables. Rewrite or sandbox links to recruitment or file-sharing sites in inbound mail, especially for HR and recruiting mailboxes.</li>
+<li><strong>Constrain PowerShell.</strong> Enable Script Block Logging and Module Logging, and use Constrained Language Mode where feasible. Alert on hidden-window launches from user-writable paths.</li>
+<li><strong>If you find a hit:</strong> isolate the host, preserve memory and the <code>C:\Users\Public</code> artifacts, and rotate credentials for any account used on that machine. Because the group also runs credential-harvesting campaigns, review sign-in logs for the affected users. Look at new MFA registrations, mailbox rules, and logins from unfamiliar infrastructure. Then audit the environment for unapproved RMM agents as a persistence check.</li>
+</ol>
+<p>The group has been active for over a year before public documentation. For any organization in the targeted sectors, a retrospective hunt is justified even without a known incident.</p>
+
+<h2>What individuals should do</h2>
+<p>This campaign is aimed at organizations, not consumers. Staff in HR, recruiting, travel, and healthcare administration are the likely lure recipients, so a few habits matter:</p>
+<ul>
+<li>Treat unsolicited résumés that point to an external "full CV" download link as suspect. Do not run an executable from a ZIP, however professional the persona looks.</li>
+<li>Do not enable macros in a document just because it asks. Verify through a separate channel first.</li>
+<li>If you see a UAC prompt after opening a downloaded file you did not expect to install anything, stop and report it to your security team.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>Is there a CVE or patch for this?</h3>
+<p>No. Public reporting describes phishing, user execution and legitimate-service abuse, with no vulnerability named. The defenses are configuration, monitoring and user-facing controls, not patching.</p>
+<h3>Is Volant Manticore the same as MuddyWater?</h3>
+<p>Not confirmed. Check Point sees overlap, including a reworked MuddyC2Go-style framework and a possible MOIS connection (medium confidence). It also sees differences in targeting and infrastructure, and treats Volant Manticore as a distinct group. Treat the MuddyWater link as an analytic judgment, not settled fact.</p>
+<h3>How many organizations were breached?</h3>
+<p>Public reporting does not say. It names target types (an airline, telecoms, critical infrastructure, a suspected government entity) but gives no victim count and does not confirm which phishing attempts led to compromise.</p>
+
+<h2>Bottom line</h2>
+<p>For defenders in Cyprus and neighboring regions, especially telecom, aviation and critical infrastructure, this is a credible, sector-specific espionage threat that deserves a retrospective hunt. For everyone else, the lasting value is in the techniques. C2 hidden in a commercial IPFS pinning service and legitimate RMM tools as backup access are both cheap to detect if you are already logging proxy and process data. The campaign is not technically exotic. It works because the lures are convincing and most environments do not watch for Pinata or unapproved remote management tools.</p>
+<p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);">Original reporting: <a href="https://news.google.com/rss/articles/CBMimgFBVV95cUxOcGpVdUNlQUNPN1I3QThycnpEc0d3SGhydkxfcFZIUTE0MjZuMzJLR1pQMkVFQ2R4c3lZN0ZqWmRVMnBKM05FdGFvM0NrSVhpQXB3S0MxZTNudVlmc1VwdVlVdS1Ga0k0UGNKcTJWLUYtT0dhSmtEdnFvWHNNblZsRlpWT0N5TFhUOGl5MndZNVRRWUUtUUhWNURR?oc=5" target="_blank" rel="nofollow noopener">Dark Reading</a></p>
+</div>
+
+<div class="author-bio-box">
+  <div class="avatar">EC</div>
+  <div>
+    <h4><a href="/about.html" style="color:var(--text);text-decoration:none;">E. Cab</a></h4>
+    <div class="role">Cybersecurity Analyst, CyberWatch Daily</div>
+    <p>Cybersecurity professional with hands-on experience in defensive operations, threat intelligence, and incident response. Covers ransomware, phishing, nation-state threats, and practical security guidance for individuals and organizations.</p>
+  </div>
+</div>
+
+<div class="cta">
+<p><strong>Protect yourself with tools recommended by cybersecurity professionals:</strong><br>
+The tools below are independently selected based on security audits, transparency, and real-world effectiveness.</p>
+<a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" rel="noopener" class="cta-btn">Get NordVPN — 70% Off</a>
+<a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" rel="noopener" class="cta-btn">Try NordPass Free</a>
+<a href="https://bitwarden.com" target="_blank" rel="noopener" class="cta-btn">Try Bitwarden Free</a>
+</div>
+</article>
+
+<aside class="sidebar">
+<div class="sc"><div class="st">Daily Newsletter</div>
+<p style="font-size:13px;color:var(--text2);margin-bottom:1rem;line-height:1.6;">Get daily threat intelligence delivered to your inbox every morning. Free, no spam.</p>
+<button class="nb" onclick="window.open('https://cyberwatchdaily.beehiiv.com/subscribe','_blank')">Subscribe Free →</button>
+</div>
+<div class="sc"><div class="st">About the Author</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:0.75rem;"><strong style="color:var(--text);">E. Cab</strong> is a cybersecurity analyst covering threat intelligence, ransomware, and defensive operations.</p>
+<a href="/about.html" style="font-family:var(--mono);font-size:12px;color:var(--green);">Read full bio →</a>
+</div>
+<div class="sc"><div class="st">Recommended Tools</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordVPN</div><div style="font-size:11px;color:var(--text3);">Best-in-class VPN protection</div></div><a href="https://go.nordvpn.net/aff_c?offer_id=15&aff_id=144963&url_id=902" target="_blank" class="tb">70% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">NordPass</div><div style="font-size:11px;color:var(--text3);">Secure password manager</div></div><a href="https://go.nordpass.io/aff_c?offer_id=488&aff_id=144963&url_id=9356" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Bitwarden</div><div style="font-size:11px;color:var(--text3);">Open-source vault</div></div><a href="https://bitwarden.com" target="_blank" class="tb">Free</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">DeleteMe</div><div style="font-size:11px;color:var(--text3);">Remove your data</div></div><a href="https://joindeleteme.com/refer?coupon=DELETEME10" target="_blank" class="tb">10% Off</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Aura</div><div style="font-size:11px;color:var(--text3);">Identity protection</div></div><a href="https://www.aura.com/" target="_blank" class="tb">Try Free</a></div>
+</div>
+<div class="sc"><div class="st">Security Hardware</div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5 NFC</div><div style="font-size:11px;color:var(--text3);">Best hardware security key</div></div><a href="https://www.amazon.com/dp/B08DHL1YDL?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">YubiKey 5C NFC</div><div style="font-size:11px;color:var(--text3);">USB-C + NFC version</div></div><a href="https://www.amazon.com/dp/B08F5D5X7T?tag=cyberwatchdai-20" target="_blank" class="tb">Buy →</a></div>
+<div class="tl"><div><div style="color:var(--text);font-weight:500;font-size:13px;">Privacy Screen</div><div style="font-size:11px;color:var(--text3);">Anti-spy laptop filter</div></div><a href="https://www.amazon.com/s?k=privacy+screen+filter+laptop&tag=cyberwatchdai-20" target="_blank" class="tb">Shop →</a></div>
+</div>
+</aside>
+</div>
+
+<footer><div class="fi">
+<div class="fl">[CyberWatch Daily]</div>
+<div class="fli">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+  <a href="/contact.html">Contact</a>
+  <a href="/privacy-policy.html">Privacy</a>
+</div>
+<div class="fc">© 2026 CyberWatch Daily · cyberwatchdaily.net</div>
+</div></footer>
+
+</body>
+</html>
